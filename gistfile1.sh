@@ -1,5 +1,6 @@
 # Standard setup (use desktop metapackage once released)
-rosinstall_generator ros ros_comm robot_model robot_state_publisher diagnostic_msgs octomap rviz --rosdistro indigo --deps --wet-only --tar > indigo.rosinstall
+rosinstall_generator ros ros_comm robot_model robot_state_publisher diagnostic_msgs octomap rviz \
+    --rosdistro indigo --deps --wet-only --tar > indigo.rosinstall
 wstool init -j8 src indigo.rosinstall
 rosdep install --from-paths src --ignore-src --rosdistro indigo -ry
 
