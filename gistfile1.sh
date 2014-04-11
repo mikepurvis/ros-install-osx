@@ -1,4 +1,8 @@
 # Preparation
+brew tap ros/hydro
+brew tap osrf/simulation
+brew tap homebrew/versions
+brew tap homebrew/science
 brew install cmake python libyaml
 
 # Standard ROS setup (use desktop metapackage once released)
