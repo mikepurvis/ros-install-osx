@@ -3,17 +3,22 @@ brew tap ros/hydro
 brew tap osrf/simulation
 brew tap homebrew/versions
 brew tap homebrew/science
+
+# Key prerequisites
 brew install cmake python libyaml
+
+# ROS packaging and setup tools
+sudo pip install -U rosdep rosinstall_generator wstool rosinstall
+
+# Some extra stuff (unnecessary pending rosdep updates?)
+sudo pip install -U pillow
+brew install wxpython
 
 # Standard ROS setup (use desktop metapackage once released)
 rosinstall_generator ros ros_comm robot_model robot_state_publisher diagnostic_msgs octomap rviz \
     --rosdistro indigo --deps --wet-only --tar > indigo.rosinstall
 wstool init -j8 src indigo.rosinstall
 rosdep install --from-paths src --ignore-src --rosdistro indigo -ry
-
-# Install some extra stuff (unnecessary pending rosdep updates?)
-sudo pip install -U pillow
-brew install wxpython
 
 # Source version of orocos (unnecessary after next release of orocos packages)
 pushd src
