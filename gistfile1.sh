@@ -16,7 +16,7 @@ brew tap homebrew/science
 brew install cmake python libyaml lz4
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
-brew install ogre  # --head
+brew install ogre --head  # Ogre 1.9 for indigo's rviz
 
 # Install unreleased empy
 curl http://www.alcyone.com/software/empy/empy-latest.tar.gz | tar xvz
