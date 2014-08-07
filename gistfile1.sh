@@ -1,8 +1,9 @@
 # Install XQuartz from: https://xquartz.macosforge.org
 
-# Homebrew
+# Homebrew (as necessary)
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-# TODO: Put /usr/local/bin at front of path, source .bash_profile
+echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
+source .bash_profile
 brew doctor
 brew update
 
