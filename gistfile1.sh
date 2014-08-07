@@ -16,32 +16,30 @@ brew tap homebrew/science
 brew install cmake python libyaml lz4
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
-brew install ogre --head  # Ogre 1.9 for indigo's rviz
+brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending some bugfixes
 
-# Install unreleased empy
+# Install unreleased empy  (necessary?)
 curl http://www.alcyone.com/software/empy/empy-latest.tar.gz | tar xvz
 pushd empy-3.3.2
 python setup.py install
 popd
 
-# Install PIL (Pending: https://github.com/ros/rosdistro/issues/5220)
-ln -s /usr/local/include/freetype2 /usr/local/include/freetype
-pip install pil --allow-external pil --allow-unverified pil
-
-# Create install path
-sudo mkdir -p /opt/ros/indigo
-sudo chown $USER /opt/ros/indigo
+# Install Pillow (Pending: https://github.com/ros/rosdistro/issues/5220)
+pip install pillow
 
 # ROS build infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom
 sudo rosdep init
 rosdep update
 
-# ROS Source Install
+# ROS Indigo Source Install
+sudo mkdir -p /opt/ros/indigo
+sudo chown $USER /opt/ros/indigo
 mkdir indigo_desktop_ws && cd indigo_desktop_ws
 rosinstall_generator desktop --rosdistro indigo --deps --tar > indigo.rosinstall
-wstool init -j4 src indigo.rosinstall
-rosdep install --from-paths src --ignore-src --rosdistro indigo -y
+rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
+wstool init -j8 src indigo.rosinstall
+rosdep install --from-paths src --ignore-src --rosdistro indigo -y --skip-keys=python-imaging
 
 # Parallel build
 catkin build --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo \
