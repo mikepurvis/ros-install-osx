@@ -1,3 +1,5 @@
+# Install XQuartz from: https://xquartz.macosforge.org
+
 # Homebrew Setup (skip if already done)
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 # TODO: Put /usr/local/bin at front of path, source .bash_profile
@@ -14,7 +16,7 @@ brew tap homebrew/science
 brew install cmake python libyaml lz4
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
-brew install ogre --HEAD  # If prompted, install XQuartz from: https://xquartz.macosforge.org
+brew install ogre  # --head
 
 # Install unreleased empy
 curl http://www.alcyone.com/software/empy/empy-latest.tar.gz | tar xvz
