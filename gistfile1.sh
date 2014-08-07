@@ -1,14 +1,27 @@
-# Preparation
+# Homebrew Setup (skip if already done)
+ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+# TODO: Put /usr/local/bin at front of path, source .bash_profile
+brew doctor
+brew update
+
+# Taps for specific formulae
 brew tap ros/deps
 brew tap osrf/simulation
 brew tap homebrew/versions
 brew tap homebrew/science
 
 # Prerequisites
-brew install cmake python libyaml lz4
+brew install cmake python libyaml lz4 poco
+brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
 
-# Install PIL (Pending: https://github.com/ros/rosdistro/issues/5220 ?)
+# Install unreleased empy
+curl http://www.alcyone.com/software/empy/empy-latest.tar.gz | tar xvz
+pushd empy-3.3.2
+python setup.py install
+popd
+
+# Install PIL (Pending: https://github.com/ros/rosdistro/issues/5220)
 ln -s /usr/local/include/freetype2 /usr/local/include/freetype
 pip install pil --allow-external pil --allow-unverified pil
 
@@ -17,11 +30,11 @@ sudo mkdir -p /opt/ros/indigo
 sudo chown $USER /opt/ros/indigo
 
 # ROS build infrastructure tools
-pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom
+pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom
 sudo rosdep init
 rosdep update
 
-# Standard ROS Source Setup
+# ROS Source Install
 mkdir indigo_desktop_ws && cd indigo_desktop_ws
 rosinstall_generator desktop --rosdistro indigo --deps --tar > indigo.rosinstall
 wstool init -j4 src indigo.rosinstall
