@@ -1,35 +1,35 @@
 # Preparation
-brew tap ros/hydro
+brew tap ros/deps
 brew tap osrf/simulation
 brew tap homebrew/versions
 brew tap homebrew/science
 
-# Key prerequisites
-brew install cmake python libyaml
+# Prerequisites
+brew install cmake python libyaml lz4
+brew install opencv --with-qt --with-eigen --with-tbb
 
-# ROS packaging and setup tools
-sudo pip install -U rosdep rosinstall_generator wstool rosinstall
+# Install PIL (Pending: https://github.com/ros/rosdistro/issues/5220 ?)
+ln -s /usr/local/include/freetype2 /usr/local/include/freetype
+pip install pil --allow-external pil --allow-unverified pil
 
-# Some extra stuff (unnecessary pending rosdep updates?)
-sudo pip install -U pillow
-brew install wxpython
+# Create install path
+sudo mkdir -p /opt/ros/indigo
+sudo chown $USER /opt/ros/indigo
 
-# Standard ROS setup (use desktop metapackage once released)
-rosinstall_generator ros ros_comm robot_model robot_state_publisher diagnostic_msgs octomap rviz \
-    --rosdistro indigo --deps --wet-only --tar > indigo.rosinstall
-wstool init -j8 src indigo.rosinstall
-rosdep install --from-paths src --ignore-src --rosdistro indigo -ry
+# ROS build infrastructure tools
+pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom
+sudo rosdep init
+rosdep update
 
-# Source version of orocos (unnecessary after next release of orocos packages)
-pushd src
-wstool remove orocos_kinematics_dynamics/*
-wstool set orocos_kinematics_dynamics --git https://github.com/orocos/orocos_kinematics_dynamics
-wstool update orocos_kinematics_dynamics
-popd
+# Standard ROS Source Setup
+mkdir indigo_desktop_ws && cd indigo_desktop_ws
+rosinstall_generator desktop --rosdistro indigo --deps --tar > indigo.rosinstall
+wstool init -j4 src indigo.rosinstall
+rosdep install --from-paths src --ignore-src --rosdistro indigo -y
 
 # Parallel build (python overrides unnecessary pending: https://github.com/Homebrew/homebrew/issues/25118 )
 catkin build --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo \
-  -DPYTHON_LIBRARY=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib \
-  -DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/include/python2.7
+  -DPYTHON_LIBRARY=/usr/local/Cellar/python/2.7.8/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib \
+  -DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.7.8/Frameworks/Python.framework/Versions/2.7/include/python2.7
 
 source /opt/ros/indigo/setup.bash
