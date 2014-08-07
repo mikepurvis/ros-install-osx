@@ -11,9 +11,10 @@ brew tap homebrew/versions
 brew tap homebrew/science
 
 # Prerequisites
-brew install cmake python libyaml lz4 poco
+brew install cmake python libyaml lz4
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
+brew install ogre --HEAD  # If prompted, install XQuartz from: https://xquartz.macosforge.org
 
 # Install unreleased empy
 curl http://www.alcyone.com/software/empy/empy-latest.tar.gz | tar xvz
@@ -40,7 +41,7 @@ rosinstall_generator desktop --rosdistro indigo --deps --tar > indigo.rosinstall
 wstool init -j4 src indigo.rosinstall
 rosdep install --from-paths src --ignore-src --rosdistro indigo -y
 
-# Parallel build (python overrides unnecessary pending: https://github.com/Homebrew/homebrew/issues/25118 )
+# Parallel build
 catkin build --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo \
   -DPYTHON_LIBRARY=/usr/local/Cellar/python/2.7.8/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib \
   -DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.7.8/Frameworks/Python.framework/Versions/2.7/include/python2.7
