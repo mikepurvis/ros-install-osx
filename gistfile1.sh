@@ -1,28 +1,27 @@
 # Install XQuartz from: https://xquartz.macosforge.org
 
-# Homebrew Setup (skip if already done)
+# Homebrew
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 # TODO: Put /usr/local/bin at front of path, source .bash_profile
 brew doctor
 brew update
 
-# Taps for specific formulae
+# Brewed Python
+brew install python
+mkdir -p ~/Library/Python/2.7/lib/python/site-packages
+echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
+
+# Homebrew taps for specific formulae
 brew tap ros/deps
 brew tap osrf/simulation
 brew tap homebrew/versions
 brew tap homebrew/science
 
 # Prerequisites
-brew install cmake python libyaml lz4
+brew install cmake libyaml lz4
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
 brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending some bugfixes
-
-# Install unreleased empy  (necessary?)
-curl http://www.alcyone.com/software/empy/empy-latest.tar.gz | tar xvz
-pushd empy-3.3.2
-python setup.py install
-popd
 
 # Install Pillow (Pending: https://github.com/ros/rosdistro/issues/5220)
 pip install pillow
