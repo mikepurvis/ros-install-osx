@@ -1,6 +1,12 @@
-# Install XQuartz from: https://xquartz.macosforge.org
+# NOTE: These instructions do not represent a robust, self-troubleshooting install; they
+# are definitely not suitable for dumping to a giant script and running as one. If you 
+# use them, they should be run one at a time, with an eye out for errors or problems
+# along the way.
 
-# Homebrew (as necessary)
+# If you haven't already, install XQuartz using the installer from its own website:
+# https://xquartz.macosforge.org
+
+# Homebrew (if you haven't yet got it)
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
 source .bash_profile
