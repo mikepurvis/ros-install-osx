@@ -7,7 +7,7 @@
 # binary components linked against system Python. This will result in runtime segfaults,
 # especially in rviz. If you suspect this is occurring, you can attempt to remove and
 # reinstall the offending packages, or go for the nuclear option--- empty your Cellar
-# and site-packages folders and start over with brew install python.
+# and site-packages folders and start over with brewed python from the beginning.
 #
 # If you haven't already, install XQuartz using the installer from its own website:
 # https://xquartz.macosforge.org
