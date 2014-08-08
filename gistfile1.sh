@@ -36,9 +36,6 @@ brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
 brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending some bugfixes
 
-# Install Pillow (Pending: https://github.com/ros/rosdistro/issues/5220)
-pip install pillow
-
 # ROS build infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom
 sudo rosdep init
@@ -51,7 +48,7 @@ mkdir indigo_desktop_ws && cd indigo_desktop_ws
 rosinstall_generator desktop --rosdistro indigo --deps --tar > indigo.rosinstall
 rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src indigo.rosinstall
-rosdep install --from-paths src --ignore-src --rosdistro indigo -y --skip-keys=python-imaging
+rosdep install --from-paths src --ignore-src --rosdistro indigo -y
 
 # Parallel build
 catkin build --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo \
