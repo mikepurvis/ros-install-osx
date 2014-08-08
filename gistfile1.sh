@@ -2,7 +2,13 @@
 # are definitely not suitable for dumping to a giant script and running as one. If you 
 # use them, they should be run one at a time, with an eye out for errors or problems
 # along the way.
-
+#
+# The #1 issue you are likely to encounter is with Homebrew or Python packages which
+# binary components linked against system Python. This will result in runtime segfaults,
+# especially in rviz. If you suspect this is occurring, you can attempt to remove and
+# reinstall the offending packages, or go for the nuclear option--- empty your Cellar
+# and site-packages folders and start over with brew install python.
+#
 # If you haven't already, install XQuartz using the installer from its own website:
 # https://xquartz.macosforge.org
 
