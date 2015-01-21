@@ -43,7 +43,7 @@ rosdep update
 
 # ROS Indigo Source Install
 mkdir indigo_desktop_ws && cd indigo_desktop_ws
-rosinstall_generator desktop --rosdistro indigo --deps --tar > indigo.rosinstall
+rosinstall_generator desktop_full --rosdistro indigo --deps --tar > indigo.rosinstall
 rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src indigo.rosinstall
 
