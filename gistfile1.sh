@@ -34,7 +34,7 @@ brew tap homebrew/science
 brew install cmake libyaml lz4
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
-brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending some bugfixes
+brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending: https://github.com/ros-visualization/rviz/issues/782
 
 # ROS build infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom
