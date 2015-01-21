@@ -53,6 +53,9 @@ wstool init -j8 src indigo.rosinstall
 # and liburdfdom-dev, respectively.
 rosdep install --from-paths src --ignore-src --rosdistro indigo -y
 
+# Extra dependencies which don't seem to come through properly from the above.
+brew install fltk theora
+
 # Parallel build
 sudo mkdir -p /opt/ros/indigo
 sudo chown $USER /opt/ros/indigo
