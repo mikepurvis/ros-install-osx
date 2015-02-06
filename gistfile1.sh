@@ -13,7 +13,7 @@
 # https://xquartz.macosforge.org
 
 # Homebrew (if you haven't yet got it)
-ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
 source .bash_profile
 brew doctor
