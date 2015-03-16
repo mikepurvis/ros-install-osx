@@ -47,14 +47,8 @@ rosinstall_generator desktop_full --rosdistro indigo --deps --tar > indigo.rosin
 rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src indigo.rosinstall
 
-# Package dependencies. Note that you may have an unresolved urdfdom key. This is due to
-# using Hydro's rviz. You can ignore it, but if it troubles you, change the build and run
-# depend keys in indigo_desktop_ws/src/rviz/package.xml from urdfdom to liburdfdom-headers-dev
-# and liburdfdom-dev, respectively.
-rosdep install --from-paths src --ignore-src --rosdistro indigo -y
-
-# Extra dependencies which don't seem to come through properly from the above.
-brew install fltk theora
+# Package dependencies. Note that we're skipping over the rosdep key from Hydro's rviz.
+rosdep install --from-paths src --ignore-src --rosdistro indigo -y --as-root pip:no --skip-keys="urdfdom urdfdom-dev"
 
 # Parallel build
 sudo mkdir -p /opt/ros/indigo
