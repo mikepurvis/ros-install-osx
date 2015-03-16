@@ -31,7 +31,7 @@ brew tap homebrew/versions
 brew tap homebrew/science
 
 # Prerequisites
-brew install cmake libyaml lz4
+brew install cmake libyaml lz4 assimp
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
 brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending: https://github.com/ros-visualization/rviz/issues/782
