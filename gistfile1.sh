@@ -37,7 +37,7 @@ brew install opencv --with-qt --with-eigen --with-tbb
 brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending: https://github.com/ros-visualization/rviz/issues/782
 
 # ROS infrastructure tools
-pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy
+pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
 sudo rosdep init
 rosdep update
 
@@ -47,7 +47,7 @@ rosinstall_generator desktop_full --rosdistro indigo --deps --tar > indigo.rosin
 rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src indigo.rosinstall
 
-# Package dependencies. Note that we're skipping over the rosdep key from Hydro's rviz.
+# Package dependencies. Note that we're skipping over the rosdep key from Hydro's rviz, since that changed for Indigo
 rosdep install --from-paths src --ignore-src --rosdistro indigo -y --as-root pip:no --skip-keys="urdfdom urdfdom-dev"
 
 # Parallel build
