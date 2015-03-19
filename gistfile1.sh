@@ -34,8 +34,7 @@ brew tap homebrew/science
 brew install cmake libyaml lz4 assimp
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
-brew install ogre  # --head  # Ogre 1.9 for indigo's rviz, but we're using hydro's rviz pending: https://github.com/ros-visualization/rviz/issues/782
-brew install gazebo2
+brew install https://github.com/osrf/homebrew-simulation/raw/ogre_1_9/ogre-1.9.rb
 
 # ROS infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
@@ -45,11 +44,10 @@ rosdep update
 # ROS Indigo Source Install
 mkdir indigo_desktop_ws && cd indigo_desktop_ws
 rosinstall_generator desktop_full --rosdistro indigo --deps --tar > indigo.rosinstall
-rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src indigo.rosinstall
 
-# Package dependencies. Note that we're skipping over the rosdep key from Hydro's rviz, since that changed for Indigo
-rosdep install --from-paths src --ignore-src --rosdistro indigo -y --as-root pip:no --skip-keys="urdfdom urdfdom-dev ogre gazebo"
+# Package dependencies.
+rosdep install --from-paths src --ignore-src --rosdistro indigo -y --as-root pip:no --skip-keys="ogre gazebo"
 
 # Parallel build
 sudo mkdir -p /opt/ros/indigo
