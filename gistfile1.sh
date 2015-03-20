@@ -35,6 +35,7 @@ brew install cmake libyaml lz4 assimp
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
 brew install https://github.com/osrf/homebrew-simulation/raw/ogre_1_9/ogre-1.9.rb
+brew install https://github.com/osrf/homebrew-simulation/raw/ogre_1_9/gazebo5.rb
 
 # ROS infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
