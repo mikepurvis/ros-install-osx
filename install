@@ -2,6 +2,7 @@
 
 ROS_DISTRO=indigo
 ROS_CONFIGURATION=desktop_full
+ROS_EXTRA_PACKAGES=
 ROS_INSTALL_DIR=/opt/ros/${ROS_DISTRO}
 
 # Homebrew
@@ -51,7 +52,7 @@ rosdep update
 # ROS Indigo Source Install
 WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
 mkdir $WS && cd $WS
-rosinstall_generator ${ROS_CONFIGURATION} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
+rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
 #rosinstall_generator rviz --rosdistro hydro --tar >> ${WS}.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src ${WS}.rosinstall
 
