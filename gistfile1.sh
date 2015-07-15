@@ -34,8 +34,8 @@ brew tap homebrew/science
 brew install cmake libyaml lz4 assimp
 brew install boost --with-python
 brew install opencv --with-qt --with-eigen --with-tbb
-brew install https://github.com/osrf/homebrew-simulation/raw/ogre_1_9/ogre-1.9.rb
-brew install https://github.com/osrf/homebrew-simulation/raw/ogre_1_9/gazebo5.rb
+brew install ogre  # Ogre v1.7
+brew install gazebo5
 
 # ROS infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
@@ -45,6 +45,7 @@ rosdep update
 # ROS Indigo Source Install
 mkdir indigo_desktop_ws && cd indigo_desktop_ws
 rosinstall_generator desktop_full --rosdistro indigo --deps --tar > indigo.rosinstall
+rosinstall_generator rviz --rosdistro hydro --tar >> indigo.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src indigo.rosinstall
 
 # Package dependencies.
@@ -56,7 +57,7 @@ sudo chown $USER /opt/ros/indigo
 catkin config --install  --install-space /opt/ros/indigo
 catkin build \
   -DCMAKE_BUILD_TYPE=Release \
-  -DPYTHON_LIBRARY=/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib \
-  -DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/include/python2.7
+  -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
+  -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7
 
 source /opt/ros/indigo/setup.bash
