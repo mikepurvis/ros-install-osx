@@ -15,7 +15,7 @@ Usage
 -----
 
     git clone https://github.com/mikepurvis/ros-install-osx
-    ./ros-install-osx/install-ros.sh
+    ./ros-install-osx/install
 
 
 Troubleshooting
