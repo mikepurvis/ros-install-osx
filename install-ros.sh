@@ -3,7 +3,7 @@ ROS_CONFIGURATION=desktop_full
 ROS_INSTALL_DIR=/opt/ros/${ROS_DISTRO}
 
 # Homebrew
-if hash brew 2>/dev/null; then
+if ! hash brew 2>/dev/null; then
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
   source .bash_profile
@@ -12,7 +12,7 @@ if hash brew 2>/dev/null; then
 fi
 
 # XQuartz
-if hash xquartz 2>/dev/null; then
+if ! hash xquartz 2>/dev/null; then
   brew install caskroom/cask/brew-cask
   brew cask install xquartz
   echo "Log out and in to finalize XQuartz setup."
@@ -41,7 +41,9 @@ brew install gazebo5
 
 # ROS infrastructure tools
 pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
-sudo rosdep init
+if [ ! -d /etc/ros/rosdep/ ]; then
+  sudo rosdep init
+fi
 rosdep update
 
 # ROS Indigo Source Install
