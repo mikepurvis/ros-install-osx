@@ -98,6 +98,11 @@ do_install()
     popd
   fi
 
+  # Exclude rqt_gui_cpp: https://github.com/ros-visualization/qt_gui_core/issues/57
+  if [ -d src/rqt_gui_core/rqt_gui_cpp ]; then
+    touch src/rqt_gui_core/rqt_gui_cpp/CATKIN_IGNORE
+  fi
+
   # Package dependencies.
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="ogre gazebo"
 
