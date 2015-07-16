@@ -75,9 +75,15 @@ do_install()
   fi
   rosdep update
 
-  # ROS Source Install
+  # Remove previous workspace if present, create and enter new one.
   WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
-  mkdir $WS && cd $WS
+  if [ -d "$WS" ]; then
+    rm -rf "$WS"
+  fi
+  mkdir $WS
+  pushd $WS
+  
+  # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init -j8 src ${WS}.rosinstall
 
@@ -103,7 +109,8 @@ do_install()
     -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
     -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7
-
+  popd
+  
   echo "Installation successful, please source the ROS workspace:"
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
