@@ -31,4 +31,23 @@ You may be prompted for your sudo password at the following points in this proce
 Troubleshooting
 ---------------
 
+Already-installed homebrew and pip packages are the most significant source of errors,
+especially pip packages installed against the system python rather than homebrew's python,
+and homebrew packages (like Ogre) where multiple versions end up installed, and things
+which depend on them end up linking to the different versions. These problems are typically
+visible at runtime, as segfaults and the like.
 
+Unfortunately, it's pretty destructive to do so, but the most reliable way to give
+yourself a clean start is removing the current homebrew installation, and currently-
+installed pip packages.
+
+For pip:
+
+    rm -rf /Library/Python/2.7/site-packages/*
+    rm -rf ~/Library/Python/2.7/lib/python/site-packages/*
+    rm -rf /usr/local/lib/python2.7/site-packages/*
+
+For homebrew, see the following: https://gist.github.com/mxcl/1173223
+
+If you take these steps, obviously also remove your ROS workspace and start this process
+over from scratch as well.
