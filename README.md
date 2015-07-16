@@ -14,8 +14,18 @@ This is the successor to my [popular gist on the same topic][1].
 Usage
 -----
 
-    git clone https://github.com/mikepurvis/ros-install-osx
-    ./ros-install-osx/install
+    curl https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install | bash
+
+Note that if you do not yet have command-line tools for XCode or XQuartz installed, you will
+need to rerun the script after those installation steps, and log out and in after XQuartz
+installation.
+
+You may be prompted for your sudo password at the following points in this process:
+
+   - Homebrew installation.
+   - Caskroom installation.
+   - XQuartz installation.
+   - Creating and chowning your `/opt/ros/distro` folder.
 
 
 Troubleshooting
