@@ -1,4 +1,26 @@
 #!/bin/bash
+# Software License Agreement (BSD)
+#
+# Author    Mike Purvis <mpurvis@clearpathrobotics.com>
+# Copyright (c) 2014-2015, Clearpath Robotics, Inc., All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+# the following conditions are met:
+# * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+#   following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#   following disclaimer in the documentation and/or other materials provided with the distribution.
+# * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or
+#   promote products derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 ROS_DISTRO=indigo
 ROS_CONFIGURATION=desktop_full
@@ -49,12 +71,22 @@ if [ ! -d /etc/ros/rosdep/ ]; then
 fi
 rosdep update
 
-# ROS Indigo Source Install
+# ROS Source Install
 WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
 mkdir $WS && cd $WS
 rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
-#rosinstall_generator rviz --rosdistro hydro --tar >> ${WS}.rosinstall  # Version of rviz from Hydro
 wstool init -j8 src ${WS}.rosinstall
+
+# Grabbing these older meshes allows rviz to run with Ogre 1.7 rather than Ogre 1.8+. Although formulae and patches
+# exist to build Ogre 1.9, rviz, and Gazebo together, I have found this approach to be the most solid and consistent.
+if [ -d src/rviz ]; then
+  pushd src/rviz/ogre_media/models
+  wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cone.mesh
+  wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cube.mesh
+  wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cylinder.mesh
+  wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_sphere.mesh
+  popd
+fi
 
 # Package dependencies.
 rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="ogre gazebo"
