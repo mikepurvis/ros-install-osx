@@ -85,10 +85,10 @@ do_install()
   # exist to build Ogre 1.9, rviz, and Gazebo together, I have found this approach to be the most solid and consistent.
   if [ -d src/rviz ]; then
     pushd src/rviz/ogre_media/models
-    wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cone.mesh
-    wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cube.mesh
-    wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cylinder.mesh
-    wget https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_sphere.mesh
+    curl https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cone.mesh > rviz_cone.mesh
+    curl https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cube.mesh > rviz_cube.mesh
+    curl https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_cylinder.mesh > rviz_cylinder.mesh
+    curl https://github.com/ros-visualization/rviz/raw/hydro-devel/ogre_media/models/rviz_sphere.mesh > rviz_sphere.mesh
     popd
   fi
 
