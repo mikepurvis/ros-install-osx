@@ -25,6 +25,7 @@ You may be prompted for your sudo password at the following points in this proce
    - Homebrew installation.
    - Caskroom installation.
    - XQuartz installation.
+   - Initializing rosdep.
    - Creating and chowning your `/opt/ros/distro` folder.
 
 
