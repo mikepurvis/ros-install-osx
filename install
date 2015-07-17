@@ -67,11 +67,9 @@ do_install()
   brew install cmake libyaml lz4 assimp
   brew install boost --with-python
   brew install opencv --with-qt --with-eigen --with-tbb
+  brew install homebrew/science/pcl  # Remove qualifier when removed from ros/homebrew-deps
   brew install ogre
   brew install gazebo5
-
-  # Restore to "ros/deps/pcl" pending: https://github.com/ros/homebrew-deps/pull/9 
-  brew install https://github.com/mikepurvis/homebrew-deps/raw/pcl-1.7.2/pcl.rb
 
   # ROS infrastructure tools
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
