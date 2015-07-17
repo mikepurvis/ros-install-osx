@@ -16,31 +16,30 @@ Usage
 
     curl https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install | bash
 
-Note that if you do not yet have command-line tools for XCode or XQuartz installed, you will
-need to rerun the script after those installation steps, and log out and in after XQuartz
-installation.
+Note that if you do not yet have XQuartz installed, you will be forced to log out and in
+after that installation, and re-run this script.
 
-You may be prompted for your sudo password at the following points in this process:
+You will be prompted for your sudo password at the following points in this process:
 
    - Homebrew installation.
    - Caskroom installation.
    - XQuartz installation.
    - Initializing rosdep.
-   - Creating and chowning your `/opt/ros/distro` folder.
+   - Creating and chowning your `/opt/ros/[distro]` folder.
 
 
 Troubleshooting
 ---------------
 
 Already-installed homebrew and pip packages are the most significant source of errors,
-especially pip packages installed against the system python rather than homebrew's python,
+especially pip packages linked against the system python rather than homebrew's python,
 and homebrew packages (like Ogre) where multiple versions end up installed, and things
-which depend on them end up linking to the different versions. These problems are typically
+which depend on them end up linked to the different versions. These problems are typically
 visible at runtime, as segfaults and the like.
 
 Unfortunately, it's pretty destructive to do so, but the most reliable way to give
-yourself a clean start is removing the current homebrew installation, and currently-
-installed pip packages.
+yourself a clean start is removing the current homebrew installation, and all
+currently-installed pip packages.
 
 For pip:
 
