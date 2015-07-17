@@ -68,8 +68,10 @@ do_install()
   brew install boost --with-python
   brew install opencv --with-qt --with-eigen --with-tbb
   brew install ogre
-  brew install ros/deps/pcl
   brew install gazebo5
+
+  # Restore to ros/deps/pcl, pending: https://github.com/ros/homebrew-deps/pull/9 
+  brew install https://github.com/mikepurvis/homebrew-deps/raw/pcl-1.7.2/pcl.rb
 
   # ROS infrastructure tools
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
@@ -101,9 +103,12 @@ do_install()
     popd
   fi
 
-  # Exclude rqt_gui_cpp: https://github.com/ros-visualization/qt_gui_core/issues/57
-  if [ -d src/qt_gui_core/qt_gui_cpp ]; then
-    touch src/qt_gui_core/qt_gui_cpp/CATKIN_IGNORE
+  # This awful hack papers over a problem with QT's cmake find modules.
+  # See: https://github.com/ros-visualization/qt_gui_core/issues/57#issuecomment-122348727
+  if [ -d /usr/local/Cellar/qt/4.8.7 ]; then
+    pushd /usr/local/Cellar/qt
+    ln -s 4.8.7 4.8.6
+    popd
   fi
 
   # Package dependencies.
