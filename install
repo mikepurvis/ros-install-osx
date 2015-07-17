@@ -102,8 +102,8 @@ do_install()
   fi
 
   # Exclude rqt_gui_cpp: https://github.com/ros-visualization/qt_gui_core/issues/57
-  if [ -d src/rqt_gui_core/rqt_gui_cpp ]; then
-    touch src/rqt_gui_core/rqt_gui_cpp/CATKIN_IGNORE
+  if [ -d src/qt_gui_core/qt_gui_cpp ]; then
+    touch src/qt_gui_core/qt_gui_cpp/CATKIN_IGNORE
   fi
 
   # Package dependencies.
