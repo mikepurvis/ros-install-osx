@@ -67,10 +67,13 @@ do_install()
   brew install cmake libyaml lz4 assimp
   brew install boost --with-python
   brew install opencv --with-qt --with-eigen --with-tbb
-  brew install ogre
+  
+  # Restore to "ogre" pending: https://github.com/osrf/homebrew-simulation/pull/41
+  brew install https://raw.githubusercontent.com/mikepurvis/homebrew-simulation/patch-2/ogre.rb
+  
   brew install gazebo5
 
-  # Restore to ros/deps/pcl, pending: https://github.com/ros/homebrew-deps/pull/9 
+  # Restore to "ros/deps/pcl" pending: https://github.com/ros/homebrew-deps/pull/9 
   brew install https://github.com/mikepurvis/homebrew-deps/raw/pcl-1.7.2/pcl.rb
 
   # ROS infrastructure tools
