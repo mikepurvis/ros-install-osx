@@ -56,9 +56,12 @@ Troubleshooting
 Already-installed homebrew and pip packages are the most significant source of errors,
 especially pip packages linked against the system python rather than homebrew's python,
 and homebrew packages (like Ogre) where multiple versions end up installed, and things
-which depend on them end up linked to the different versions. The script makes _some_
-attempt at detecting and warning about these situations, but some problems of this kind
-will only be visible as segfaults at runtime.
+which depend on them end up linked to the different versions. If you have macports or
+fink installed, and python from either of those is in your path, that will definitely
+be trouble.
+
+The script makes _some_ attempt at detecting and warning about these situations, but some
+problems of this kind will only be visible as segfaults at runtime.
 
 Unfortunately, it's pretty destructive to do so, but the most reliable way to give
 yourself a clean start is removing the current homebrew installation, and all
@@ -72,5 +75,6 @@ For pip:
 
 For homebrew, see the following: https://gist.github.com/mxcl/1173223
 
-If you take these steps, obviously also remove your ROS workspace and start this process
-over from scratch as well.
+If you take these steps, obviously also remove your ROS workspace and start the install
+process over from scratch as well. Finally, audit your `$PATH` variable to ensure that
+when you run `python`, you're getting Homebrew's `python`.
