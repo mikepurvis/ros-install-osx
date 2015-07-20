@@ -48,6 +48,31 @@ do_install()
     exit 0
   fi
 
+  # Check for pip packages in the system Python directory.
+  if [ $(ls /Library/Python/2.7/site-packages/ | wc -l) -gt 1 ]; then
+    echo "These instructions are about to install Python from Homebrew. However, there are already"
+    echo "pip packages installed against the system python, in the following path:"
+    echo
+    echo "    /Library/Python/2.7/site-packages/"
+    echo
+    echo "To proceed, please remove the contents of this folder."
+    exit 1
+  fi
+
+  # Check for root-owned stuff in /usr/local
+  if [ $(find /usr/local/* -maxdepth 3 -type d -user root | wc -l) -gt 1 ]; then
+    echo "Looks like you have some stuff owned by the root user in /usr/local. The installation can"
+    echo "continue, but if there are pip packages which were installed using sudo, this will be a"
+    echo "problem if rosdep tries to update them. If you have issues installing dependencies, consider"
+    echo "nuking your Homebrew installation and starting from scratch:"
+    echo
+    echo "    https://gist.github.com/mxcl/1173223"
+    echo
+    echo "Alternatively, you could try chowning the contents of /usr/local to yourself:"
+    echo
+    echo "    sudo chown -R $USER:admin /usr/local/*"
+  fi
+
   # Brewed Python
   if [ $(which python) != "/usr/local/bin/python" ]; then
     brew install python
@@ -60,6 +85,11 @@ do_install()
   brew tap osrf/simulation
   brew tap homebrew/versions
   brew tap homebrew/science
+
+  # Check for unwanted taps--typically happens when past/broken installs already exist.
+  if brew tap | grep "osrf/hydro"; then
+    brew untap osrf/hydro
+  fi
 
   # Prerequisites. All of these should in theory be covered by rosdep, but for various reasons
   # they're best installed in advance, due to needing a specific version, or specifying build
@@ -85,7 +115,7 @@ do_install()
   fi
   mkdir $WS
   pushd $WS
-  
+
   # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init -j8 src ${WS}.rosinstall
@@ -105,14 +135,16 @@ do_install()
   # See: https://github.com/ros-visualization/qt_gui_core/issues/57#issuecomment-122348727
   if [ -d /usr/local/Cellar/qt/4.8.7 ]; then
     pushd /usr/local/Cellar/qt
-    ln -s 4.8.7 4.8.6
+    if [ ! -d "4.8.6" ]; then
+      ln -s 4.8.7 4.8.6
+    fi
     popd
   fi
 
-  # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="ogre gazebo"
+  # Package dependencies. Skip gazebo because we have installed gazebo5 instead.
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="gazebo"
 
-  # Parallel build
+  # Parallel build.
   sudo mkdir -p ${ROS_INSTALL_DIR}
   sudo chown $USER ${ROS_INSTALL_DIR}
   catkin config --install  --install-space ${ROS_INSTALL_DIR}
@@ -121,7 +153,7 @@ do_install()
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
     -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7
   popd
-  
+
   echo "Installation successful, please source the ROS workspace:"
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
