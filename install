@@ -37,8 +37,8 @@ do_install()
     echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
     source .bash_profile
     brew doctor
-    brew update
   fi
+  brew update
 
   # XQuartz
   if ! hash xquartz 2>/dev/null; then
