@@ -55,7 +55,9 @@ do_install()
     echo
     echo "    /Library/Python/2.7/site-packages/"
     echo
-    echo "To proceed, please remove the contents of this folder."
+    echo "To proceed, please uninstall these packages:"
+    echo
+    echo "    pip freeze | xargs sudo pip uninstall -y"
     exit 1
   fi
 
