@@ -34,7 +34,7 @@ rm -rf /usr/local/Library/Taps/*
 rm -rf /usr/local/Library/LinkedKegs/*
 
 # Restore brew executable.
-rm -f /usr/local/bin/*
+mv /tmp/brew /usr/local/bin/brew
 
 # Remove installation.
 rm -rf install_dir
