@@ -70,11 +70,7 @@ Unfortunately, it's pretty destructive to do so, but the most reliable way to gi
 yourself a clean start is removing the current homebrew installation, and all
 currently-installed pip packages.
 
-For pip:
-
-    rm -rf /Library/Python/2.7/site-packages/*
-    rm -rf ~/Library/Python/2.7/lib/python/site-packages/*
-    rm -rf /usr/local/lib/python2.7/site-packages/*
+For pip: `pip freeze | xargs sudo pip uninstall -y`
 
 For homebrew, see the following: https://gist.github.com/mxcl/1173223
 
