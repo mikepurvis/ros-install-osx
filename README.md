@@ -16,8 +16,8 @@ Usage
 
     curl https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install | bash
 
-Note that if you do not yet have XQuartz installed, you will be forced to log out and in
-after that installation, and re-run this script.
+Note that if you do not yet have XQuartz installed, you will be forced to log out and
+in after that installation, and re-run this script.
 
 You will be prompted for your sudo password at the following points in this process:
 
@@ -27,18 +27,21 @@ You will be prompted for your sudo password at the following points in this proc
    - Initializing rosdep.
    - Creating and chowning your `/opt/ros/[distro]` folder.
 
+The installation can be done entirely without sudo if Homebrew and XQuartz are already
+installed, rosdep is already installed and initialized, and you set the `ROS_INSTALL_DIR`
+environment variable to a path which already exists and you have write access to.
+
 
 Step by Step
 ------------
 
 The `install` script should just work for most users. However, if you run into trouble,
 it's a pretty big pain to rebuild everything. Note that in this scenario, it may make
-sense to use the script as a list of instructions, and execute them one by one,
+sense to treat the script as a list of instructions, and execute them one by one,
 manually.
 
-If you have a build probably, for example with rviz, note that you can modify the
-`catkin build` line to start at a particular package. Inside your
-`indigo_desktop_full_ws` dir, run:
+If you have a build fail, for example with rviz, note that you can modify the `catkin build`
+line to start at a particular package. Inside your `indigo_desktop_full_ws` dir, run:
 
     catkin build \
       -DCMAKE_BUILD_TYPE=Release \
