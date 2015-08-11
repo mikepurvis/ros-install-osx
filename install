@@ -106,6 +106,7 @@ do_install()
   # ROS infrastructure tools
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
   if [ ! -d /etc/ros/rosdep/ ]; then
+    echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
     sudo rosdep init
   fi
   rosdep update
@@ -150,6 +151,7 @@ do_install()
   if [ -d ${ROS_INSTALL_DIR} ]; then
     rm -rf ${ROS_INSTALL_DIR}/*
   else
+    echo "This sudo prompt is to create and chown ${ROS_INSTALL_DIR}."
     sudo mkdir -p ${ROS_INSTALL_DIR}
     sudo chown $USER ${ROS_INSTALL_DIR}
   fi
