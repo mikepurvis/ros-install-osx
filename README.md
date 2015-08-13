@@ -1,7 +1,5 @@
-ros-install-osx
+ros-install-osx   ![Manual test on Parallels VM](https://img.shields.io/badge/yosemite-2015--08--13-green.svg)
 ===============
-
-Last manual test: ![yosemite](https://img.shields.io/badge/yosemite-2015--08--13-green.svg)
 
 This repo aims to maintain a usable, scripted, up-to-date installation procedure for
 [ROS](http://ros.org). The intent is that the `install` script may be executed on a
