@@ -1,6 +1,8 @@
 ros-install-osx
 ===============
 
+Last manual test: ![yosemite](https://img.shields.io/badge/yosemite-2015--08--13-green.svg)
+
 This repo aims to maintain a usable, scripted, up-to-date installation procedure for
 [ROS](http://ros.org). The intent is that the `install` script may be executed on a
 bare Mavericks or Yosemite machine and produce a working desktop_full installation,
