@@ -99,7 +99,7 @@ do_install()
   brew install cmake libyaml lz4 assimp
   brew install boost --with-python
   brew install opencv --with-qt --with-eigen --with-tbb
-  brew install homebrew/science/pcl  # Remove qualifier when removed from ros/homebrew-deps
+  brew install pcl --build-from-source  # Pending: https://github.com/Homebrew/homebrew-science/issues/2852
   brew install ogre
   brew install gazebo5
 
