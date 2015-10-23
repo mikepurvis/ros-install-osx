@@ -105,9 +105,6 @@ do_install()
   # Make opencv use numpy from pip rather than brew, see issue #14
   pip install numpy
   brew install opencv --with-qt --with-eigen --with-tbb --without-numpy
-
-  brew install pcl --build-from-source  # Pending: https://github.com/Homebrew/homebrew-science/issues/2852
-
   brew install gazebo5
 
   # ROS infrastructure tools
