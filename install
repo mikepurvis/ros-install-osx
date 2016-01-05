@@ -98,9 +98,6 @@ do_install()
   # options, or whatever. Obviously it would be great to migrate these toward purely rosdep.
   brew install cmake libyaml lz4 assimp
   brew install boost --with-python
-  
-  # FLTK for El Capitan, see issue #12
-  brew reinstall --devel https://raw.githubusercontent.com/dpo/homebrew/ec46018128dde5bf466b013a6c7086d0880930a3/Library/Formula/fltk.rb
 
   # Make opencv use numpy from pip rather than brew, see issue #14
   pip install numpy
