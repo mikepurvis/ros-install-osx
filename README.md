@@ -101,7 +101,33 @@ This issue is known to the developers and is being addressed. See:
 
 For a quick fix, you can do the following:
 
-```
+```bash
 brew reinstall --devel https://raw.githubusercontent.com/dpo/homebrew/ec46018128dde5bf466b013a6c7086d0880930a3/Library/Formula/fltk.rb
 
+```
+
+#### library not found for -ltbb
+
+See [Issue #4](https://github.com/mikepurvis/ros-install-osx/issues/4).
+You need to compile using Xcode's Command Line Tools:
+
+```bash
+xcode-select --install # Install the Command Line Tools
+sudo xcode-select -s /Library/Developer/CommandLineTools # Switch to using them
+gcc --version # Verify that you're compiling using Command Line Tools
+```
+
+The last command should output something that includes the following:
+
+```bash
+Configured with: --prefix=/Library/Developer/CommandLineTools/usr
+```
+
+You'll then have to rerun the entire `install` script or do the following:
+
+```bash
+rm -rf /opt/ros/indigo/* # More generally, /opt/ros/${ROS_DISTRO}/*
+rm -rf build/ devel/ # Assuming your working dir is the catkin workspace
+catkin build \
+  ... # See actual script for the 4-line-long command
 ```
