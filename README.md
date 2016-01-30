@@ -84,3 +84,15 @@ For homebrew, see the following: https://gist.github.com/mxcl/1173223
 If you take these steps, obviously also remove your ROS workspace and start the install
 process over from scratch as well. Finally, audit your `$PATH` variable to ensure that
 when you run `python`, you're getting Homebrew's `python`.
+
+### El Capitan support
+
+The `install` script may not work as smoothly in OS X El Capitan (see [Issue #12](https://github.com/mikepurvis/ros-install-osx/issues/12))
+Here are some pointers, tips, and hacks to help you complete the installation:
+
+#### No definition of [procps] for OS [osx]
+
+This issue is known to the developers and is being addressed. See:
+
+* http://answers.ros.org/question/224956/no-definition-of-procps-for-os-osx
+* https://github.com/ros-perception/vision_opencv/pull/109
