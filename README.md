@@ -114,7 +114,7 @@ This issue is known to the developers and is being addressed. See:
 For a quick fix, you can do the following:
 
 ```bash
-brew reinstall --devel fltk
+brew install fltk --devel
 
 ```
 
