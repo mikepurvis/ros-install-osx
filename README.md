@@ -98,8 +98,9 @@ see [Issue #11](https://github.com/mikepurvis/ros-install-osx/issues/11) and
 
 ### El Capitan support
 
-The `install` script may not work as smoothly in OS X El Capitan (see [Issue #12](https://github.com/mikepurvis/ros-install-osx/issues/12))
-Here are some pointers, tips, and hacks to help you complete the installation:
+The `install` script may not work as smoothly in OS X El Capitan.
+Here are some pointers, tips, and hacks to help you complete the installation.
+This list was compiled based on the discussion in [Issue #12](https://github.com/mikepurvis/ros-install-osx/issues/12).
 
 #### No definition of [procps] for OS [osx]
 
@@ -113,7 +114,7 @@ This issue is known to the developers and is being addressed. See:
 For a quick fix, you can do the following:
 
 ```bash
-brew reinstall --devel https://raw.githubusercontent.com/dpo/homebrew/ec46018128dde5bf466b013a6c7086d0880930a3/Library/Formula/fltk.rb
+brew reinstall --devel fltk
 
 ```
 
