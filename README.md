@@ -111,10 +111,10 @@ brew reinstall --devel https://raw.githubusercontent.com/dpo/homebrew/ec46018128
 See [Issue #4](https://github.com/mikepurvis/ros-install-osx/issues/4).
 You need to compile using Xcode's Command Line Tools:
 
-```bash
+```shell
 xcode-select --install # Install the Command Line Tools
 sudo xcode-select -s /Library/Developer/CommandLineTools # Switch to using them
-gcc --version # Verify that you're compiling using Command Line Tools
+gcc --version # Verify that you are compiling using Command Line Tools
 ```
 
 The last command should output something that includes the following:
@@ -131,3 +131,26 @@ rm -rf build/ devel/ # Assuming your working dir is the catkin workspace
 catkin build \
   ... # See actual script for the 4-line-long command
 ```
+
+#### dyld: Library not loaded
+
+This may occur after installation has finished successfully and you try to
+execute something like `rosrun`. For example:
+
+```shell
+rosrun turtlesim turtlesim_node
+dyld: Library not loaded: librospack.dylib
+  Referenced from: # Some file in the catkin ws
+  Reason: image not found
+find: ftsopen: No such file or directory
+[rosrun] Couldn't find executable named turtlesim_node below
+find: ftsopen: No such file or directory
+```
+
+The quick fix is to add
+
+```bash
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/ros/indigo/lib
+```
+
+to the start of `/opt/ros/indigo/bin/rosrun` (or other problematic script).
