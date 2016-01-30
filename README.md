@@ -16,6 +16,13 @@ Usage
 
     curl https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install | bash
 
+or
+
+```shell
+curl -O https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install
+bash install
+```
+
 Note that if you do not yet have XQuartz installed, you will be forced to log out and
 in after that installation, and re-run this script.
 
