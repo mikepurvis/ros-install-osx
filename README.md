@@ -60,14 +60,15 @@ If you've resolved whatever issue stopped the build previously, this will pick u
 it left off.
 
 
-Troubleshooting
----------------
+## Troubleshooting
+
+### Python and pip packages
 
 Already-installed homebrew and pip packages are the most significant source of errors,
-especially pip packages linked against the system python rather than homebrew's python,
-and homebrew packages (like Ogre) where multiple versions end up installed, and things
-which depend on them end up linked to the different versions. If you have macports or
-fink installed, and python from either of those is in your path, that will definitely
+especially pip packages linked against the system Python rather than Homebrew's Python,
+and Homebrew packages (like Ogre) where multiple versions end up installed, and things
+which depend on them end up linked to the different versions. If you have MacPorts or
+Fink installed, and Python from either of those is in your path, that will definitely
 be trouble.
 
 The script makes _some_ attempt at detecting and warning about these situations, but some
@@ -84,6 +85,16 @@ For homebrew, see the following: https://gist.github.com/mxcl/1173223
 If you take these steps, obviously also remove your ROS workspace and start the install
 process over from scratch as well. Finally, audit your `$PATH` variable to ensure that
 when you run `python`, you're getting Homebrew's `python`.
+Another way to check which Python you are running is to do:
+
+```bash
+which python # Should result in /usr/local/bin/python
+ls -l $(which python) # Should show a symlink pointing to Homebrew's Cellar
+```
+
+If you are getting permission errors when you `sudo uninstall` pip packages,
+see [Issue #11](https://github.com/mikepurvis/ros-install-osx/issues/11) and
+[this StackOverflow Q&A](http://stackoverflow.com/a/35051066/2653356).
 
 ### El Capitan support
 
@@ -137,13 +148,13 @@ catkin build \
 This may occur after installation has finished successfully and you try to
 execute something like `rosrun`. For example:
 
-```shell
+```bash
 rosrun turtlesim turtlesim_node
 dyld: Library not loaded: librospack.dylib
   Referenced from: # Some file in the catkin ws
   Reason: image not found
 find: ftsopen: No such file or directory
-[rosrun] Couldn't find executable named turtlesim_node below
+[rosrun] Couldnt find executable named turtlesim_node below
 find: ftsopen: No such file or directory
 ```
 
