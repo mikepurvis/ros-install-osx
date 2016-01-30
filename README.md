@@ -96,3 +96,12 @@ This issue is known to the developers and is being addressed. See:
 
 * http://answers.ros.org/question/224956/no-definition-of-procps-for-os-osx
 * https://github.com/ros-perception/vision_opencv/pull/109
+
+#### FLTK fails to build
+
+For a quick fix, you can do the following:
+
+```
+brew reinstall --devel https://raw.githubusercontent.com/dpo/homebrew/ec46018128dde5bf466b013a6c7086d0880930a3/Library/Formula/fltk.rb
+
+```
