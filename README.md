@@ -19,8 +19,9 @@ Usage
 or
 
 ```shell
-curl -O https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install
-bash install
+git clone https://github.com/mikepurvis/ros-install-osx.git
+cd ros-install-osx
+./install
 ```
 
 Note that if you do not yet have XQuartz installed, you will be forced to log out and
