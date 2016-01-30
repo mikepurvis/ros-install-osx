@@ -110,15 +110,6 @@ This issue is known to the developers and is being addressed. See:
 * http://answers.ros.org/question/224956/no-definition-of-procps-for-os-osx
 * https://github.com/ros-perception/vision_opencv/pull/109
 
-#### FLTK fails to build
-
-For a quick fix, you can do the following:
-
-```bash
-brew install fltk --devel
-
-```
-
 #### library not found for -ltbb
 
 See [Issue #4](https://github.com/mikepurvis/ros-install-osx/issues/4).
