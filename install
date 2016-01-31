@@ -2,7 +2,7 @@
 # Software License Agreement (BSD)
 #
 # Author    Mike Purvis <mpurvis@clearpathrobotics.com>
-# Copyright (c) 2014-2015, Clearpath Robotics, Inc., All rights reserved.
+# Copyright (c) 2014-2016, Clearpath Robotics, Inc., All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that
 # the following conditions are met:
@@ -30,19 +30,6 @@ ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
 do_install()
 {
   set -e
-
-  # Check for SIP if on El Capitan
-  if [[ `sw_vers -productVersion` == *"10.11"* ]]
-  then
-    if `csrutil status | grep -q enabled`
-    then
-      echo "You have System Integrity Protection enabled."
-      echo
-      echo "This prevents DYLD_LIBRARY_PATH from being exported to subshells"
-      echo "Please add: export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/ros/$ROS_DISTRO/lib"
-      echo "To the start of /opt/ros/$ROS_DISTRO/bin/rosrun to fix this issue."
-    fi
-  fi
 
   # Homebrew
   if ! hash brew 2>/dev/null; then
@@ -183,6 +170,19 @@ do_install()
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
+  
+    # Check for SIP if on El Capitan
+  if [[ `sw_vers -productVersion` == *"10.11"* ]]
+  then
+    if `csrutil status | grep -q enabled`
+    then
+      echo "You have System Integrity Protection enabled."
+      echo
+      echo "This prevents DYLD_LIBRARY_PATH from being exported to subshells"
+      echo "Please add: export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:/opt/ros/\$ROS_DISTRO/lib"
+      echo "To the start of /opt/ros/$ROS_DISTRO/bin/rosrun to work around the issue."
+    fi
+  fi
 }
 
 do_install
