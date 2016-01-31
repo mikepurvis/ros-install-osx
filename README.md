@@ -16,6 +16,14 @@ Usage
 
     curl https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install | bash
 
+or
+
+```shell
+git clone https://github.com/mikepurvis/ros-install-osx.git
+cd ros-install-osx
+./install
+```
+
 Note that if you do not yet have XQuartz installed, you will be forced to log out and
 in after that installation, and re-run this script.
 
@@ -53,14 +61,15 @@ If you've resolved whatever issue stopped the build previously, this will pick u
 it left off.
 
 
-Troubleshooting
----------------
+## Troubleshooting
+
+### Python and pip packages
 
 Already-installed homebrew and pip packages are the most significant source of errors,
-especially pip packages linked against the system python rather than homebrew's python,
-and homebrew packages (like Ogre) where multiple versions end up installed, and things
-which depend on them end up linked to the different versions. If you have macports or
-fink installed, and python from either of those is in your path, that will definitely
+especially pip packages linked against the system Python rather than Homebrew's Python,
+and Homebrew packages (like Ogre) where multiple versions end up installed, and things
+which depend on them end up linked to the different versions. If you have MacPorts or
+Fink installed, and Python from either of those is in your path, that will definitely
 be trouble.
 
 The script makes _some_ attempt at detecting and warning about these situations, but some
@@ -77,3 +86,75 @@ For homebrew, see the following: https://gist.github.com/mxcl/1173223
 If you take these steps, obviously also remove your ROS workspace and start the install
 process over from scratch as well. Finally, audit your `$PATH` variable to ensure that
 when you run `python`, you're getting Homebrew's `python`.
+Another way to check which Python you are running is to do:
+
+```bash
+which python # Should result in /usr/local/bin/python
+ls -l $(which python) # Should show a symlink pointing to Homebrew's Cellar
+```
+
+If you are getting permission errors when you `sudo uninstall` pip packages,
+see [Issue #11](https://github.com/mikepurvis/ros-install-osx/issues/11) and
+[this StackOverflow Q&A](http://stackoverflow.com/a/35051066/2653356).
+
+### El Capitan support
+
+The `install` script may not work as smoothly in OS X El Capitan.
+Here are some pointers, tips, and hacks to help you complete the installation.
+This list was compiled based on the discussion in [Issue #12](https://github.com/mikepurvis/ros-install-osx/issues/12).
+
+#### No definition of [procps] for OS [osx]
+
+This issue is known to the developers and is being addressed. See:
+
+* http://answers.ros.org/question/224956/no-definition-of-procps-for-os-osx
+* https://github.com/ros-perception/vision_opencv/pull/109
+
+#### library not found for -ltbb
+
+See [Issue #4](https://github.com/mikepurvis/ros-install-osx/issues/4).
+You need to compile using Xcode's Command Line Tools:
+
+```shell
+xcode-select --install # Install the Command Line Tools
+sudo xcode-select -s /Library/Developer/CommandLineTools # Switch to using them
+gcc --version # Verify that you are compiling using Command Line Tools
+```
+
+The last command should output something that includes the following:
+
+```bash
+Configured with: --prefix=/Library/Developer/CommandLineTools/usr
+```
+
+You'll then have to rerun the entire `install` script or do the following:
+
+```bash
+rm -rf /opt/ros/indigo/* # More generally, /opt/ros/${ROS_DISTRO}/*
+rm -rf build/ devel/ # Assuming your working dir is the catkin workspace
+catkin build \
+  ... # See actual script for the 4-line-long command
+```
+
+#### dyld: Library not loaded
+
+This may occur after installation has finished successfully and you try to
+execute something like `rosrun`. For example:
+
+```bash
+rosrun turtlesim turtlesim_node
+dyld: Library not loaded: librospack.dylib
+  Referenced from: # Some file in the catkin ws
+  Reason: image not found
+find: ftsopen: No such file or directory
+[rosrun] Couldnt find executable named turtlesim_node below
+find: ftsopen: No such file or directory
+```
+
+The quick fix is to add
+
+```bash
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/ros/indigo/lib
+```
+
+to the start of `/opt/ros/indigo/bin/rosrun` (or other problematic script).
