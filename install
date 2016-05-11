@@ -97,8 +97,7 @@ do_install()
   # Prerequisites. All of these should in theory be covered by rosdep, but for various reasons
   # they're best installed in advance, due to needing a specific version, or specifying build
   # options, or whatever. Obviously it would be great to migrate these toward purely rosdep.
-  brew install cmake libyaml lz4 assimp
-  brew install boost --with-python
+  brew install boost boost-python cmake libyaml lz4 assimp
   brew reinstall fltk --devel # FLTK for El Capitan, see issue #12
 
   # Make opencv use numpy from pip rather than brew, see issue #14
