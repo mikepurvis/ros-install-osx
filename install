@@ -83,27 +83,24 @@ do_install()
     echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
   fi
 
-  # Homebrew taps for prerequisites
+  # Gives us console_bridge, urdfdom, and gtest.
   brew tap ros/deps
+
+  # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
-  brew tap homebrew/versions
+
+  # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
 
-  # Check for unwanted taps--typically happens when past/broken installs already exist.
-  if brew tap | grep "osrf/hydro"; then
-    brew untap osrf/hydro
-  fi
+  # Install libyaml prior to the python setup tools below, as it's a dependency for pyyaml.
+  brew install libyaml
 
-  # Prerequisites. All of these should in theory be covered by rosdep, but for various reasons
-  # they're best installed in advance, due to needing a specific version, or specifying build
-  # options, or whatever. Obviously it would be great to migrate these toward purely rosdep.
-  brew install boost boost-python cmake libyaml lz4 assimp
-  brew reinstall fltk --devel # FLTK for El Capitan, see issue #12
+  # Install numpy from homebrew so that we can bypass the rosdep default which would be to install
+  # it from pip (and results in it being built from source rather than installed from bottle).
+  brew install homebrew/python/numpy
 
-  # Make opencv use numpy from pip rather than brew, see issue #14
-  pip install numpy
-  brew install opencv --with-qt --with-eigen --with-tbb --without-numpy
-  brew install gazebo5
+  # Install gazebo7 manually because the rosdep default would give us Gazebo 2.
+  brew install gazebo7
 
   # ROS infrastructure tools
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
@@ -146,8 +143,8 @@ do_install()
     popd
   fi
 
-  # Package dependencies. Skip gazebo because we have installed gazebo5 instead.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="gazebo"
+  # Package dependencies. Skip the packages which we installed above.
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="gazebo python-numpy"
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
