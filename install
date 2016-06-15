@@ -159,11 +159,11 @@ do_install()
   fi
 
   # Parallel build.
-  catkin config --install  --install-space ${ROS_INSTALL_DIR}
-  catkin build \
+  catkin config --install  --install-space ${ROS_INSTALL_DIR} --cmake-args \
     -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
     -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7
+  catkin build
   popd
 
   echo "Installation successful, please source the ROS workspace:"
