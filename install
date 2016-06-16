@@ -92,22 +92,15 @@ do_install()
   # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
 
-  # Install libyaml prior to the python setup tools below, as it's a dependency for pyyaml.
-  brew install libyaml
-
-  # Install numpy from homebrew so that we can bypass the rosdep default which would be to install
-  # it from pip (and results in it being built from source rather than installed from bottle).
-  brew install homebrew/python/numpy
-
-  # Install gazebo7 manually because the rosdep default would give us Gazebo 2.
-  brew install gazebo7
-
   # ROS infrastructure tools
+  brew install libyaml
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
   if [ ! -d /etc/ros/rosdep/ ]; then
     echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
     sudo rosdep init
   fi
+  echo "This sudo prompt confirms you have the correct brewed python rosdeps."
+  sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   rosdep update
 
   # Remove previous workspace if present, create and enter new one.
@@ -133,7 +126,7 @@ do_install()
   fi
 
   # Package dependencies. Skip the packages which we installed above.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys="gazebo python-numpy"
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
