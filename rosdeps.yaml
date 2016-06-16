@@ -1,0 +1,24 @@
+gazebo:
+  osx:
+    homebrew:
+      packages: [gazebo7]
+python-imaging:
+  osx:
+    homebrew:
+      packages: [homebrew/python/pillow]
+python-matplotlib:
+  osx:
+    homebrew:
+      packages: [homebrew/python/matplotlib]
+python-numpy:
+  osx:
+    homebrew:
+      packages: [homebrew/python/numpy]
+python-scapy:
+  osx:
+    homebrew:
+      packages: [homebrew/python/scapy]
+python-scipy:
+  osx:
+    homebrew:
+      packages: [homebrew/python/scipy]
