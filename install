@@ -122,24 +122,13 @@ do_install()
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init -j8 src ${WS}.rosinstall
 
-  # Grabbing these older meshes allows rviz to run with Ogre 1.7 rather than Ogre 1.8+. Although formulae and patches
-  # exist to build Ogre 1.9, rviz, and Gazebo together, I have found this approach to be the most solid and consistent.
+  # Grabbing these older meshes allows rviz to run with Ogre 1.7 rather than Ogre 1.8+.
   if [ -d src/rviz ]; then
     pushd src/rviz/ogre_media/models
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cone.mesh > rviz_cone.mesh
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cube.mesh > rviz_cube.mesh
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cylinder.mesh > rviz_cylinder.mesh
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_sphere.mesh > rviz_sphere.mesh
-    popd
-  fi
-
-  # This awful hack papers over a problem with QT's cmake find modules.
-  # See: https://github.com/ros-visualization/qt_gui_core/issues/57#issuecomment-122348727
-  if [ -d /usr/local/Cellar/qt/4.8.7 ]; then
-    pushd /usr/local/Cellar/qt
-    if [ ! -d "4.8.6" ]; then
-      ln -s 4.8.7 4.8.6
-    fi
     popd
   fi
 
@@ -168,7 +157,7 @@ do_install()
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
   
-    # Check for SIP if on El Capitan
+  # Check for SIP if on El Capitan
   if [[ `sw_vers -productVersion` == *"10.11"* ]]
   then
     if `csrutil status | grep -q enabled`
