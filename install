@@ -57,7 +57,7 @@ do_install()
     echo
     echo "If you have problems, please uninstall these packages:"
     echo
-    echo "    for i in $( pip freeze ); do sudo pip uninstall -y $i; done"
+    echo "    for i in \$( pip freeze ); do sudo pip uninstall -y $i; done"
     echo
     echo "Then delete the build directory and start over again from scratch."
   fi
@@ -94,13 +94,17 @@ do_install()
 
   # ROS infrastructure tools
   brew install libyaml
-  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
+  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
+
+  # Initialize and update rosdep
   if [ ! -d /etc/ros/rosdep/ ]; then
     echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
     sudo rosdep init
   fi
-  echo "This sudo prompt confirms you have the correct brewed python rosdeps."
-  sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+  if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
+    echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
+    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+  fi
   rosdep update
 
   # Remove previous workspace if present, create and enter new one.
@@ -125,7 +129,7 @@ do_install()
     popd
   fi
 
-  # Package dependencies. Skip the packages which we installed above.
+  # Package dependencies.
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
 
   # Clean out or create the install directory.
