@@ -158,3 +158,31 @@ export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/ros/indigo/lib
 ```
 
 to the start of `/opt/ros/indigo/bin/rosrun` (or other problematic script).
+
+### other
+
+#### Qt hack
+
+The `install` script carries out the following "hack":
+
+```shell
+if [ -d /usr/local/Cellar/qt/4.8.7 ]; then
+    pushd /usr/local/Cellar/qt
+    if [ ! -d "4.8.6" ]; then
+      ln -s 4.8.7 4.8.6
+    fi
+    popd
+  fi
+```
+However, it is very likely that this won't work as Qt gets upgraded.
+For example, as of the writing of this section, the latest version is `4.8.7_2`.
+Therefore, you would have to modify the `install` script:
+```shell
+ln -s 4.8.7_2 4.8.6
+```
+In addition, if you ever perform a `brew cleanup`, Homebrew will delete this
+symlink that the script created (`4.8.6`) and you will have to create it again.
+You can check the status of your symlink using:
+```shell
+ls -lh /usr/local/Cellar/qt # You should see 4.8.6 -> 4.8.7_2
+```
