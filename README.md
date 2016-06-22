@@ -103,13 +103,6 @@ The `install` script may not work as smoothly in OS X El Capitan.
 Here are some pointers, tips, and hacks to help you complete the installation.
 This list was compiled based on the discussion in [Issue #12](https://github.com/mikepurvis/ros-install-osx/issues/12).
 
-#### No definition of [procps] for OS [osx]
-
-This issue is known to the developers and is being addressed. See:
-
-* http://answers.ros.org/question/224956/no-definition-of-procps-for-os-osx
-* https://github.com/ros-perception/vision_opencv/pull/109
-
 #### library not found for -ltbb
 
 See [Issue #4](https://github.com/mikepurvis/ros-install-osx/issues/4).
@@ -138,23 +131,8 @@ catkin build \
 
 #### dyld: Library not loaded
 
-This may occur after installation has finished successfully and you try to
-execute something like `rosrun`. For example:
-
-```bash
-rosrun turtlesim turtlesim_node
-dyld: Library not loaded: librospack.dylib
-  Referenced from: # Some file in the catkin ws
-  Reason: image not found
-find: ftsopen: No such file or directory
-[rosrun] Couldnt find executable named turtlesim_node below
-find: ftsopen: No such file or directory
-```
-
-The quick fix is to add
-
-```bash
-export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/ros/indigo/lib
-```
-
-to the start of `/opt/ros/indigo/bin/rosrun` (or other problematic script).
+If you see this after installation, when trying to execute `rosrun`, then you
+have [System Integrity Protection](https://support.apple.com/en-us/HT204899) enabled.
+The installation script should have detected that and *suggested* a quick fix.
+Please refer to the very last section of 
+[`install`](https://github.com/mikepurvis/ros-install-osx/blob/master/install)
