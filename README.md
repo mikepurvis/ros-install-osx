@@ -103,13 +103,6 @@ The `install` script may not work as smoothly in OS X El Capitan.
 Here are some pointers, tips, and hacks to help you complete the installation.
 This list was compiled based on the discussion in [Issue #12](https://github.com/mikepurvis/ros-install-osx/issues/12).
 
-#### No definition of [procps] for OS [osx]
-
-This issue is known to the developers and is being addressed. See:
-
-* http://answers.ros.org/question/224956/no-definition-of-procps-for-os-osx
-* https://github.com/ros-perception/vision_opencv/pull/109
-
 #### library not found for -ltbb
 
 See [Issue #4](https://github.com/mikepurvis/ros-install-osx/issues/4).
