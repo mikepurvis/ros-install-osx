@@ -1,0 +1,18 @@
+os:
+  - osx
+    osx_image: xcode8
+language: cpp
+compiler:
+  - clang
+env:
+  global:
+    # Because virtualized OS X is so slow, there isn't enough time
+    # to also build Gazebo. We could build desktop_full if Gazebo
+    # were available bottled.
+    - ROS_CONFIGURATION=desktop
+  matrix:
+    - ROS_DISTRO=indigo
+    - ROS_DISTRO=kinetic
+script:
+  - brew unlink cmake libyaml || echo $?
+  - ./install
