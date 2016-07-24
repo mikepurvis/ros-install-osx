@@ -92,9 +92,12 @@ do_install()
   # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
 
+  # Homebrew python gets us bottles for numpy, scipy, etc.
+  brew tap homebrew/python
+
   # ROS infrastructure tools
   brew install libyaml
-  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx
+  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
 
   # Initialize and update rosdep
   if [ ! -d /etc/ros/rosdep/ ]; then
@@ -120,12 +123,27 @@ do_install()
   wstool init -j8 src ${WS}.rosinstall
 
   # Grabbing these older meshes allows rviz to run with Ogre 1.7 rather than Ogre 1.8+.
+  # Some details here: https://github.com/ros-visualization/rviz/issues/782
   if [ -d src/rviz ]; then
     pushd src/rviz/ogre_media/models
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cone.mesh > rviz_cone.mesh
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cube.mesh > rviz_cube.mesh
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cylinder.mesh > rviz_cylinder.mesh
     curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_sphere.mesh > rviz_sphere.mesh
+    popd
+  fi
+
+  # This patch originates from here: https://github.com/ros/catkin/pull/784
+  if [ -d src/catkin ]; then
+    pushd src/catkin/cmake
+    curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
+    popd
+  fi
+
+  # Can be removed when interactive_markers is next released: https://github.com/ros-visualization/interactive_markers/issues/31
+  if [ -d src/interactive_markers ]; then
+    pushd src/interactive_markers
+    curl https://raw.githubusercontent.com/ros-visualization/interactive_markers/indigo-devel/CMakeLists.txt > CMakeLists.txt
     popd
   fi
 
@@ -143,10 +161,11 @@ do_install()
 
   # Parallel build.
   catkin config --install  --install-space ${ROS_INSTALL_DIR} --cmake-args \
+    -DCATKIN_ENABLE_TESTING=0 \
     -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
     -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7
-  catkin build
+  catkin build --limit-status-rate 1
   popd
 
   echo "Installation successful, please source the ROS workspace:"
