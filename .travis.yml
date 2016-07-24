@@ -1,0 +1,16 @@
+sudo: required
+
+os: osx
+
+before_install:
+  # Avoid already installed error
+  - brew uninstall cmake libyaml || echo $?
+  - brew uninstall boost || echo $?
+  - brew uninstall opencv || echo $?
+  - brew uninstall gazebo5 || echo $?
+
+install:
+  - bash -x install
+
+script:
+  - source /opt/ros/indigo/setup.bash
