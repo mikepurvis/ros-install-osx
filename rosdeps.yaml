@@ -2,6 +2,12 @@ gazebo:
   osx:
     homebrew:
       packages: [gazebo7]
+python:
+  osx:
+    homebrew:
+      packages: [python, nose]
+    pip:
+      packages: [pip, setuptools]
 python-imaging:
   osx:
     homebrew:

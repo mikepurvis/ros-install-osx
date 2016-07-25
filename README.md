@@ -1,9 +1,9 @@
-ros-install-osx   ![Manual test on Parallels VM](https://img.shields.io/badge/yosemite-2015--08--13-green.svg)
+ros-install-osx   [![Build Status](https://travis-ci.org/mikepurvis/ros-install-osx.svg?branch=master)](https://travis-ci.org/mikepurvis/ros-install-osx)
 ===============
 
 This repo aims to maintain a usable, scripted, up-to-date installation procedure for
 [ROS](http://ros.org). The intent is that the `install` script may be executed on a
-bare Mavericks or Yosemite machine and produce a working desktop_full installation,
+bare Yosemite or El Capitan machine and produce a working desktop_full installation,
 including RQT, rviz, and Gazebo.
 
 This is the successor to my [popular gist on the same topic][1].
