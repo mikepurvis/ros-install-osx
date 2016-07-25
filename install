@@ -57,7 +57,7 @@ do_install()
     echo
     echo "If you have problems, please uninstall these packages:"
     echo
-    echo "    for i in \$( pip freeze ); do sudo pip uninstall -y $i; done"
+    echo "    for i in \$( pip freeze ); do sudo -H pip uninstall -y \$i; done"
     echo
     echo "Then delete the build directory and start over again from scratch."
   fi
