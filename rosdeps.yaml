@@ -5,9 +5,9 @@ gazebo:
 python:
   osx:
     homebrew:
-      packages: [python, nose]
+      packages: [python]
     pip:
-      packages: [pip, setuptools]
+      packages: [pip, setuptools, nose]
 python-imaging:
   osx:
     homebrew:
