@@ -2,21 +2,23 @@ language: generic
 
 matrix:
   include:
+    # OSRF has bottles of Gazebo on Yosemite, so test gazebo_ros on that.
+    - os: osx
+      osx_image: xcode7
+      env: ROS_DISTRO=indigo ROS_CONFIGURATION=gazebo_ros
+
+    # Check up to rviz on El Capitan.
     - os: osx
       osx_image: xcode8
-      env: ROS_DISTRO=indigo
+      env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
+
+    # Kinetic currently fails due to qt4/5 issues.
     - os: osx
       osx_image: xcode8
-      env: ROS_DISTRO=kinetic
+      env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
+
   allow_failures:
-    - env: ROS_DISTRO=kinetic
-env:
-  global:
-    # Because virtualized OS X is so slow, and the Travis build VM has only a single core, the
-    # build of "desktop" exceeds the 50min limit. If we had sponsorship to get longer build times,
-    # we would be able to switch this job to "desktop" or "desktop_full". (Having Gazebo and other
-    # stuff from OSRF available bottled would also really help.)
-    - ROS_CONFIGURATION=rviz
+    - env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
 
 script:
   - ./install
