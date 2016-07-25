@@ -51,11 +51,7 @@ manually.
 If you have a build fail, for example with rviz, note that you can modify the `catkin build`
 line to start at a particular package. Inside your `indigo_desktop_full_ws` dir, run:
 
-    catkin build \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-      -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7 \
-      --start-with rviz
+    catkin build --start-with rviz
 
 If you've resolved whatever issue stopped the build previously, this will pick up where
 it left off.
