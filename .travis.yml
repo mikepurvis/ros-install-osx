@@ -7,18 +7,21 @@ matrix:
       osx_image: xcode7
       env: ROS_DISTRO=indigo ROS_CONFIGURATION=gazebo_ros
 
-    # Check up to rviz on El Capitan.
+    # Check up to rviz on El Capitan (this build sometimes times out).
     - os: osx
       osx_image: xcode8
       env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
 
-    # Kinetic currently fails due to qt4/5 issues.
+    # Building anything GUI from Kinetic fails due to qt4/5 issues.
     - os: osx
       osx_image: xcode8
       env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
 
-  allow_failures:
-    - env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/Library/Caches/Homebrew
+    - /etc/ros/rosdep
 
 script:
   - ./install
