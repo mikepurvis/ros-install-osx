@@ -148,7 +148,7 @@ do_install()
   fi
 
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
