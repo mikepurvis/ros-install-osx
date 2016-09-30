@@ -96,7 +96,7 @@ do_install()
   brew tap homebrew/python
 
   # ROS infrastructure tools
-  brew install libyaml
+  brew install libyaml || true
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
 
   # Initialize and update rosdep
