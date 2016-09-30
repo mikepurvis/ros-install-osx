@@ -140,13 +140,6 @@ do_install()
     popd
   fi
 
-  # Can be removed when interactive_markers is next released: https://github.com/ros-visualization/interactive_markers/issues/31
-  if [ -d src/interactive_markers ]; then
-    pushd src/interactive_markers
-    curl https://raw.githubusercontent.com/ros-visualization/interactive_markers/indigo-devel/CMakeLists.txt > CMakeLists.txt
-    popd
-  fi
-
   # Package dependencies.
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
 
