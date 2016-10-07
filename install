@@ -166,8 +166,8 @@ do_install()
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
   
-  # Check for SIP if on El Capitan
-  if [[ `sw_vers -productVersion` == *"10.11"* ]]
+  # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
+  if [[ `sw_vers -productVersion` > "10.10" ]]
   then
     if `csrutil status | grep -q enabled`
     then
