@@ -99,6 +99,7 @@ do_install()
   brew remove --force boost || true
   brew tap homebrew/versions
   brew install homebrew/versions/boost159
+  brew link --force boost159
 
   # ROS infrastructure tools
   brew install libyaml || true
