@@ -28,3 +28,7 @@ python-scipy:
   osx:
     homebrew:
       packages: [homebrew/python/scipy]
+boost:
+  osx:
+    homebrew:
+      packages: [boost159, boost-python159]
