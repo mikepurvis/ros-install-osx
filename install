@@ -95,6 +95,11 @@ do_install()
   # Homebrew python gets us bottles for numpy, scipy, etc.
   brew tap homebrew/python
 
+  # Temporary workaround for mikepurvis/ros-install-osx#67
+  brew remove --force boost || true
+  brew tap homebrew/versions
+  brew install homebrew/versions/boost159
+
   # ROS infrastructure tools
   brew install libyaml || true
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
@@ -165,7 +170,7 @@ do_install()
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
-  
+
   # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
   if [[ `sw_vers -productVersion` > "10.10" ]]
   then
