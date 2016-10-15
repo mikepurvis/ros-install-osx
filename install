@@ -95,10 +95,13 @@ do_install()
   # Homebrew python gets us bottles for numpy, scipy, etc.
   brew tap homebrew/python
 
+  # Temporary workaround for boost, boost-python, pyside, shiboken
+  brew tap homebrew/versions
+  brew tap homebrew/boneyard
+
   # Temporary workaround for mikepurvis/ros-install-osx#67
   brew remove --force boost || true
   brew remove --force boost-python || true
-  brew tap homebrew/versions
   # brew install boost159
   # brew link --force boost159
   # brew install boost-python159
