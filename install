@@ -118,7 +118,7 @@ do_install()
   fi
   if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
     echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/spmaniato/ros-install-osx/downgrade_boost/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
 
