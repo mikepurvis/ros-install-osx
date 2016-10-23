@@ -102,10 +102,10 @@ do_install()
   # Temporary workaround for mikepurvis/ros-install-osx#67
   brew remove --force boost || true
   brew remove --force boost-python || true
-  # brew install boost159
-  # brew link --force boost159
-  # brew install boost-python159
-  # brew link --force boost-python159
+  brew install boost159
+  brew link --force --overwrite boost159
+  brew install boost-python159
+  brew link --force --overwrite boost-python159
 
   # ROS infrastructure tools
   brew install libyaml || true
