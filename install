@@ -99,14 +99,6 @@ do_install()
   brew tap homebrew/versions
   brew tap homebrew/boneyard
 
-  # Temporary workaround for mikepurvis/ros-install-osx#67
-  brew remove --force boost || true
-  brew remove --force boost-python || true
-  brew install boost159
-  brew link --force --overwrite boost159
-  brew install boost-python159
-  brew link --force --overwrite boost-python159
-
   # ROS infrastructure tools
   brew install libyaml || true
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
@@ -154,6 +146,14 @@ do_install()
 
   # Package dependencies.
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
+
+  # Temporary workaround for mikepurvis/ros-install-osx#67
+  brew remove --force boost || true
+  brew remove --force boost-python || true
+  brew install boost159
+  brew link --force --overwrite boost159
+  brew install boost-python159
+  brew link --force --overwrite boost-python159
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then

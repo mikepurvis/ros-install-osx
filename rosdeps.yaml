@@ -1,11 +1,11 @@
-boost:
-  osx:
-    homebrew:
-      packages: [homebrew/versions/boost159, homebrew/versions/boost-python159]
-boost-python:
-  osx:
-    homebrew:
-      packages: [homebrew/versions/boost-python159]
+# boost:
+#   osx:
+#     homebrew:
+#       packages: [homebrew/versions/boost159, homebrew/versions/boost-python159]
+# boost-python:
+#   osx:
+#     homebrew:
+#       packages: [homebrew/versions/boost-python159]
 gazebo:
   osx:
     homebrew:
