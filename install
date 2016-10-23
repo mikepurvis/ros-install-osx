@@ -95,6 +95,10 @@ do_install()
   # Homebrew python gets us bottles for numpy, scipy, etc.
   brew tap homebrew/python
 
+  # Temporary workaround for boost, boost-python, pyside, shiboken
+  brew tap homebrew/versions
+  brew tap homebrew/boneyard
+
   # ROS infrastructure tools
   brew install libyaml || true
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
@@ -106,7 +110,7 @@ do_install()
   fi
   if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
     echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/spmaniato/ros-install-osx/downgrade_boost/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
 
@@ -143,6 +147,14 @@ do_install()
   # Package dependencies.
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
 
+  # Temporary workaround for mikepurvis/ros-install-osx#67
+  brew remove --force boost || true
+  brew remove --force boost-python || true
+  brew install boost159
+  brew link --force --overwrite boost159
+  brew install boost-python159
+  brew link --force --overwrite boost-python159
+
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
     rm -rf ${ROS_INSTALL_DIR}/*
@@ -165,7 +177,7 @@ do_install()
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
-  
+
   # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
   if [[ `sw_vers -productVersion` > "10.10" ]]
   then

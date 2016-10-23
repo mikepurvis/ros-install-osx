@@ -1,3 +1,11 @@
+# boost:
+#   osx:
+#     homebrew:
+#       packages: [homebrew/versions/boost159, homebrew/versions/boost-python159]
+# boost-python:
+#   osx:
+#     homebrew:
+#       packages: [homebrew/versions/boost-python159]
 gazebo:
   osx:
     homebrew:
@@ -20,6 +28,10 @@ python-numpy:
   osx:
     homebrew:
       packages: [homebrew/python/numpy]
+python-qt-bindings:
+  osx:
+    homebrew:
+      packages: [homebrew/boneyard/pyside, homebrew/boneyard/shiboken, pyqt, sip]
 python-scapy:
   osx:
     homebrew:
