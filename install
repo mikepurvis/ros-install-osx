@@ -163,7 +163,7 @@ do_install()
 
   # Fix for strange lack of nosetests in osx, kindof hackish
   if [ -z `which nosetests` ]; then
-    ln -s /usr/local/Cellar/matplotlib/1.5.1/libexec/bin/nosetests /usr/local/bin
+    ln -s /usr/local/Cellar/matplotlib/$(python -c "import matplotlib; print matplotlib.__version__")/libexec/bin/nosetests /usr/local/bin
   fi
 
   # Clean out or create the install directory.
