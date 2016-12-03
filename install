@@ -95,6 +95,9 @@ do_install()
   # Homebrew python gets us bottles for numpy, scipy, etc.
   brew tap homebrew/python
 
+  # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
+  brew install cartr/qt4/qt
+
   # ROS infrastructure tools
   brew install libyaml || true
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
@@ -140,8 +143,21 @@ do_install()
     popd
   fi
 
+  # Fix header problem in ros_comm indigo until patch is pushed.
+  echo "Fix header problem in ros_comm indigo until patch is pushed."
+  if [ -d src/ros_comm/rosconsole ]; then
+    pushd src/ros_comm/rosconsole
+    curl https://gist.githubusercontent.com/lloydc99/da3b16f8afe49dd5b059dcf19f79ddc6/raw/ec566b0aac2e914164d2262f72182f9a171c3f94/ros_comm_vector.patch | patch -p1
+    popd
+  fi
+
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 --skip-keys=pyqt
+
+  # Fix for strange lack of nosetests in osx
+  if [ -z `which nosetests` ]; then
+    ln -s /usr/local/Cellar/matplotlib/1.5.1/libexec/bin/nosetests /usr/local/bin
+  fi
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
@@ -154,6 +170,7 @@ do_install()
 
   # Parallel build.
   catkin config --install  --install-space ${ROS_INSTALL_DIR} --cmake-args \
+    -DCMAKE_FIND_FRAMEWORK=LAST \
     -DCATKIN_ENABLE_TESTING=1 \
     -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
@@ -165,7 +182,7 @@ do_install()
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
-  
+
   # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
   if [[ `sw_vers -productVersion` > "10.10" ]]
   then
