@@ -99,6 +99,7 @@ do_install()
   if [[ `sw_vers -productVersion` > "10.11" ]]
   then
     brew install cartr/qt4/qt
+    SKIP_KEYS="--skip-keys=pyqt"
   fi
 
   # ROS infrastructure tools
@@ -158,10 +159,6 @@ do_install()
   fi
 
   # Package dependencies.
-  if [[ `sw_vers -productVersion` > "10.11" ]]; then
-    SKIP_KEYS="--skip-keys=pyqt"
-  fi
-
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 ${SKIP_KEYS}
 
   # Fix for strange lack of nosetests in osx, kindof hackish
