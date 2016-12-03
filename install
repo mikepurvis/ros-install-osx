@@ -96,7 +96,10 @@ do_install()
   brew tap homebrew/python
 
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
-  brew install cartr/qt4/qt
+  if [[ `sw_vers -productVersion` > "10.11" ]]
+  then
+    brew install cartr/qt4/qt
+  fi
 
   # ROS infrastructure tools
   brew install libyaml || true
@@ -143,18 +146,25 @@ do_install()
     popd
   fi
 
-  # Fix header problem in ros_comm indigo until patch is pushed.
-  echo "Fix header problem in ros_comm indigo until patch is pushed."
-  if [ -d src/ros_comm/rosconsole ]; then
-    pushd src/ros_comm/rosconsole
-    curl https://gist.githubusercontent.com/lloydc99/da3b16f8afe49dd5b059dcf19f79ddc6/raw/ec566b0aac2e914164d2262f72182f9a171c3f94/ros_comm_vector.patch | patch -p1
-    popd
+  # Fix header problem in ros_comm until patch is pushed into indigo.
+  # https://github.com/ros/ros_comm/commit/74674c49a64abbdcdd5aeea016997af2959c6f05
+  if [ "$ROS_DISTRO" == "indigo" ]; then
+    echo "Fix header problem in ros_comm indigo until patch is pushed."
+    if [ -d src/ros_comm/rosconsole ]; then
+      pushd src/ros_comm/rosconsole
+      curl https://gist.githubusercontent.com/lloydc99/da3b16f8afe49dd5b059dcf19f79ddc6/raw/ec566b0aac2e914164d2262f72182f9a171c3f94/ros_comm_vector.patch | patch -p1
+      popd
+    fi
   fi
 
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 --skip-keys=pyqt
+  if [[ `sw_vers -productVersion` > "10.11" ]]; then
+    SKIP_KEYS="--skip-keys=pyqt"
+  fi
 
-  # Fix for strange lack of nosetests in osx
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 ${SKIP_KEYS}
+
+  # Fix for strange lack of nosetests in osx, kindof hackish
   if [ -z `which nosetests` ]; then
     ln -s /usr/local/Cellar/matplotlib/1.5.1/libexec/bin/nosetests /usr/local/bin
   fi
