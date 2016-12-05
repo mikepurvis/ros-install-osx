@@ -101,7 +101,7 @@ do_install()
   if [[ ! "${OSX_PRODUCT_VERSION}" < "10.12" ]]
   then
     echo "Installing custom Sierra qt4."
-    brew install lloydc99/qt4/qt
+    brew tap lloydc99/qt4
     SKIP_PYQT="--skip-keys=pyqt"
   fi
 
