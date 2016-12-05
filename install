@@ -98,7 +98,7 @@ do_install()
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
   if [[ `sw_vers -productVersion` > "10.11" ]]
   then
-    brew install cartr/qt4/qt
+    brew install lloydc99/qt4/qt
     SKIP_KEYS="--skip-keys=pyqt"
   fi
 
