@@ -102,6 +102,7 @@ do_install()
   then
     echo "Installing custom Sierra qt4."
     brew install lloydc99/qt4/qt
+    SKIP_PYQT="--skip-keys=pyqt"
   fi
 
   # ROS infrastructure tools
@@ -161,7 +162,7 @@ do_install()
   fi
 
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 --skip-keys=pyqt
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 ${SKIP_PYQT}
 
   # Fix for strange lack of nosetests in osx, kindof hackish
   if [ -z `which nosetests` ]; then
