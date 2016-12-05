@@ -15,7 +15,7 @@ matrix:
     # Desktop full of LTS on 10.12
     - os: osx
       osx_image: xcode8.1
-      env: ROS_DISTRO=indigo ROS_CONFIGURATION=desktop-full
+      env: ROS_DISTRO=indigo ROS_CONFIGURATION=desktop_full
 
     # Building anything GUI from Kinetic fails due to qt4/5 issues.
     - os: osx
