@@ -22,10 +22,10 @@ matrix:
       osx_image: xcode8
       env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
 
-cache:
-  directories:
-    - $HOME/Library/Caches/pip
-    - $HOME/Library/Caches/Homebrew
+cache: false
+#  directories:
+#    - $HOME/Library/Caches/pip
+#    - $HOME/Library/Caches/Homebrew
 
 script:
   - ./install

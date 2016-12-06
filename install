@@ -98,11 +98,10 @@ do_install()
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
   OSX_PRODUCT_VERSION=`sw_vers -productVersion`
   echo "OSX Product version: " ${OSX_PRODUCT_VERSION}
-  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.12" ]]
+  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.11" ]]
   then
     echo "Installing custom Sierra qt4."
     brew tap lloydc99/qt4
-    SKIP_PYQT="--skip-keys=pyqt"
   fi
 
   # ROS infrastructure tools
@@ -162,7 +161,7 @@ do_install()
   fi
 
   # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5 ${SKIP_PYQT}
+  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
 
   # Fix for strange lack of nosetests in osx, kindof hackish
   if [ -z `which nosetests` ]; then
