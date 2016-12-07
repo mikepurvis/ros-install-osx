@@ -98,10 +98,12 @@ do_install()
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
   OSX_PRODUCT_VERSION=`sw_vers -productVersion`
   echo "OSX Product version: " ${OSX_PRODUCT_VERSION}
-  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.11" ]]
+
+  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.10" ]]
   then
-    echo "Installing custom Sierra qt4."
+    echo "Installing custom El Capitan/Sierra qt4 with pyside."
     brew tap lloydc99/qt4
+    brew install lloydc99/qt4/qt
   fi
 
   # ROS infrastructure tools
