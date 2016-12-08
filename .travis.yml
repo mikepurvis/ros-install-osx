@@ -13,9 +13,9 @@ matrix:
       env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
 
     # Desktop full LTS on 10.12
-#    - os: osx
-#      osx_image: xcode8.1
-#      env: ROS_DISTRO=indigo ROS_CONFIGURATION=desktop_full
+    - os: osx
+      osx_image: xcode8.1
+      env: ROS_DISTRO=indigo ROS_CONFIGURATION=desktop_full
 
     # Building anything GUI from Kinetic fails due to qt4/5 issues.
     - os: osx
@@ -25,7 +25,7 @@ matrix:
 cache:
   directories:
     - $HOME/Library/Caches/pip
-    - $HOME/Library/Caches/Homebrew
+#    - $HOME/Library/Caches/Homebrew
 
 script:
   - ./install
