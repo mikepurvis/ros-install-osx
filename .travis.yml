@@ -3,14 +3,14 @@ language: generic
 matrix:
   include:
     # OSRF has bottles of Gazebo on Yosemite, so test gazebo_ros on that.
-    - os: osx
-      osx_image: xcode7.3
-      env: ROS_DISTRO=indigo ROS_CONFIGURATION=gazebo_ros
+#    - os: osx
+#      osx_image: xcode7.3
+#      env: ROS_DISTRO=indigo ROS_CONFIGURATION=gazebo_ros
 
     # Check up to rviz on El Capitan (this build sometimes times out).
-    - os: osx
-      osx_image: xcode8
-      env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
+#    - os: osx
+#      osx_image: xcode8
+#      env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
 
     # Desktop full LTS on 10.12
     - os: osx
@@ -18,14 +18,17 @@ matrix:
       env: ROS_DISTRO=indigo ROS_CONFIGURATION=desktop_full
 
     # Building anything GUI from Kinetic fails due to qt4/5 issues.
-    - os: osx
-      osx_image: xcode8
-      env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
+#    - os: osx
+#      osx_image: xcode8
+#      env: ROS_DISTRO=kinetic ROS_CONFIGURATION=ros_base
 
 cache:
   directories:
     - $HOME/Library/Caches/pip
-#    - $HOME/Library/Caches/Homebrew
+    - $HOME/Library/Caches/Homebrew
+
+before_script:
+  - rm -f /usr/local/bin/f2py
 
 script:
   - ./install
