@@ -28,7 +28,7 @@ cache:
     - $HOME/Library/Caches/Homebrew
 
 before_script:
-  - rm -f /usr/local/bin/f2py
+  - rm -f /usr/local/bin/f2py && rm -rf /usr/local/lib/python2.7/site-packages/numpy
 
 script:
   - ./install
