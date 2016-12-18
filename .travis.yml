@@ -31,4 +31,5 @@ before_script:
   - rm -f /usr/local/bin/f2py && rm -rf /usr/local/lib/python2.7/site-packages/numpy
 
 script:
+  - brew test-bot --fast
   - ./install
