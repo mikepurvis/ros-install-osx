@@ -87,24 +87,29 @@ do_install()
   brew tap ros/deps
 
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
-  brew tap osrf/simulation
+  brew tap lloydc99/simulation
+  brew tap cartr/qt4
 
   # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
 
+  # Deprecated tap
   # Homebrew python gets us bottles for numpy, scipy, etc.
-  brew tap homebrew/python
+  #brew tap homebrew/python
 
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
   OSX_PRODUCT_VERSION=`sw_vers -productVersion`
   echo "OSX Product version: " ${OSX_PRODUCT_VERSION}
 
-  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.10" ]]
-  then
-    echo "Installing custom El Capitan/Sierra qt4 with pyside."
-    brew tap lloydc99/qt4
-    brew install lloydc99/qt4/qt
-  fi
+#  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.10" ]]
+#  then
+#    echo "Installing custom El Capitan/Sierra qt4 with pyside."
+#    brew tap lloydc99/qt4
+#    brew install lloydc99/qt4/qt
+#    echo "Installing custom El Capitan/Sierra simulation with newer bottles."
+#    brew tap lloydc99/rethink
+#    brew install lloydc99/qt4/simbody
+#  fi
 
   # ROS infrastructure tools
   brew install libyaml || true
@@ -116,8 +121,8 @@ do_install()
     sudo rosdep init
   fi
   if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
-    echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    echo "This sudo prompt adds the brewed python rosdep and legacy qt4 yaml to /etc/ros/rosdep/10-ros-install-osx.list."
+    sudo sh -c "echo 'yaml https://gist.githubusercontent.com/lloydc99/827e2f2fad3c97de11687121301c1ce5/raw/1061326d022c3e4f056e38040b1260c352a613c7/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
 
@@ -167,7 +172,7 @@ do_install()
 
   # Fix for strange lack of nosetests in osx, kindof hackish
   if [ -z `which nosetests` ]; then
-    ln -s /usr/local/Cellar/matplotlib/$(python -c "import matplotlib; print matplotlib.__version__")/libexec/bin/nosetests /usr/local/bin
+    ln -s /usr/local/Cellar/numpy/$(python -c "import numpy; print numpy.__version__")/libexec/nose/bin/nosetests /usr/local/bin
   fi
 
   # Clean out or create the install directory.

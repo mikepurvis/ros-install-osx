@@ -3,14 +3,14 @@ language: generic
 matrix:
   include:
     # OSRF has bottles of Gazebo on Yosemite, so test gazebo_ros on that.
-    - os: osx
-      osx_image: xcode7.3
-      env: ROS_DISTRO=indigo ROS_CONFIGURATION=gazebo_ros
+#    - os: osx
+#      osx_image: xcode7.3
+#      env: ROS_DISTRO=indigo ROS_CONFIGURATION=gazebo_ros
 
     # Check up to rviz on El Capitan (this build sometimes times out).
-    - os: osx
-      osx_image: xcode8
-      env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
+#    - os: osx
+#      osx_image: xcode8
+#      env: ROS_DISTRO=indigo ROS_CONFIGURATION=rviz
 
     # Desktop full LTS on 10.12
     - os: osx
@@ -31,5 +31,4 @@ before_script:
   - rm -f /usr/local/bin/f2py && rm -rf /usr/local/lib/python2.7/site-packages/numpy
 
 script:
-  - brew test-bot --fast
   - ./install

@@ -1,7 +1,31 @@
+libqt4:
+  osx:
+    homebrew:
+      packages: [cartr/qt4/qt]
+libqt4-dev:
+  osx:
+    homebrew:
+      packages: [cartr/qt4/qt]
+libqt4-opengl-dev:
+  osx:
+    homebrew:
+      packages: [cartr/qt4/qt]
+qt4-qmake:
+  osx:
+    homebrew:
+      packages: [cartr/qt4/qt]
+python-qt-bindings:
+  osx:
+    homebrew:
+      packages: [cartr/qt4/pyside, cartr/qt4/shiboken, cartr/qt4/pyqt]
+python-qt-bindings-gl:
+  osx:
+    homebrew:
+      packages: [cartr/qt4/pyqt]
 gazebo:
   osx:
     homebrew:
-      packages: [gazebo7]
+      packages: [lloydc99/simulation/gazebo7]
 python:
   osx:
     homebrew:
@@ -11,20 +35,12 @@ python:
 python-imaging:
   osx:
     homebrew:
-      packages: [homebrew/python/pillow]
+      packages: [homebrew/science/pillow]
 python-matplotlib:
   osx:
     homebrew:
-      packages: [homebrew/python/matplotlib]
-python-numpy:
-  osx:
-    homebrew:
-      packages: [homebrew/python/numpy]
-python-scapy:
-  osx:
-    homebrew:
-      packages: [homebrew/python/scapy]
+      packages: [homebrew/science/matplotlib]
 python-scipy:
   osx:
     homebrew:
-      packages: [homebrew/python/scipy]
+      packages: [scipy]
