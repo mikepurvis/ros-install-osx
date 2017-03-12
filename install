@@ -86,30 +86,21 @@ do_install()
   # Gives us console_bridge, urdfdom, and gtest.
   brew tap ros/deps
 
-  # This tap gives us formulae for Gazebo and its dependencies, including SDF.
-  brew tap lloydc99/simulation
-  brew tap cartr/qt4
-
   # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
-
-  # Deprecated tap
-  # Homebrew python gets us bottles for numpy, scipy, etc.
-  #brew tap homebrew/python
 
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
   OSX_PRODUCT_VERSION=`sw_vers -productVersion`
   echo "OSX Product version: " ${OSX_PRODUCT_VERSION}
 
-#  if [[ ! "${OSX_PRODUCT_VERSION}" < "10.10" ]]
-#  then
-#    echo "Installing custom El Capitan/Sierra qt4 with pyside."
-#    brew tap lloydc99/qt4
-#    brew install lloydc99/qt4/qt
-#    echo "Installing custom El Capitan/Sierra simulation with newer bottles."
-#    brew tap lloydc99/rethink
-#    brew install lloydc99/qt4/simbody
-#  fi
+ if [[ ! "${OSX_PRODUCT_VERSION}" < "10.10" ]]
+ then
+   echo "Installing custom El Capitan/Sierra qt4 with pyside."
+   brew tap cartr/qt4
+   #brew install cartr/qt4/qt
+   echo "Installing custom El Capitan/Sierra simulation with newer bottles."
+   brew tap lloydc99/simulation
+ fi
 
   # ROS infrastructure tools
   brew install libyaml || true
@@ -120,9 +111,10 @@ do_install()
     echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
     sudo rosdep init
   fi
+
   if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
     echo "This sudo prompt adds the brewed python rosdep and legacy qt4 yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-    sudo sh -c "echo 'yaml https://gist.githubusercontent.com/lloydc99/827e2f2fad3c97de11687121301c1ce5/raw/1061326d022c3e4f056e38040b1260c352a613c7/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    sudo sh -c "echo 'yaml https://gist.githubusercontent.com/lloydc99/827e2f2fad3c97de11687121301c1ce5/raw/39e13ebe4d6cdee0521bac33bdc6e7bb3cb717e5/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
 
