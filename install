@@ -86,14 +86,23 @@ do_install()
   # Gives us console_bridge, urdfdom, and gtest.
   brew tap ros/deps
 
-  # This tap gives us formulae for Gazebo and its dependencies, including SDF.
-  brew tap osrf/simulation
-
   # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
 
-  # Homebrew python gets us bottles for numpy, scipy, etc.
-  brew tap homebrew/python
+  brew tap lloydc99/simulation
+
+  # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
+  OSX_PRODUCT_VERSION=`sw_vers -productVersion`
+  echo "OSX Product version: " ${OSX_PRODUCT_VERSION}
+
+ if [[ ! "${OSX_PRODUCT_VERSION}" < "10.10" ]]
+ then
+   echo "Installing custom El Capitan/Sierra qt4 with pyside."
+   brew tap cartr/qt4
+   #brew install cartr/qt4/qt
+   echo "Installing custom El Capitan/Sierra simulation with newer bottles."
+   brew tap lloydc99/simulation
+ fi
 
   # ROS infrastructure tools
   brew install libyaml || true
@@ -104,9 +113,10 @@ do_install()
     echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
     sudo rosdep init
   fi
+
   if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
-    echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    echo "This sudo prompt adds the brewed python rosdep and legacy qt4 yaml to /etc/ros/rosdep/10-ros-install-osx.list."
+    sudo sh -c "echo 'yaml https://gist.githubusercontent.com/lloydc99/827e2f2fad3c97de11687121301c1ce5/raw/39e13ebe4d6cdee0521bac33bdc6e7bb3cb717e5/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
 
@@ -143,6 +153,11 @@ do_install()
   # Package dependencies.
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
 
+  # Fix for strange lack of nosetests in osx, kindof hackish
+  if [ -z `which nosetests` ]; then
+    ln -s /usr/local/Cellar/numpy/$(python -c "import numpy; print numpy.__version__")/libexec/nose/bin/nosetests /usr/local/bin
+  fi
+
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
     rm -rf ${ROS_INSTALL_DIR}/*
@@ -154,6 +169,7 @@ do_install()
 
   # Parallel build.
   catkin config --install  --install-space ${ROS_INSTALL_DIR} --cmake-args \
+    -DCMAKE_FIND_FRAMEWORK=LAST \
     -DCATKIN_ENABLE_TESTING=1 \
     -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
@@ -165,9 +181,9 @@ do_install()
   echo
   echo "  source ${ROS_INSTALL_DIR}/setup.bash"
   echo
-  
+
   # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
-  if [[ `sw_vers -productVersion` > "10.10" ]]
+  if [[ "${OSX_PRODUCT_VERSION}" > "10.10" ]]
   then
     if `csrutil status | grep -q enabled`
     then
