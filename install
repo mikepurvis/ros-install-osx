@@ -89,6 +89,8 @@ do_install()
   # Homebrew science gives us vtk and PCL, among other things.
   brew tap homebrew/science
 
+  brew tap lloydc99/simulation
+
   # Sierra no longer has a working qt4 so use this private version until the issue is resolved.
   OSX_PRODUCT_VERSION=`sw_vers -productVersion`
   echo "OSX Product version: " ${OSX_PRODUCT_VERSION}
@@ -146,17 +148,6 @@ do_install()
     pushd src/catkin/cmake
     curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
     popd
-  fi
-
-  # Fix header problem in ros_comm until patch is pushed into indigo.
-  # https://github.com/ros/ros_comm/commit/74674c49a64abbdcdd5aeea016997af2959c6f05
-  if [ "$ROS_DISTRO" == "indigo" ]; then
-    echo "Fix header problem in ros_comm indigo until patch is pushed."
-    if [ -d src/ros_comm/rosconsole ]; then
-      pushd src/ros_comm/rosconsole
-      curl https://gist.githubusercontent.com/lloydc99/da3b16f8afe49dd5b059dcf19f79ddc6/raw/ec566b0aac2e914164d2262f72182f9a171c3f94/ros_comm_vector.patch | patch -p1
-      popd
-    fi
   fi
 
   # Package dependencies.
