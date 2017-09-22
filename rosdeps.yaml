@@ -1,4 +1,4 @@
-pcl:
+libpcl-all-dev:
   osx:
     homebrew: 
       packages: [pcl]
