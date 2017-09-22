@@ -1,3 +1,7 @@
+pcl:
+  osx:
+    homebrew: 
+      packages: [pcl]
 gazebo:
   osx:
     homebrew:
