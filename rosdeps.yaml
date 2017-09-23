@@ -1,3 +1,11 @@
+ogre:
+  osx:
+    homebrew:
+      package: [ogre1.9]
+matplotlib:
+  osx:
+    pip:
+      packages: [pip, matplotlib]
 libpcl-all-dev:
   osx:
     homebrew: 
