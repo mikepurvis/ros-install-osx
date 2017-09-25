@@ -79,7 +79,7 @@ brew tap osrf/simulation
 # Homebrew science gives us vtk and PCL, among other things.
 brew tap homebrew/science
 
-echo "Installing qt5 and pyqt5"
+echo "Installing brew software"
 
 # fixes some compiling errors (will take awhile to compile)
 brew install cmake --HEAD || true
@@ -93,8 +93,16 @@ brew install ogre1.9
 brew install gazebo8 || true
 
 brew install libyaml || true
-brew install qt5 pyqt5 || true
-brew link qt5 --force || true
+brew install qt pyqt || true
+# brew link qt5 --force || true
+
+ # Remove previous workspace if present, create and enter new one.
+WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
+if [ -d "$WS" ]; then
+rm -rf "$WS"
+fi
+mkdir $WS
+pushd $WS
 
 # Install the ROS infrastructure tools, you may have to run this several times until all python deps are properly installed
 sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
@@ -105,7 +113,11 @@ rosinstall_generator geometry2 --rosdistro kinetic --deps > geometry2.rosinstall
 rosinstall_generator class_loader --rosdistro kinetic --upstream-development > class_loader.rosinstall
 rosinstall_generator rospack --rosdistro lunar --upstream-development > rospack.rosinstall
 rosinstall_generator rviz --rosdistro kinetic --upstream-development > rviz.rosinstall
-rosinstall_generator gazebo_ros_control --rosdistro kinetic --deps-only --deps --deps-depth 1 --exclude gazebo_dev gazebo_ros> gazebo8_ros_pkgs_deps.rosinstall
+rosinstall_generator gazebo_ros_control --rosdistro kinetic --deps-only --deps --deps-depth 1 --exclude gazebo_dev gazebo_ros > gazebo8_ros_pkgs_deps.rosinstall
+rosinstall_generator realtime_tools ros_control --rosdistro kinetic --deps --deps-depth 1 > extra_deps.rosinstall
+
+mkdir src
+pushd src
 
 wstool init
 
@@ -133,7 +145,12 @@ wstool merge -ry ../rospack.rosinstall
 # need upstream-dev to fix compiling errors
 wstool merge -ry ../rviz.rosinstall 
 
+# some extra missing packages
+wstool merge -ry ../extra_deps.rosinstall 
+
 wstool update -j8
+
+popd
 
 # Initialize and update rosdep
 if [ ! -d /etc/ros/rosdep/ ]; then
@@ -145,6 +162,12 @@ if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
 	sudo sh -c "echo 'yaml https://raw.githubusercontent.com/smnogar/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
 fi
 
+# # Install the necessary ROS dependencies
+# sudo rosdep init
+rosdep update
+rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
+rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
+
 # This patch originates from here: https://github.com/ros/catkin/pull/784
 # this is necessary for python to find dylibs
 if [ -d src/catkin ]; then
@@ -152,12 +175,6 @@ if [ -d src/catkin ]; then
 	curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
 	popd
 fi
-
-# # Install the necessary ROS dependencies
-# sudo rosdep init
-rosdep update
-rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
-rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
 
 # this is importnat for python to work
 ln -s /usr/local/share/sip/Qt5 /usr/local/share/sip/PyQt5
