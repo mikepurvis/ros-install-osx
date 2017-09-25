@@ -1,183 +1,185 @@
-#!/bin/bash
-# Software License Agreement (BSD)
+# NOTE: These instructions do not represent a robust, self-troubleshooting install; they
+# are definitely not suitable for dumping to a giant script and running as one. If you 
+# use them, they should be run one at a time, with an eye out for errors or problems
+# along the way.
 #
-# Author    Mike Purvis <mpurvis@clearpathrobotics.com>
-# Copyright (c) 2014-2016, Clearpath Robotics, Inc., All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that
-# the following conditions are met:
-# * Redistributions of source code must retain the above copyright notice, this list of conditions and the
-#   following disclaimer.
-# * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
-#   following disclaimer in the documentation and/or other materials provided with the distribution.
-# * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or
-#   promote products derived from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# The #1 issue you are likely to encounter is with Homebrew or Python packages whose
+# binary components link against system Python. This will result in runtime segfaults,
+# especially in rviz. If you suspect this is occurring, you can attempt to remove and
+# reinstall the offending packages, or go for the nuclear option--- empty your Cellar
+# and site-packages folders and start over with brewed python from the beginning.
 
-ROS_DISTRO=${ROS_DISTRO:-indigo}
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# If a cleanup is necessary, proceed with extreme caution!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ROS_DISTRO=${ROS_DISTRO:-kinetic}
 ROS_CONFIGURATION=${ROS_CONFIGURATION:-desktop_full}
 ROS_EXTRA_PACKAGES=${ROS_EXTRA_PACKAGES:-}
 ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
 
-do_install()
-{
-  set -e
+# Homebrew
+if ! hash brew 2>/dev/null; then
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
+	source ~/.bash_profile
+	brew doctor
+fi
+brew update
 
-  # Homebrew
-  if ! hash brew 2>/dev/null; then
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
-    source ~/.bash_profile
-    brew doctor
-  fi
-  brew update
+# XQuartz
+if ! hash xquartz 2>/dev/null; then
+	brew install caskroom/cask/brew-cask
+	brew cask install xquartz
+	echo "Log out and in to finalize XQuartz setup."
+	exit 0
+fi
 
-  # XQuartz
-  if ! hash xquartz 2>/dev/null; then
-    brew install caskroom/cask/brew-cask
-    brew cask install xquartz
-    echo "Log out and in to finalize XQuartz setup."
-    exit 0
-  fi
+# Check for pip packages in the system Python directory.
+if [ $(ls /Library/Python/2.7/site-packages/ | wc -l) -gt 1 ]; then
+	echo "These instructions are about to install Python from Homebrew. However, there are already"
+	echo "pip packages installed against the system python, in the following path:"
+	echo
+	echo "    /Library/Python/2.7/site-packages/"
+	echo
+	echo "If you have problems, please uninstall these packages:"
+	echo
+	echo "    for i in \$( pip freeze ); do sudo -H pip uninstall -y \$i; done"
+	echo
+	echo "Then delete the build directory and start over again from scratch."
+fi
 
-  # Check for pip packages in the system Python directory.
-  if [ $(ls /Library/Python/2.7/site-packages/ | wc -l) -gt 1 ]; then
-    echo "These instructions are about to install Python from Homebrew. However, there are already"
-    echo "pip packages installed against the system python, in the following path:"
-    echo
-    echo "    /Library/Python/2.7/site-packages/"
-    echo
-    echo "If you have problems, please uninstall these packages:"
-    echo
-    echo "    for i in \$( pip freeze ); do sudo -H pip uninstall -y \$i; done"
-    echo
-    echo "Then delete the build directory and start over again from scratch."
-  fi
+# Check for root-owned stuff in /usr/local
+if [ $(find /usr/local/* -maxdepth 3 -type d -user root | wc -l) -gt 1 ]; then
+	echo "Looks like you have some stuff owned by the root user in /usr/local. The installation can"
+	echo "continue, but if there are pip packages which were installed using sudo, this will be a"
+	echo "problem if rosdep tries to update them. If you have issues installing dependencies, consider"
+	echo "nuking your Homebrew installation and starting from scratch:"
+	echo
+	echo "    https://gist.github.com/mxcl/1173223"
+	echo
+	echo "Alternatively, you could try chowning the contents of /usr/local to yourself:"
+	echo
+	echo "    sudo chown -R $USER:admin /usr/local/*"
+fi
 
-  # Check for root-owned stuff in /usr/local
-  if [ $(find /usr/local/* -maxdepth 3 -type d -user root | wc -l) -gt 1 ]; then
-    echo "Looks like you have some stuff owned by the root user in /usr/local. The installation can"
-    echo "continue, but if there are pip packages which were installed using sudo, this will be a"
-    echo "problem if rosdep tries to update them. If you have issues installing dependencies, consider"
-    echo "nuking your Homebrew installation and starting from scratch:"
-    echo
-    echo "    https://gist.github.com/mxcl/1173223"
-    echo
-    echo "Alternatively, you could try chowning the contents of /usr/local to yourself:"
-    echo
-    echo "    sudo chown -R $USER:admin /usr/local/*"
-  fi
+# Brewed Python
+if [ $(which python) != "/usr/local/bin/python" ]; then
+	brew install python
+	mkdir -p ~/Library/Python/2.7/lib/python/site-packages
+	echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
+fi
 
-  # Brewed Python
-  if [ $(which python) != "/usr/local/bin/python" ]; then
-    brew install python
-    mkdir -p ~/Library/Python/2.7/lib/python/site-packages
-    echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
-  fi
+# ros
+brew tap ros/deps
 
-  # Gives us console_bridge, urdfdom, and gtest.
-  brew tap ros/deps
+# This tap gives us formulae for Gazebo and its dependencies, including SDF.
+brew tap osrf/simulation
 
-  # This tap gives us formulae for Gazebo and its dependencies, including SDF.
-  brew tap osrf/simulation
+# Homebrew science gives us vtk and PCL, among other things.
+brew tap homebrew/science
 
-  # Homebrew science gives us vtk and PCL, among other things.
-  brew tap homebrew/science
+echo "Installing qt5 and pyqt5"
 
-  # Homebrew python gets us bottles for numpy, scipy, etc.
-  brew tap homebrew/python
+# fixes some compiling errors (will take awhile to compile)
+brew install cmake --HEAD || true
 
-  # ROS infrastructure tools
-  brew install libyaml || true
-  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
+# boost 1.59 is needed since not everything has been updated for 1.65 (also a long compile)
+brew install boost@1.59 --c++11 --with-icu4c
+brew install boost-python@1.59
 
-  # Initialize and update rosdep
-  if [ ! -d /etc/ros/rosdep/ ]; then
-    echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
-    sudo rosdep init
-  fi
-  if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
-    echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-    sudo sh -c "echo 'yaml https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
-  fi
-  rosdep update
+# use gazebo8 and ogre1.9 for consistency with rviz
+brew install ogre1.9
+brew install gazebo8 || true
 
-  # Remove previous workspace if present, create and enter new one.
-  WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
-  if [ -d "$WS" ]; then
-    rm -rf "$WS"
-  fi
-  mkdir $WS
-  pushd $WS
+brew install libyaml || true
+brew install qt5 pyqt5 || true
+brew link qt5 --force || true
 
-  # Standard source install
-  rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
-  wstool init -j8 src ${WS}.rosinstall
+# Install the ROS infrastructure tools, you may have to run this several times until all python deps are properly installed
+sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
 
-  # Grabbing these older meshes allows rviz to run with Ogre 1.7 rather than Ogre 1.8+.
-  # Some details here: https://github.com/ros-visualization/rviz/issues/782
-  if [ -d src/rviz ]; then
-    pushd src/rviz/ogre_media/models
-    curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cone.mesh > rviz_cone.mesh
-    curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cube.mesh > rviz_cube.mesh
-    curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_cylinder.mesh > rviz_cylinder.mesh
-    curl https://raw.githubusercontent.com/ros-visualization/rviz/hydro-devel/ogre_media/models/rviz_sphere.mesh > rviz_sphere.mesh
-    popd
-  fi
+# Download ROS sources
+rosinstall_generator ${ROS_CONFIGURATION} --rosdistro kinetic --deps > kinetic.rosinstall
+rosinstall_generator geometry2 --rosdistro kinetic --deps > geometry2.rosinstall
+rosinstall_generator class_loader --rosdistro kinetic --upstream-development > class_loader.rosinstall
+rosinstall_generator rospack --rosdistro lunar --upstream-development > rospack.rosinstall
+rosinstall_generator rviz --rosdistro kinetic --upstream-development > rviz.rosinstall
+rosinstall_generator gazebo_ros_control --rosdistro kinetic --deps-only --deps --deps-depth 1 --exclude gazebo_dev gazebo_ros> gazebo8_ros_pkgs_deps.rosinstall
 
-  # This patch originates from here: https://github.com/ros/catkin/pull/784
-  if [ -d src/catkin ]; then
-    pushd src/catkin/cmake
-    curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
-    popd
-  fi
+wstool init
 
-  # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
+# base install
+wstool merge -ry ../kinetic.rosinstall
 
-  # Clean out or create the install directory.
-  if [ -d ${ROS_INSTALL_DIR} ]; then
-    rm -rf ${ROS_INSTALL_DIR}/*
-  else
-    echo "This sudo prompt is to create and chown ${ROS_INSTALL_DIR}."
-    sudo mkdir -p ${ROS_INSTALL_DIR}
-    sudo chown $USER ${ROS_INSTALL_DIR}
-  fi
+# so that tf2 has tf2_tools
+wstool merge -ry ../geometry2.rosinstall
 
-  # Parallel build.
-  catkin config --install  --install-space ${ROS_INSTALL_DIR} --cmake-args \
+# fix number of errors on compiling
+wstool merge -ry ../class_loader.rosinstall
+
+# load gazebo8 support packages
+wstool set gazebo8_ros_pkgs --git https://github.com/osrf/gazebo8_ros_pkgs-release.git -v upstream/2.5.10 -y
+
+# remove gazebo7 support
+wstool remove gazebo_ros_pkgs/gazebo_ros_pkgs gazebo_ros_pkgs/gazebo_ros gazebo_ros_pkgs/gazebo_plugins gazebo_ros_pkgs/gazebo_msgs gazebo_ros_pkgs/gazebo_dev
+
+# gazebo8 support packages deps
+wstool merge -ry ../gazebo8_ros_pkgs_deps.rosinstall 
+
+# 
+wstool merge -ry ../rospack.rosinstall 
+
+# need upstream-dev to fix compiling errors
+wstool merge -ry ../rviz.rosinstall 
+
+wstool update -j8
+
+# Initialize and update rosdep
+if [ ! -d /etc/ros/rosdep/ ]; then
+	echo "This sudo prompt is to initialize rosdep (creates the /etc/ros/rosdep path)."
+	sudo rosdep init
+fi
+if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
+	echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
+	sudo sh -c "echo 'yaml https://raw.githubusercontent.com/smnogar/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+fi
+
+# This patch originates from here: https://github.com/ros/catkin/pull/784
+# this is necessary for python to find dylibs
+if [ -d src/catkin ]; then
+	pushd src/catkin/cmake
+	curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
+	popd
+fi
+
+# # Install the necessary ROS dependencies
+# sudo rosdep init
+rosdep update
+rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
+rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
+
+# this is importnat for python to work
+ln -s /usr/local/share/sip/Qt5 /usr/local/share/sip/PyQt5
+
+catkin config --install  --install-space /opt/ros/kinetic --cmake-args \
     -DCATKIN_ENABLE_TESTING=1 \
     -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-    -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7
-  catkin build --limit-status-rate 1
-  popd
+    -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7 \
+    -DCMAKE_FIND_FRAMEWORK=LAST
+catkin build
 
-  echo "Installation successful, please source the ROS workspace:"
-  echo
-  echo "  source ${ROS_INSTALL_DIR}/setup.bash"
-  echo
-  
-  # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
-  if [[ `sw_vers -productVersion` > "10.10" ]]
-  then
-    if `csrutil status | grep -q enabled`
-    then
-      echo "You have System Integrity Protection enabled."
-      echo
-      echo "This prevents DYLD_LIBRARY_PATH from being exported to subshells"
-      echo "Please add: export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:/opt/ros/\$ROS_DISTRO/lib"
-      echo "To the start of /opt/ros/$ROS_DISTRO/bin/rosrun to work around the issue."
-    fi
-  fi
-}
 
-do_install
+# Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
+if [[ `sw_vers -productVersion` > "10.10" ]]
+then
+	if `csrutil status | grep -q enabled`
+	then
+		echo "You have System Integrity Protection enabled."
+		echo
+		echo "This prevents DYLD_LIBRARY_PATH from being exported to subshells"
+		echo "Please add: export DYLD_LIBRARY_PATH=\$DYLD_LIBRARY_PATH:/opt/ros/\$ROS_DISTRO/lib"
+		echo "To the start of /opt/ros/$ROS_DISTRO/bin/rosrun to work around the issue."
+	fi
+fi
