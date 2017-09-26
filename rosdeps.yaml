@@ -28,10 +28,6 @@ python-imaging:
   osx:
     pip:
       packages: [pip, Pillow]
-python-matplotlib:
-  osx:
-    homebrew:
-      packages: [matplotlib]
 python-numpy:
   osx:
     homebrew:
