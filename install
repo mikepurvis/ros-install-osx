@@ -166,7 +166,7 @@ fi
 # sudo rosdep init
 rosdep update
 rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
-rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
+rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev matplotlib" -y
 
 # This patch originates from here: https://github.com/ros/catkin/pull/784
 # this is necessary for python to find dylibs
@@ -178,6 +178,10 @@ fi
 
 # this is importnat for python to work
 ln -s /usr/local/share/sip/Qt5 /usr/local/share/sip/PyQt5
+
+# this may help
+# brew link --force qt5 && ln -s /usr/local/Cellar/qt5/5.4.0/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.4.0/plugins /usr/local/plugins
+
 
 catkin config --install  --install-space /opt/ros/kinetic --cmake-args \
     -DCATKIN_ENABLE_TESTING=1 \
