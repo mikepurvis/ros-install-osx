@@ -90,7 +90,7 @@ brew install boost-python@1.59
 
 # use gazebo8 and ogre1.9 for consistency with rviz
 brew install ogre1.9
-brew install gazebo8 || true
+brew install gazebo8 --without-bullet || true
 
 brew install libyaml || true
 brew install qt pyqt || true
