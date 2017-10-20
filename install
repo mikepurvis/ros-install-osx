@@ -157,12 +157,15 @@ do_install()
   fi
 
   # Parallel build.
-  catkin config --install  --install-space ${ROS_INSTALL_DIR} --blacklist opencv3 --cmake-args \
-    -DCATKIN_ENABLE_TESTING=1 \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_FIND_FRAMEWORK=LAST \
-    -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-    -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
+  catkin config --install  --install-space ${ROS_INSTALL_DIR} \
+    --blacklist opencv3 \
+    --make-args CXXFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0 \
+    --cmake-args \
+      -DCATKIN_ENABLE_TESTING=1 \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_FIND_FRAMEWORK=LAST \
+      -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
+      -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
   catkin build --limit-status-rate 1
   popd
 
