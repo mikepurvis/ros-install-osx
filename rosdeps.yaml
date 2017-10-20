@@ -1,25 +1,28 @@
+# Override the default key to get us Ogre 1.9 instead of 1.7.
 libogre-dev:
   osx:
     homebrew:
       packages: [ogre1.9]
-libpng-dev:
+
+# Use Gazebo 8 instead of 7.
+gazebo7:
   osx:
     homebrew:
-      packages: [libpng]
-libwebp-dev:
+      packages: [gazebo8]
+libgazebo7-dev:
   osx:
     homebrew:
-      packages: [webp]
+      packages: [gazebo8]
+
+# Installing all this Python stuff from homebrew instead of pip
+# means we get pre-built bottles and don't have to build it all
+# each time.
 python:
   osx:
     homebrew:
       packages: [python]
     pip:
       packages: [pip, setuptools, nose]
-python-imaging:
-  osx:
-    pip:
-      packages: [pillow]
 python-matplotlib:
   osx:
     homebrew:
@@ -37,16 +40,7 @@ python-wxtools:
     homebrew:
       packages: [wxmac]
 
-# Use Gazebo 8 instead of 7.
-gazebo7:
-  osx:
-    homebrew:
-      packages: [gazebo8]
-libgazebo7-dev:
-  osx:
-    homebrew:
-      packages: [gazebo8]
-
+# Zero out all the QT5 keys. We'll install it ourselves upfront.
 libqt5-opengl-dev:
   osx:
     homebrew:
