@@ -177,7 +177,7 @@ do_install()
       -DCATKIN_ENABLE_TESTING=1 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
-      -DPYTHON_EXECUTABE=$(which python2) \
+      -DPYTHON_EXECUTABLE=$(which python2) \
       -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
       -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
   catkin build --limit-status-rate 1
