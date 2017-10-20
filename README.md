@@ -14,10 +14,6 @@ This is the successor to my [popular gist on the same topic][1].
 Usage
 -----
 
-    curl https://raw.githubusercontent.com/mikepurvis/ros-install-osx/master/install | bash
-
-or
-
 ```shell
 git clone https://github.com/mikepurvis/ros-install-osx.git
 cd ros-install-osx
