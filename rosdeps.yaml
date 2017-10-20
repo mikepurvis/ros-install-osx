@@ -14,6 +14,12 @@ libgazebo7-dev:
     homebrew:
       packages: [gazebo8]
 
+# Don't try to install opencv3
+opencv3:
+  osx:
+    homebrew:
+      packages: []
+
 # Installing all this Python stuff from homebrew instead of pip
 # means we get pre-built bottles and don't have to build it all
 # each time.
