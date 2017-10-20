@@ -1,5 +1,0 @@
-#!/bin/sh
-# This wrapper allows scripts to call python and it actually be
-# the python2 that's brewed Python, rather than system python.
-python2 $@
-exit $?

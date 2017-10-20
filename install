@@ -77,7 +77,7 @@ do_install()
   fi
 
   # Brewed Python
-  if [ $(which python2) != "/usr/local/bin/python2" ]; then
+  if [ ! "$(which python2)" = "/usr/local/bin/python2" ]; then
     brew install python
     mkdir -p ~/Library/Python/2.7/lib/python/site-packages
     echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
@@ -112,6 +112,7 @@ do_install()
   brew install opencv3
 
   # Mock out python and pip so that we get the brewed versions when rosdep and other programs call them.
+  # Mock out pip so that we get the brewed pip2 when rosdep calls it to make an installation.
   export PATH=$(pwd)/shim:$PATH
 
   # Initialize and update rosdep
@@ -131,28 +132,34 @@ do_install()
     rm -rf "$WS"
   fi
   mkdir $WS
-  pushd $WS
+  cd $WS
 
   # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
-  wstool init -j8 src ${WS}.rosinstall
+  wstool init src
+  pushd src
+    # Avoid downloading opencv3; we already installed it from homebrew.
+    wstool merge file://$(pwd)/../${WS}.rosinstall
+    wstool remove opencv3
+    wstool update -j8
 
-  # This patch originates from: https://github.com/ros/catkin/pull/784
-  if [ -d src/catkin ]; then
-    pushd src/catkin/cmake
-    curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
-    popd
-  fi
+    # This patch originates from: https://github.com/ros/catkin/pull/784
+    if [ -d catkin ]; then
+      pushd catkin/cmake
+        curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
+      popd
+    fi
 
-  # This patch originates from: https://github.com/ros-visualization/rviz/pull/1165
-  if [ -d src/rviz ]; then
-    pushd src/rviz
-    curl https://raw.githubusercontent.com/mikepurvis/rviz/21eac2bcc061bb623fd17aa449f6215c493b27f2/CMakeLists.txt > CMakeLists.txt
-    popd
-  fi
+    # This patch originates from: https://github.com/ros-visualization/rviz/pull/1165
+    if [ -d rviz ]; then
+      pushd rviz
+        curl https://raw.githubusercontent.com/mikepurvis/rviz/21eac2bcc061bb623fd17aa449f6215c493b27f2/CMakeLists.txt > CMakeLists.txt
+      popd
+    fi
 
-  # Package dependencies.
-  rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no --skip-keys=python-qt-bindings-qwt5
+    # Package dependencies.
+    rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
+  popd
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
@@ -164,16 +171,16 @@ do_install()
   fi
 
   # Parallel build.
-  catkin config --install  --install-space ${ROS_INSTALL_DIR} \
-    --blacklist opencv3 \
+  catkin config --install \
+    --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
       -DCATKIN_ENABLE_TESTING=1 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
+      -DPYTHON_EXECUTABE=$(which python2) \
       -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
       -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
   catkin build --limit-status-rate 1
-  popd
 
   echo "Installation successful, please source the ROS workspace:"
   echo
