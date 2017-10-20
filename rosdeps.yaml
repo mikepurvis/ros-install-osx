@@ -1,7 +1,15 @@
-gazebo:
+libogre-dev:
   osx:
     homebrew:
-      packages: [gazebo7]
+      packages: [ogre1.9]
+libpng-dev:
+  osx:
+    homebrew:
+      packages: [libpng]
+libwebp-dev:
+  osx:
+    homebrew:
+      packages: [webp]
 python:
   osx:
     homebrew:
@@ -10,21 +18,72 @@ python:
       packages: [pip, setuptools, nose]
 python-imaging:
   osx:
-    homebrew:
-      packages: [homebrew/python/pillow]
+    pip:
+      packages: [pillow]
 python-matplotlib:
   osx:
     homebrew:
-      packages: [homebrew/python/matplotlib]
+      packages: [homebrew/science/matplotlib]
 python-numpy:
   osx:
     homebrew:
-      packages: [homebrew/python/numpy]
-python-scapy:
-  osx:
-    homebrew:
-      packages: [homebrew/python/scapy]
+      packages: [numpy]
 python-scipy:
   osx:
     homebrew:
-      packages: [homebrew/python/scipy]
+      packages: [scipy]
+python-wxtools:
+  osx:
+    homebrew:
+      packages: [wxmac]
+
+# Use Gazebo 8 instead of 7.
+gazebo7:
+  osx:
+    homebrew:
+      packages: [gazebo8]
+libgazebo7-dev:
+  osx:
+    homebrew:
+      packages: [gazebo8]
+
+libqt5-opengl-dev:
+  osx:
+    homebrew:
+      packages: []
+libqt5-opengl:
+  osx:
+    homebrew:
+      packages: []
+libqt5-core:
+  osx:
+    homebrew:
+      packages: []
+python-qt5-bindings-gl:
+  osx:
+    homebrew:
+      packages: []
+python-qt5-bindings-webkit:
+  osx:
+    homebrew:
+      packages: []
+libqt5-gui:
+  osx:
+    homebrew:
+      packages: []
+libqt5-widgets:
+  osx:
+    homebrew:
+      packages: []
+qtbase5-dev:
+  osx:
+    homebrew:
+      packages: []
+qt5-qmake:
+  osx:
+    homebrew:
+      packages: []
+python-qt5-bindings:
+  osx:
+    homebrew:
+      packages: []
