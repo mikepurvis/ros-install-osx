@@ -137,10 +137,17 @@ do_install()
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init -j8 src ${WS}.rosinstall
 
-  # This patch originates from here: https://github.com/ros/catkin/pull/784
+  # This patch originates from: https://github.com/ros/catkin/pull/784
   if [ -d src/catkin ]; then
     pushd src/catkin/cmake
     curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
+    popd
+  fi
+
+  # This patch originates from: https://github.com/ros-visualization/rviz/pull/1165
+  if [ -d src/rviz ]; then
+    pushd src/rviz
+    curl https://raw.githubusercontent.com/mikepurvis/rviz/21eac2bcc061bb623fd17aa449f6215c493b27f2/CMakeLists.txt > CMakeLists.txt
     popd
   fi
 
@@ -159,7 +166,6 @@ do_install()
   # Parallel build.
   catkin config --install  --install-space ${ROS_INSTALL_DIR} \
     --blacklist opencv3 \
-    --make-args CXXFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0 \
     --cmake-args \
       -DCATKIN_ENABLE_TESTING=1 \
       -DCMAKE_BUILD_TYPE=Release \
