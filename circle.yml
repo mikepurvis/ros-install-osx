@@ -1,0 +1,7 @@
+machine:
+  xcode:
+    version: 8.2
+
+compile:
+  override:
+    - ./install
