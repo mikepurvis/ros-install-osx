@@ -100,6 +100,9 @@ do_install()
   brew install qt5 pyqt5 sip
   brew link qt5 --force
 
+  # Get homebrew's opencv3 from a bottle so that we don't have to build it.
+  brew install opencv3
+
   # Mock out python and pip so that we get the brewed versions when rosdep and other programs call them.
   export PATH=$(pwd)/shim:$PATH
 
@@ -146,7 +149,7 @@ do_install()
   fi
 
   # Parallel build.
-  catkin config --install  --install-space ${ROS_INSTALL_DIR} --cmake-args \
+  catkin config --install  --install-space ${ROS_INSTALL_DIR} --blacklist opencv3 --cmake-args \
     -DCATKIN_ENABLE_TESTING=1 \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_FIND_FRAMEWORK=LAST \
