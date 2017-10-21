@@ -140,7 +140,7 @@ do_install()
   pushd src
     # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
-    wstool remove opencv3
+    wstool remove opencv3 || true
     wstool update -j8
 
     # See: https://github.com/ros/catkin/pull/784
