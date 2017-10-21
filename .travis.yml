@@ -2,8 +2,15 @@ language: generic
 
 matrix:
   include:
+    # See: https://docs.travis-ci.com/user/reference/osx/#OS-X-Version
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode8    # El Capitan (10.11)
+      env: ROS_CONFIGURATION=rviz PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin
+    - os: osx
+      osx_image: xcode8.3  # Sierra (10.12)
+      env: ROS_CONFIGURATION=rviz PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin
+    - os: osx
+      osx_image: xcode9.1  # Sierra (10.12)
       env: ROS_CONFIGURATION=rviz PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin:/opt/X11/bin
 
 script:
