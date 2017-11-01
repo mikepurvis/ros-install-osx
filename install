@@ -159,6 +159,20 @@ do_install()
       curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/stereo_image_proc/CMakeLists.txt > image_pipeline/stereo_image_proc/CMakeLists.txt
     fi
 
+    # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/303
+    if [ -d image_proc ]; then
+      pushd image_proc
+        curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/image_proc/CMakeLists.txt > CMakeLists.txt
+      popd
+    fi
+
+    # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/303
+    if [ -d stereo_image_proc ]; then
+      pushd stereo_image_proc
+        curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/stereo_image_proc/CMakeLists.txt > CMakeLists.txt
+      popd
+    fi
+
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
   popd
