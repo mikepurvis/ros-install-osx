@@ -145,30 +145,18 @@ do_install()
 
     # See: https://github.com/ros/catkin/pull/784
     if [ -d catkin ]; then
-      pushd catkin/cmake
-        curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkinConfig.cmake.in
-      popd
+      curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkin/cmake/catkinConfig.cmake.in
     fi
 
     # Pending release: https://github.com/ros-visualization/rviz/pull/1165
     if [ -d rviz ]; then
-      pushd rviz
-        curl https://raw.githubusercontent.com/mikepurvis/rviz/21eac2bcc061bb623fd17aa449f6215c493b27f2/CMakeLists.txt > CMakeLists.txt
-      popd
+      curl https://raw.githubusercontent.com/mikepurvis/rviz/21eac2bcc061bb623fd17aa449f6215c493b27f2/CMakeLists.txt > rviz/CMakeLists.txt
     fi
 
     # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/303
-    if [ -d image_proc ]; then
-      pushd image_proc
-        curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/image_proc/CMakeLists.txt > CMakeLists.txt
-      popd
-    fi
-
-    # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/303
-    if [ -d stereo_image_proc ]; then
-      pushd stereo_image_proc
-        curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/stereo_image_proc/CMakeLists.txt > CMakeLists.txt
-      popd
+    if [ -d image_pipeline ]; then
+      curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/image_proc/CMakeLists.txt > image_pipeline/image_proc/CMakeLists.txt
+      curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/stereo_image_proc/CMakeLists.txt > image_pipeline/stereo_image_proc/CMakeLists.txt
     fi
 
     # Package dependencies.
