@@ -159,7 +159,7 @@ do_install()
       curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/stereo_image_proc/CMakeLists.txt > image_pipeline/stereo_image_proc/CMakeLists.txt
 
       # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/304
-      curl https://github.com/mbreyer/image_pipeline/blob/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
+      curl https://raw.githubusercontent.com/mbreyer/image_pipeline/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
     fi
 
     # Package dependencies.
