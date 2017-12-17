@@ -112,7 +112,7 @@ sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall 
 
 # Download ROS sources
 rosinstall_generator ${ROS_CONFIGURATION} --rosdistro kinetic --deps > kinetic.rosinstall
-rosinstall_generator geometry2 --rosdistro kinetic --deps > geometry2.rosinstall
+rosinstall_generator geometry2 --rosdistro kinetic --upstream-development > geometry2.rosinstall
 rosinstall_generator class_loader --rosdistro kinetic --upstream-development > class_loader.rosinstall
 rosinstall_generator rospack --rosdistro lunar --upstream-development > rospack.rosinstall
 rosinstall_generator rviz --rosdistro kinetic --upstream-development > rviz.rosinstall
