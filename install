@@ -85,8 +85,8 @@ echo "Installing brew software"
 brew install cmake --HEAD || true
 
 # boost 1.59 is needed since not everything has been updated for 1.65 (also a long compile)
-brew install boost@1.59 --c++11 --with-icu4c
-brew install boost-python@1.59
+brew install boost
+brew install boost-python
 
 # use gazebo8 and ogre1.9 for consistency with rviz
 brew install ogre1.9
@@ -94,7 +94,11 @@ brew install gazebo8 || true
 
 brew install libyaml || true
 brew install qt pyqt || true
-# brew link qt5 --force || true
+brew link qt --force || true
+
+# fix from https://github.com/Homebrew/legacy-homebrew/issues/29938 for qt
+# cmake errors on catkin build
+echo export PATH='/usr/local/opt/qt5/bin:$PATH' >> ~/.bash_profile
 
  # Remove previous workspace if present, create and enter new one.
 WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
@@ -105,7 +109,7 @@ mkdir $WS
 pushd $WS
 
 # Install the ROS infrastructure tools, you may have to run this several times until all python deps are properly installed
-sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
+sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx wxPython
 
 # Download ROS sources
 rosinstall_generator ${ROS_CONFIGURATION} --rosdistro kinetic --deps > kinetic.rosinstall
