@@ -83,3 +83,4 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 	* See [here](https://superuser.com/questions/433746/is-there-a-fix-for-the-too-many-open-files-in-system-error-on-os-x-10-7-1) for details
 * [If running out of pty devices](https://codybonney.com/increase-the-max-number-of-ptys-on-os-x-10-8-3/)
 * image_publisher currently fails. [See this fix](https://github.com/ros-perception/image_pipeline/pull/304)
+* For Gazebo plugins, don't forget to setup `/opt/ros/kinetic/lib` in `GAZEBO_PLUGIN_PATH` and to export it into env

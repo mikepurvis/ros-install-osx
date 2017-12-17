@@ -84,8 +84,7 @@ echo "Installing brew software"
 # fixes some compiling errors (will take awhile to compile)
 brew install cmake --HEAD || true
 
-# boost 1.59 is needed since not everything has been updated for 1.65 (also a long compile)
-brew install boost
+brew install boost --c++11 --with-icu4c
 brew install boost-python
 
 # use gazebo8 and ogre1.9 for consistency with rviz
@@ -135,7 +134,9 @@ wstool merge -ry ../geometry2.rosinstall
 wstool merge -ry ../class_loader.rosinstall
 
 # load gazebo8 support packages
-wstool set gazebo8_ros_pkgs --git https://github.com/osrf/gazebo8_ros_pkgs-release.git -v upstream/2.5.10 -y
+# wstool set gazebo8_ros_pkgs --git https://github.com/osrf/gazebo8_ros_pkgs-release.git -v upstream/2.5.14 -y
+wstool set gazebo_ros_pkgs --git https://github.com/ros-simulation/gazebo_ros_pkgs -v 2.5.14 -y
+
 
 # remove gazebo7 support
 wstool remove gazebo_ros_pkgs/gazebo_ros_pkgs gazebo_ros_pkgs/gazebo_ros gazebo_ros_pkgs/gazebo_plugins gazebo_ros_pkgs/gazebo_msgs gazebo_ros_pkgs/gazebo_dev
