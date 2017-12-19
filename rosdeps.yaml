@@ -43,4 +43,4 @@ python-scipy:
 python-wxtools:
   osx:
     pip:
-      packages: [wxPython]
+      packages: [pip, wxPython]
