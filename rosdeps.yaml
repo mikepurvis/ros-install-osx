@@ -40,3 +40,7 @@ python-scipy:
   osx:
     homebrew:
       packages: [scipy]
+python-wxtools:
+  osx:
+    pip:
+      packages: wxPython
