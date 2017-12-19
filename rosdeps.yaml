@@ -1,7 +1,7 @@
 boost:
   osx:
     homebrew:
-      packages: [boost@1.59, boost-python@1.59]
+      packages: [boost, boost-python]
 ogre:
   osx:
     homebrew:
