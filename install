@@ -92,12 +92,26 @@ brew install ogre1.9
 brew install gazebo8 || true
 
 brew install libyaml || true
-brew install qt pyqt || true
-brew link qt --force || true
+# brew install qt pyqt || true
+# brew link qt --force || true
+brew install qt5 pyqt5 sip
+export CMAKE_PREFIX_PATH=$(brew --prefix qt5)
+
 
 # fix from https://github.com/Homebrew/legacy-homebrew/issues/29938 for qt
 # cmake errors on catkin build
 echo export PATH='/usr/local/opt/qt5/bin:$PATH' >> ~/.bash_profile
+
+# This hack is required to make qt_gui_cpp compile correctly. See https://github.com/mikepurvis/ros-install-osx/pull/84#issuecomment-338209466
+pushd /usr/local/share/sip
+if [ ! -e PyQt5 ]; then
+ln -s Qt5 PyQt5
+fi
+popd
+
+# Get homebrew's opencv3 from a bottle so that we don't have to build it.
+brew install opencv3
+
 
  # Remove previous workspace if present, create and enter new one.
 WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
@@ -108,16 +122,16 @@ mkdir $WS
 pushd $WS
 
 # Install the ROS infrastructure tools, you may have to run this several times until all python deps are properly installed
-sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx wxPython
+sudo -H pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools catkin_pkg bloom empy sphinx
 
 # Download ROS sources
 rosinstall_generator ${ROS_CONFIGURATION} --rosdistro kinetic --deps > kinetic.rosinstall
 rosinstall_generator geometry2 --rosdistro kinetic --upstream-development > geometry2.rosinstall
-rosinstall_generator class_loader --rosdistro kinetic --upstream-development > class_loader.rosinstall
-rosinstall_generator rospack --rosdistro lunar --upstream-development > rospack.rosinstall
+# rosinstall_generator class_loader --rosdistro kinetic --upstream-development > class_loader.rosinstall
+# rosinstall_generator rospack --rosdistro lunar --upstream-development > rospack.rosinstall
 rosinstall_generator rviz --rosdistro kinetic --upstream-development > rviz.rosinstall
-rosinstall_generator gazebo_ros_control --rosdistro kinetic --deps-only --deps --deps-depth 1 --exclude gazebo_dev gazebo_ros > gazebo8_ros_pkgs_deps.rosinstall
-rosinstall_generator realtime_tools ros_control --rosdistro kinetic --deps --deps-depth 1 > extra_deps.rosinstall
+# rosinstall_generator gazebo_ros_control --rosdistro kinetic --deps-only --deps --deps-depth 1 --exclude gazebo_dev gazebo_ros > gazebo8_ros_pkgs_deps.rosinstall
+# rosinstall_generator realtime_tools ros_control --rosdistro kinetic --deps --deps-depth 1 > extra_deps.rosinstall
 
 mkdir src
 pushd src
@@ -130,28 +144,15 @@ wstool merge -ry ../kinetic.rosinstall
 # so that tf2 has tf2_tools
 wstool merge -ry ../geometry2.rosinstall
 
-# fix number of errors on compiling
-wstool merge -ry ../class_loader.rosinstall
-
-# load gazebo8 support packages
-# wstool set gazebo8_ros_pkgs --git https://github.com/osrf/gazebo8_ros_pkgs-release.git -v upstream/2.5.14 -y
+# remove gazebo7 support and add gazebo8
 wstool set gazebo_ros_pkgs --git https://github.com/ros-simulation/gazebo_ros_pkgs -v 2.5.14 -y
-
-
-# remove gazebo7 support
 wstool remove gazebo_ros_pkgs/gazebo_ros_pkgs gazebo_ros_pkgs/gazebo_ros gazebo_ros_pkgs/gazebo_plugins gazebo_ros_pkgs/gazebo_msgs gazebo_ros_pkgs/gazebo_dev
-
-# gazebo8 support packages deps
-wstool merge -ry ../gazebo8_ros_pkgs_deps.rosinstall 
-
-# 
-wstool merge -ry ../rospack.rosinstall 
 
 # need upstream-dev to fix compiling errors
 wstool merge -ry ../rviz.rosinstall 
 
-# some extra missing packages
-wstool merge -ry ../extra_deps.rosinstall 
+# don't need to compile this
+wstool remove opencv3
 
 wstool update -j8
 
@@ -164,14 +165,15 @@ if [ ! -d /etc/ros/rosdep/ ]; then
 fi
 if [ ! -f /etc/ros/rosdep/10-ros-install-osx.list ]; then
 	echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/10-ros-install-osx.list."
-	sudo sh -c "echo 'yaml https://raw.githubusercontent.com/smnogar/ros-install-osx/master/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+	sudo sh -c "echo 'yaml https://raw.githubusercontent.com/smnogar/ros-install-osx/high-sierra/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
 fi
 
 # # Install the necessary ROS dependencies
 # sudo rosdep init
 rosdep update
-rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev" -y
-rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="ppython-qt-bindings-qwt5 libqt5-core libqt5-gui libqt5-opengl libqt5-opengl-dev libqt5-widgets qt5-qmake qtbase5-dev python-imaging python-qt5-bindings python-qt5-bindings-gl python-qt5-bindings-webkit libogre-dev gazebo gazebo7 libgazebo7-dev matplotlib" -y
+rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys="gazebo7 libgazebo7-dev ogre" -y
+rosdep install --from-paths src --ignore-src --rosdistro kinetic --skip-keys="gazebo7 libgazebo7-dev ogre" -y
+
 
 # This patch originates from here: https://github.com/ros/catkin/pull/784
 # this is necessary for python to find dylibs
@@ -188,13 +190,16 @@ ln -s /usr/local/share/sip/Qt5 /usr/local/share/sip/PyQt5
 # brew link --force qt5 && ln -s /usr/local/Cellar/qt5/5.4.0/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.4.0/plugins /usr/local/plugins
 
 
-catkin config --install  --install-space /opt/ros/kinetic --cmake-args \
-    -DCATKIN_ENABLE_TESTING=1 \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DPYTHON_LIBRARY=$(python -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-    -DPYTHON_INCLUDE_DIR=$(python -c "import sys; print sys.prefix")/include/python2.7 \
-    -DCMAKE_FIND_FRAMEWORK=LAST
-catkin build
+catkin config --install \
+--install-space /opt/ros/kinetic \
+--cmake-args \
+  -DCATKIN_ENABLE_TESTING=1 \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_FIND_FRAMEWORK=LAST \
+  -DPYTHON_EXECUTABLE=$(which python2) \
+  -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
+  -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
+catkin build --limit-status-rate 1
 
 
 # Check for SIP if on OSX/macOS 10.11 (El Capitan) or later
