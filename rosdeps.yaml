@@ -1,46 +1,93 @@
-boost:
+# Override the default key to get us Ogre 1.9 instead of 1.7.
+libogre-dev:
   osx:
     homebrew:
-      packages: [boost, boost-python]
-ogre:
-  osx:
-    homebrew:
-      package: [ogre1.9]
-matplotlib:
-  osx:
-    pip:
-      packages: [pip, matplotlib]
-libpcl-all-dev:
-  osx:
-    homebrew: 
-      packages: [pcl]
+      packages: [ogre1.9]
+
+# Use Gazebo 8 instead of 7.
 gazebo:
   osx:
     homebrew:
       packages: [gazebo8]
+gazebo7:
+  osx:
+    homebrew:
+      packages: [gazebo8]
+libgazebo7-dev:
+  osx:
+    homebrew:
+      packages: [gazebo8]
+
+# Don't try to install opencv3
+opencv3:
+  osx:
+    homebrew:
+      packages: []
+
+# Installing all this Python stuff from homebrew instead of pip
+# means we get pre-built bottles and don't have to build it all
+# each time.
 python:
   osx:
     homebrew:
       packages: [python]
     pip:
       packages: [pip, setuptools, nose]
-python-imaging:
+python-matplotlib:
   osx:
-    pip:
-      packages: [pip, Pillow]
+    homebrew:
+      packages: [homebrew/science/matplotlib]
 python-numpy:
   osx:
     homebrew:
       packages: [numpy]
-python-scapy:
-  osx:
-    pip:
-      packages: [pip, scapy]
 python-scipy:
   osx:
     homebrew:
       packages: [scipy]
 python-wxtools:
   osx:
-    pip:
-      packages: [pip, wxPython]
+    homebrew:
+      packages: [wxmac]
+
+# Zero out all the QT5 keys. We'll install it ourselves upfront.
+libqt5-opengl-dev:
+  osx:
+    homebrew:
+      packages: []
+libqt5-opengl:
+  osx:
+    homebrew:
+      packages: []
+libqt5-core:
+  osx:
+    homebrew:
+      packages: []
+python-qt5-bindings-gl:
+  osx:
+    homebrew:
+      packages: []
+python-qt5-bindings-webkit:
+  osx:
+    homebrew:
+      packages: []
+libqt5-gui:
+  osx:
+    homebrew:
+      packages: []
+libqt5-widgets:
+  osx:
+    homebrew:
+      packages: []
+qtbase5-dev:
+  osx:
+    homebrew:
+      packages: []
+qt5-qmake:
+  osx:
+    homebrew:
+      packages: []
+python-qt5-bindings:
+  osx:
+    homebrew:
+      packages: []
