@@ -142,20 +142,9 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
     * Can’t detect correct qt installation
 * Important steps to get kinetic to work (all of these are critical):
     * Make sure using brew python/pip
-    * Use boost@1.59 —c++11 —with-icu4c
-        * Newest version (1.65) does not include tr1 libraries so some packages fail
     * Rviz needs ogre1.9
-    * Follow attached install script
-    * make sure to "brew link qt5 —force”
-* boost 1.65 causes major problems
-    * rviz does not compile with it
-        * this issue is related: https://github.com/osrf/homebrew-simulation/issues/267
 * Gazebo8
-    * Uses Ogre1.9, requires "gazebo8_ros_pkgs-release” to integrate with ROS kinetic
-* Geometry2
-    * Better support for tf2
-* cmake args: 
-    *Use install script
+    * Uses Ogre1.9
 * High Sierra
     * Make sure to set `ROS_MASTER_URI` to the actual machine name
     * Otherwise significant delays exist in running especially python based commands
@@ -176,4 +165,3 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 * For Gazebo plugins, don't forget to setup `/opt/ros/kinetic/lib` in `GAZEBO_PLUGIN_PATH` and to export it into env
 * mavros/mavlink
 	* [workaround to get mavros to compile (endian.h) errors] (https://github.com/mavlink/mavros/issues/851)
-	* libmavconn fails with Boost 1.66, use 1.65.1
