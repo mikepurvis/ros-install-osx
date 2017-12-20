@@ -174,3 +174,6 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 * [If running out of pty devices](https://codybonney.com/increase-the-max-number-of-ptys-on-os-x-10-8-3/)
 * image_publisher currently fails. [See this fix](https://github.com/ros-perception/image_pipeline/pull/304)
 * For Gazebo plugins, don't forget to setup `/opt/ros/kinetic/lib` in `GAZEBO_PLUGIN_PATH` and to export it into env
+* mavros/mavlink
+	* [workaround to get mavros to compile (endian.h) errors] (https://github.com/mavlink/mavros/issues/851)
+	* libmavconn fails with Boost 1.66, use 1.65.1
