@@ -142,10 +142,13 @@ do_install()
     wstool merge file://$(pwd)/../${WS}.rosinstall
     wstool remove opencv3
 
-    # kinetic rospack fails to compile with new versions of boost
-    wstool rm rospack
-    wstool set rospack --git https://github.com/ros/rospack.git
-    wstool update -j8 --delete-changed-uris
+    # fix for old boost version errors
+    if [ "${ROS_DISTRO}" = "kinetic" ]; then
+      wstool rm rospack
+      wstool set rospack --git https://github.com/ros/rospack.git -y
+    fi
+    wstool update -j8
+
 
     # See: https://github.com/ros/catkin/pull/784
     if [ -d catkin ]; then
@@ -164,6 +167,11 @@ do_install()
 
       # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/304
       curl https://raw.githubusercontent.com/mbreyer/image_pipeline/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
+    fi
+
+    # this causes issues for some nodes. See https://github.com/ros/ros_comm/issues/1207
+    if [ -d ros_comm ]; then
+      curl https://raw.githubusercontent.com/ros/ros_comm/2d987bcbb46768168dccdd58f35bdee8b705d52a/tools/rosmaster/src/rosmaster/util.py > ros_comm/rosmaster/src/rosmaster/util.py
     fi
 
     # Package dependencies.
