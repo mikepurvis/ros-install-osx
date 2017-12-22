@@ -171,7 +171,7 @@ do_install()
 
     # this causes issues for some nodes. See https://github.com/ros/ros_comm/issues/1207
     if [ -d ros_comm ]; then
-      curl https://raw.githubusercontent.com/ros/ros_comm/2d987bcbb46768168dccdd58f35bdee8b705d52a/tools/rosmaster/src/rosmaster/util.py > ros_comm/rosmaster/src/rosmaster/util.py
+      curl https://raw.githubusercontent.com/ros/ros_comm/d727416e243b0ae0757754d540648f01b13d990a/tools/rosmaster/src/rosmaster/util.py > ros_comm/rosmaster/src/rosmaster/util.py
     fi
 
     # Package dependencies.
