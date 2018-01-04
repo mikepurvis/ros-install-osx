@@ -33,6 +33,11 @@ geographiclib-tools:
     homebrew:
       packages: []
 
+# ignore joystick drivers
+joy:
+  osx:
+    homebrew:
+      packages: []
 
 # Installing all this Python stuff from homebrew instead of pip
 # means we get pre-built bottles and don't have to build it all

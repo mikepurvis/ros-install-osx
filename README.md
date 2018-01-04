@@ -157,10 +157,11 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 	* `ulimit -n 4096`
 	* See [here](https://superuser.com/questions/433746/is-there-a-fix-for-the-too-many-open-files-in-system-error-on-os-x-10-7-1) for details
 	* or
-	* `sudo sysctl -w kern.maxfiles=67584`
-	* `sudo sysctl -w kern.maxfilesperproc=65536    # (67584 - 2048)`
+	* `sudo sysctl -w kern.maxfiles=99999`
+	* `sudo sysctl -w kern.maxfilesperproc=99999`
 	* `ulimit -n 65536`
 * [If running out of pty devices](https://codybonney.com/increase-the-max-number-of-ptys-on-os-x-10-8-3/)
+	* `sudo sysctl -w kern.tty.ptmx_max=999`
 * image_publisher currently fails. [See this fix](https://github.com/ros-perception/image_pipeline/pull/304)
 * For Gazebo plugins, don't forget to setup `/opt/ros/kinetic/lib` in `GAZEBO_PLUGIN_PATH` and to export it into env
 * mavros/mavlink
