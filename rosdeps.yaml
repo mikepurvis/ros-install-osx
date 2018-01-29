@@ -31,8 +31,8 @@ python:
       packages: [pip, setuptools, nose]
 python-matplotlib:
   osx:
-    homebrew:
-      packages: [homebrew/science/matplotlib]
+    pip:
+      packages: [matplotlib]
 python-numpy:
   osx:
     homebrew:
