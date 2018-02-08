@@ -89,9 +89,6 @@ do_install()
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
 
-  # Homebrew science gives us vtk and PCL, among other things.
-  brew tap homebrew/science
-
   # ROS infrastructure tools
   brew install libyaml || true
   pip2 install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
