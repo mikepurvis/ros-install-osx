@@ -51,8 +51,8 @@ python:
       packages: [pip, setuptools, nose]
 python-matplotlib:
   osx:
-    homebrew:
-      packages: [homebrew/science/matplotlib]
+    pip:
+      packages: [matplotlib]
 python-numpy:
   osx:
     homebrew:
@@ -107,3 +107,41 @@ python-qt5-bindings:
   osx:
     homebrew:
       packages: []
+google-mock:
+  osx:
+    homebrew:
+      pacakges: []
+gtest: 
+  osx:
+    homebrew:
+      packages: []
+
+python:
+  osx:
+    homebrew:
+      packages: [python@2]
+
+sdl:
+  osx:
+    homebrew:
+      packages: [sdl]
+
+ompl:
+  osx:
+    homebrew:
+      packages: [ompl]
+
+bfl:
+  osx:
+    homebrew:
+      packages: []
+
+fcl:
+  osx:
+    homebrew:
+      packages: [fcl]
+
+libfcl-dev:
+  osx:
+    homebrew:
+      packages: [fcl]

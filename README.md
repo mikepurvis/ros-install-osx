@@ -1,6 +1,10 @@
 ros-install-osx   [![Build Status](https://travis-ci.org/mikepurvis/ros-install-osx.svg?branch=master)](https://travis-ci.org/mikepurvis/ros-install-osx)
 ===============
 
+**Note: This should work as of 7/11/18**
+
+* This commonly breaks depending on what gets pushed over brew and whether the corresponding packages update deprecated code.
+
 This repo aims to maintain a usable, scripted, up-to-date installation procedure for
 [ROS](http://ros.org), currently Lunar. The intent is that the `install` script may
 be executed on a El Capitan or newer machine and produce a working desktop_full
@@ -135,34 +139,86 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 
 * It is basically impossible to get indigo to work on macOS sierra
     * This has to do with home-brew dropping qt4 support: https://github.com/mikepurvis/ros-install-osx/issues/63
+
 * Could also install indigo on snapdragon, but would take a VERY long time to install
+
 * rosdep —skip-keys command is useful for resolving dependencies
     * rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys geographiclib --skip-keys geographiclib-tools
+
 * Indigo still doesn’t work using qt@4
     * Can’t detect correct qt installation
+
 * Important steps to get kinetic to work (all of these are critical):
     * Make sure using brew python/pip
     * Rviz needs ogre1.9
+
 * Gazebo8
     * Uses Ogre1.9
+
 * High Sierra
     * Make sure to set `ROS_MASTER_URI` to the actual machine name
     * Otherwise significant delays exist in running especially python based commands
+
 * If having QT errors compiling look at the end of this thread:
     * https://github.com/Homebrew/legacy-homebrew/issues/29938
     * Basically add path
+
 * Command for updating pip if getting weird python errors
     * pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+
 * If you start getting weird errors with accessing too many files, try:
-	* `ulimit -n 4096`
-	* See [here](https://superuser.com/questions/433746/is-there-a-fix-for-the-too-many-open-files-in-system-error-on-os-x-10-7-1) for details
-	* or
-	* `sudo sysctl -w kern.maxfiles=99999`
-	* `sudo sysctl -w kern.maxfilesperproc=99999`
-	* `ulimit -n 65536`
+  * `ulimit -n 4096`
+  * See [here](https://superuser.com/questions/433746/is-there-a-fix-for-the-too-many-open-files-in-system-error-on-os-x-10-7-1) for details
+  * or
+  * `sudo sysctl -w kern.maxfiles=99999`
+  * `sudo sysctl -w kern.maxfilesperproc=99999`
+  * `ulimit -n 65536`
+
 * [If running out of pty devices](https://codybonney.com/increase-the-max-number-of-ptys-on-os-x-10-8-3/)
-	* `sudo sysctl -w kern.tty.ptmx_max=999`
+  * `sudo sysctl -w kern.tty.ptmx_max=999`
+
 * image_publisher currently fails. [See this fix](https://github.com/ros-perception/image_pipeline/pull/304)
+
 * For Gazebo plugins, don't forget to setup `/opt/ros/kinetic/lib` in `GAZEBO_PLUGIN_PATH` and to export it into env
+
 * mavros/mavlink
-	* [workaround to get mavros to compile (endian.h) errors] (https://github.com/mavlink/mavros/issues/851)
+  * [workaround to get mavros to compile (endian.h) errors] (https://github.com/mavlink/mavros/issues/851)
+
+* If errors are encountered such as:
+
+    ```
+    Errors     << qt_gui_cpp:cmake /Users/steve/Documents_local/temp/kinetic/logs/qt_gui_cpp/build.cmake.000.log                        
+    CMake Error at /Users/steve/Documents/ARL/Snapdragon/ros-install-osx/kinetic_desktop_full_ws/src/qt_gui_core/qt_gui_cpp/src/qt_gui_cpp/CMakeLists.txt:3 (find_package):
+      By not providing "FindQt5Widgets.cmake" in CMAKE_MODULE_PATH this project
+      has asked CMake to find a package configuration file provided by
+      "Qt5Widgets", but CMake did not find one.
+    
+      Could not find a package configuration file provided by "Qt5Widgets" with
+      any of the following names:
+    
+        Qt5WidgetsConfig.cmake
+        qt5widgets-config.cmake
+    
+      Add the installation prefix of "Qt5Widgets" to CMAKE_PREFIX_PATH or set
+      "Qt5Widgets_DIR" to a directory containing one of the above files.  If
+      "Qt5Widgets" provides a separate development package or SDK, be sure it has
+      been installed.
+    ```
+
+    * It means qt or pyqt are not correctly installed or in the path. Try the various relevant lines in the installation script such as:
+
+      * 
+
+        ```
+        pushd /usr/local/share/sip
+          if [ ! -e PyQt5 ]; then
+            ln -s Qt5 PyQt5
+          fi
+          popd
+        ```
+
+      * `export PATH=$(pwd)/shim:$PATH`
+
+      * `brew link qt --force `
+
+      * `export PATH="/usr/local/opt/qt/bin:$PATH" `
