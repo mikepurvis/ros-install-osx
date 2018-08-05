@@ -4,18 +4,28 @@ libogre-dev:
     homebrew:
       packages: [ogre1.9]
 
-# Use Gazebo 8 instead of 7.
-gazebo7:
+# Use Gazebo 9.
+gazebo9:
   osx:
     homebrew:
-      packages: [gazebo8]
-libgazebo7-dev:
+      packages: [gazebo9]
+libgazebo9-dev:
   osx:
     homebrew:
-      packages: [gazebo8]
+      packages: [gazebo9]
 
+libgpgme-dev:
+  osx:
+    homebrew:
+      packages: [gpgme]
 # Don't try to install opencv3
 opencv3:
+  osx:
+    homebrew:
+      packages: []
+
+# Don't try to install google-mock
+google-mock:
   osx:
     homebrew:
       packages: []
@@ -37,6 +47,10 @@ python-numpy:
   osx:
     homebrew:
       packages: [numpy]
+python-gnupg:
+  osx:
+    pip:
+      packages: [python-gnupg]
 python-scipy:
   osx:
     homebrew:
