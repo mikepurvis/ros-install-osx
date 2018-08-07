@@ -133,7 +133,7 @@ do_install()
   if [ -d "$WS" ]; then
     rm -rf "$WS"
   fi
-  mkdir -p $WS
+  mkdir $WS
   cd $WS
 
   # Standard source install
