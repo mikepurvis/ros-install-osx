@@ -140,25 +140,23 @@ do_install()
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
   pushd src
-    # Avoid downloading opencv3; we already installed it from homebrew.
-    wstool merge file://$(pwd)/../${WS}.rosinstall
-    #wstool remove opencv3
-    wstool update -j8
-
+  
+    # Pending release https://github.com/ros/bond_core/pull/37
     if [ -d bond_core ]; then
-      curl curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
+      curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
     fi
 
-    # https://github.com/ros-perception/vision_opencv/pull/225
+    # Pending merge and release https://github.com/ros-perception/vision_opencv/pull/225
     if [ -d vision_opencv ]; then
       curl https://raw.githubusercontent.com/meyerj/vision_opencv/9a9ad348abdfed010c70604cd964786f22220b30/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
     fi
 
-    # https://github.com/ros-perception/image_common/pull/82
+    # Pending merge and release https://github.com/ros-perception/image_common/pull/82
     if [ -d image_common ]; then
       curl https://raw.githubusercontent.com/meyerj/image_common/51be08ba5dc352597a2ad5baabb7e92c6baa2634/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
     fi
 
+    # Pending release https://github.com/ros/actionlib/pull/105
     if [ -d actionlib ]; then
       curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/src/connection_monitor.cpp > actionlib/src/connection_monitor.cpp
       curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/include/actionlib/destruction_guard.h > actionlib/include/actionlib/destruction_guard.h
@@ -166,6 +164,7 @@ do_install()
       curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/include/actionlib/client/simple_action_client.h > actionlib/include/actionlib/client/simple_action_client.h
     fi
 
+    # Pending release https://github.com/ros-perception/laser_assembler/pull/16
     if [ -d laser_assembler ]; then
       curl https://raw.githubusercontent.com/ros-perception/laser_assembler/5c504c05078a684746860efb9db433f73c896d32/test/test_assembler.cpp > laser_assembler/test/test_assembler.cpp
     fi
@@ -182,7 +181,6 @@ do_install()
     sudo mkdir -p ${ROS_INSTALL_DIR}
     sudo chown $USER ${ROS_INSTALL_DIR}
   fi
-
 
   # Parallel build.
   catkin config --install \
