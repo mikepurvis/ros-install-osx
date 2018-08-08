@@ -146,12 +146,12 @@ do_install()
       curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
     fi
 
-    # Pending merge and release https://github.com/ros-perception/vision_opencv/pull/225
+    # Pending merge and release https://github.com/ros-perception/vision_opencv/pull/239
     if [ -d vision_opencv ]; then
       curl https://raw.githubusercontent.com/meyerj/vision_opencv/9a9ad348abdfed010c70604cd964786f22220b30/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
     fi
 
-    # Pending merge and release https://github.com/ros-perception/image_common/pull/82
+    # Pending merge and release https://github.com/ros-perception/image_common/pull/85
     if [ -d image_common ]; then
       curl https://raw.githubusercontent.com/meyerj/image_common/51be08ba5dc352597a2ad5baabb7e92c6baa2634/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
     fi
