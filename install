@@ -90,7 +90,7 @@ do_install()
   brew tap osrf/simulation
 
   # ROS infrastructure tools
-  brew install libyaml || true
+  brew install libyaml
   pip2 install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
@@ -118,7 +118,7 @@ do_install()
     sudo rosdep init
   fi
   if [ ! -f /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list ]; then
-    echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    echo "This sudo prompt adds the brewed python rosdep yaml to /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
     sudo sh -c "echo 'yaml file://$(pwd)/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
@@ -127,6 +127,7 @@ do_install()
   # based on https://stackoverflow.com/questions/45693149/openssl-aes-h-file-not-found-on-mac
   cd /usr/local/include
   ln -fs ../opt/openssl/include/openssl .
+  cd -
 
   # Remove previous workspace if present, create and enter new one.
   WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
@@ -140,7 +141,9 @@ do_install()
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
   pushd src
-  
+    wstool merge file://$(pwd)/../${WS}.rosinstall
+    wstool update -j8
+
     # Pending release https://github.com/ros/bond_core/pull/37
     if [ -d bond_core ]; then
       curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
