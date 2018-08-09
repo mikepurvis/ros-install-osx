@@ -172,6 +172,11 @@ do_install()
       curl https://raw.githubusercontent.com/ros-perception/laser_assembler/5c504c05078a684746860efb9db433f73c896d32/test/test_assembler.cpp > laser_assembler/test/test_assembler.cpp
     fi
 
+    # temporary fix for catkin_pkg issue with unicode characters reported in https://github.com/ros-infrastructure/catkin_pkg/issues/234
+    if [ -d roslisp ]; then
+      curl https://raw.githubusercontent.com/berkaydeniz/roslisp/03826c6dd92fd348ffd7a74de1f361c13a92346c/manifest.xml > roslisp/manifest.xml
+    fi
+
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
   popd
@@ -216,5 +221,4 @@ do_install()
     fi
   fi
 }
-
 do_install
