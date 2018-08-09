@@ -22,7 +22,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-ROS_DISTRO=${ROS_DISTRO:-lunar}
+ROS_DISTRO=${ROS_DISTRO:-melodic}
 ROS_CONFIGURATION=${ROS_CONFIGURATION:-desktop_full}
 ROS_EXTRA_PACKAGES=${ROS_EXTRA_PACKAGES:-}
 ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
@@ -78,7 +78,7 @@ do_install()
 
   # Brewed Python
   if [ ! "$(which python2)" = "/usr/local/bin/python2" ]; then
-    brew install python
+    brew install python@2
     mkdir -p ~/Library/Python/2.7/lib/python/site-packages
     echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
   fi
@@ -90,7 +90,7 @@ do_install()
   brew tap osrf/simulation
 
   # ROS infrastructure tools
-  brew install libyaml || true
+  brew install libyaml
   pip2 install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
@@ -118,10 +118,16 @@ do_install()
     sudo rosdep init
   fi
   if [ ! -f /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list ]; then
-    echo "This sudo prompt adds the the brewed python rosdep yaml to /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
+    echo "This sudo prompt adds the brewed python rosdep yaml to /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
     sudo sh -c "echo 'yaml file://$(pwd)/rosdeps.yaml osx' > /etc/ros/rosdep/sources.list.d/10-ros-install-osx.list"
   fi
   rosdep update
+
+  # set up the symlink for openssl
+  # based on https://stackoverflow.com/questions/45693149/openssl-aes-h-file-not-found-on-mac
+  cd /usr/local/include
+  ln -fs ../opt/openssl/include/openssl .
+  cd -
 
   # Remove previous workspace if present, create and enter new one.
   WS=${ROS_DISTRO}_${ROS_CONFIGURATION}_ws
@@ -135,28 +141,40 @@ do_install()
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
   pushd src
-    # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
-    wstool remove opencv3
     wstool update -j8
 
-    # See: https://github.com/ros/catkin/pull/784
-    if [ -d catkin ]; then
-      curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkin/cmake/catkinConfig.cmake.in
+    # Pending release https://github.com/ros/bond_core/pull/37
+    if [ -d bond_core ]; then
+      curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
     fi
 
-    # Pending release: https://github.com/ros-visualization/rviz/pull/1165
-    if [ -d rviz ]; then
-      curl https://raw.githubusercontent.com/mikepurvis/rviz/21eac2bcc061bb623fd17aa449f6215c493b27f2/CMakeLists.txt > rviz/CMakeLists.txt
+    # Pending merge and release https://github.com/ros-perception/vision_opencv/pull/239
+    if [ -d vision_opencv ]; then
+      curl https://raw.githubusercontent.com/meyerj/vision_opencv/9a9ad348abdfed010c70604cd964786f22220b30/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
     fi
 
-    if [ -d image_pipeline ]; then
-      # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/303
-      curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/image_proc/CMakeLists.txt > image_pipeline/image_proc/CMakeLists.txt
-      curl https://raw.githubusercontent.com/mikepurvis/image_pipeline/d308d00aed5b66961f9e13ab7a50660a24be7c7f/stereo_image_proc/CMakeLists.txt > image_pipeline/stereo_image_proc/CMakeLists.txt
+    # Pending merge and release https://github.com/ros-perception/image_common/pull/85
+    if [ -d image_common ]; then
+      curl https://raw.githubusercontent.com/meyerj/image_common/51be08ba5dc352597a2ad5baabb7e92c6baa2634/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
+    fi
 
-      # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/304
-      curl https://raw.githubusercontent.com/mbreyer/image_pipeline/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
+    # Pending release https://github.com/ros/actionlib/pull/105
+    if [ -d actionlib ]; then
+      curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/src/connection_monitor.cpp > actionlib/src/connection_monitor.cpp
+      curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/include/actionlib/destruction_guard.h > actionlib/include/actionlib/destruction_guard.h
+      curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/include/actionlib/server/simple_action_server_imp.h > actionlib/include/actionlib/server/simple_action_server_imp.h
+      curl https://raw.githubusercontent.com/ros/actionlib/e30896c84209dd9b605b91f34087aefc1de91d57/include/actionlib/client/simple_action_client.h > actionlib/include/actionlib/client/simple_action_client.h
+    fi
+
+    # Pending release https://github.com/ros-perception/laser_assembler/pull/16
+    if [ -d laser_assembler ]; then
+      curl https://raw.githubusercontent.com/ros-perception/laser_assembler/5c504c05078a684746860efb9db433f73c896d32/test/test_assembler.cpp > laser_assembler/test/test_assembler.cpp
+    fi
+
+    # temporary fix for catkin_pkg issue with unicode characters reported in https://github.com/ros-infrastructure/catkin_pkg/issues/234
+    if [ -d roslisp ]; then
+      curl https://raw.githubusercontent.com/berkaydeniz/roslisp/03826c6dd92fd348ffd7a74de1f361c13a92346c/manifest.xml > roslisp/manifest.xml
     fi
 
     # Package dependencies.
@@ -181,7 +199,8 @@ do_install()
       -DCMAKE_FIND_FRAMEWORK=LAST \
       -DPYTHON_EXECUTABLE=$(which python2) \
       -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-      -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
+      -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7 \
+      -DCMAKE_CXX_STANDARD=14
   catkin build --limit-status-rate 1
 
   echo "Installation successful, please source the ROS workspace:"
@@ -202,5 +221,4 @@ do_install()
     fi
   fi
 }
-
 do_install
