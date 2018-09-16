@@ -133,6 +133,8 @@ The installation script should have detected that and *suggested* a quick fix.
 Please refer to the very last section of 
 [`install`](https://github.com/mikepurvis/ros-install-osx/blob/master/install)
 
+**It is strongly recommended to disable SIP**
+
 #### Assorted notes
 
 Below are assorted tips that I have compiled for fixing any issues that can crop up.
@@ -222,3 +224,13 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
       * `brew link qt --force `
 
       * `export PATH="/usr/local/opt/qt/bin:$PATH" `
+
+* Python Crypto errors
+
+    * ```
+        pip uninstall Crypto
+        pip uninstall pycrypto
+        pip install pycrypto
+        ```
+
+        

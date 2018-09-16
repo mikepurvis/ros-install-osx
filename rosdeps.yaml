@@ -115,33 +115,52 @@ gtest:
   osx:
     homebrew:
       packages: []
-
 python:
   osx:
     homebrew:
       packages: [python@2]
-
 sdl:
   osx:
     homebrew:
       packages: [sdl]
-
 ompl:
   osx:
     homebrew:
       packages: [ompl]
-
 bfl:
   osx:
     homebrew:
       packages: []
-
 fcl:
   osx:
     homebrew:
       packages: [fcl]
-
 libfcl-dev:
   osx:
     homebrew:
       packages: [fcl]
+python-gnupg:
+  osx:
+    pip: [python-gnupg]
+libgazebo9-dev:
+  osx:
+    homebrew: [gazebo9]
+gazebo9:
+  osx:
+    homebrew: [gazebo9]
+libgpgme-dev:
+  osx:
+    homebrew: [gpgme]
+
+
+
+
+
+
+
+
+
+
+
+
+

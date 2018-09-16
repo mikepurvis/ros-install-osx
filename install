@@ -22,11 +22,10 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-ROS_DISTRO=${ROS_DISTRO:-kinetic}
+ROS_DISTRO=${ROS_DISTRO:-melodic}
 ROS_CONFIGURATION=${ROS_CONFIGURATION:-desktop_full}
 ROS_EXTRA_PACKAGES=${ROS_EXTRA_PACKAGES:-}
 ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
-CUSTOM_BUILD_DIR=${CUSTOM_BUILD_DIR:.}
 
 do_install()
 {
@@ -92,7 +91,7 @@ do_install()
 
   # ROS infrastructure tools
   brew install libyaml || true
-  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl
+  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl osrf_pycommon
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
@@ -138,31 +137,58 @@ do_install()
   pushd src
     # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
-    wstool remove opencv3
 
     # fix for old boost version errors
     if [ "${ROS_DISTRO}" = "kinetic" ]; then
       wstool rm rospack
       wstool set rospack --git https://github.com/ros/rospack.git -y
+
+      wstool rm ros_comm/*
+      wstool set ros_comm --git https://github.com/ros/ros_comm.git -y
+
+      wstool rm roscpp_core/*
+      wstool set roscpp_core --git https://github.com/ros/roscpp_core.git -y
+
+      wstool rm geometric_shapes
+      wstool set geometric_shapes --git https://github.com/ros-planning/geometric_shapes.git -y
+
+       # patch in latest python_qt_binding
+      wstool remove python_qt_binding
+      wstool set python_qt_binding --git https://github.com/ros-visualization/python_qt_binding.git
+
+      wstool remove opencv3
+
+      wstool update -j8
+
+      # patch rostime for boost 1.67, obsolete once https://github.com/ros/roscpp_core/pull/79 is integrated in main branch
+      curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/duration.h > roscpp_core/rostime/include/ros/impl/duration.h
+      curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/time.h > roscpp_core/rostime/include/ros/impl/time.h
+
+      # add custom install for image_common/camera_calibration_parsers
+      curl https://raw.githubusercontent.com/smnogar/image_common/51969339f1fd7034952fa8c3d18b88fb015153c5/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
+
+      # fix boost_python errors for cv_bridge
+      curl https://raw.githubusercontent.com/berkaydeniz/vision_opencv/9a7be3e4aabd69cdb5d1dc79e0bbe13f421ccba3/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
+
+      # patch tf2 (rosconsole errors are only fixed for melotic geometry 2 release)
+      curl https://raw.githubusercontent.com/ros/geometry2/0173a538f89c66e2783dc67ee3609660625e16b4/tf2/src/buffer_core.cpp > geometry2/tf2/src/buffer_core.cpp
+
+      # See: https://github.com/ros/catkin/pull/784
+      if [ -d catkin ]; then
+        curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkin/cmake/catkinConfig.cmake.in
+      fi
+
+      if [ -d image_pipeline ]; then
+        # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/304
+        curl https://raw.githubusercontent.com/mbreyer/image_pipeline/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
+      fi
+
     fi
+
     wstool update -j8
-
-    # patch in latest python_qt_binding
-    wstool remove python_qt_binding
-    wstool set python_qt_binding --git https://github.com/ros-visualization/python_qt_binding.git
-
-    # patch rostime for boost 1.67, obsolete once https://github.com/ros/roscpp_core/pull/79 is integrated in main branch
-    curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/duration.h > roscpp_core/rostime/include/ros/impl/duration.h
-    curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/time.h > roscpp_core/rostime/include/ros/impl/time.h
 
     # fix boncpp (Fixed in commit 1240bce but not released yet)
     curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
-
-    # add custom install for image_common/camera_calibration_parsers
-    curl https://raw.githubusercontent.com/smnogar/image_common/51969339f1fd7034952fa8c3d18b88fb015153c5/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
-
-    # fix boost_python errors for cv_bridge
-    curl https://raw.githubusercontent.com/berkaydeniz/vision_opencv/9a7be3e4aabd69cdb5d1dc79e0bbe13f421ccba3/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
 
     # add custom install for actionlib
     curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/include/actionlib/client/simple_action_client.h > actionlib/include/actionlib/client/simple_action_client.h
@@ -170,22 +196,19 @@ do_install()
     curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/include/actionlib/server/simple_action_server_imp.h > actionlib/include/actionlib/server/simple_action_server_imp.h
     curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/src/connection_monitor.cpp > actionlib/src/connection_monitor.cpp 
 
-    # patch tf2 (rosconsole errors are only fixed for melotic geometry 2 release)
-    curl https://raw.githubusercontent.com/ros/geometry2/0173a538f89c66e2783dc67ee3609660625e16b4/tf2/src/buffer_core.cpp > geometry2/tf2/src/buffer_core.cpp
+    # fix boost errors in laser_assembler
+    curl https://raw.githubusercontent.com/ros-perception/laser_assembler/5c504c05078a684746860efb9db433f73c896d32/test/test_assembler.cpp > laser_assembler/test/test_assembler.cpp
 
-    # See: https://github.com/ros/catkin/pull/784
-    if [ -d catkin ]; then
-      curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkin/cmake/catkinConfig.cmake.in
-    fi
-
-    if [ -d image_pipeline ]; then
-      # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/304
-      curl https://raw.githubusercontent.com/mbreyer/image_pipeline/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
+    # make symnbolic link to correct header locaiton for rosbag_storage errors
+    if [ ! -d /usr/local/include/openssl ]; then
+      ln -s /usr/local/opt/openssl/include/* /usr/local/include/
     fi
 
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
   popd
+
+
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
@@ -199,17 +222,14 @@ do_install()
   # Parallel build.
   catkin config --install \
     --install-space ${ROS_INSTALL_DIR} \
-    --log-space ${CUSTOM_BUILD_DIR}/logs
-    --build-space ${CUSTOM_BUILD_DIR}/build
-    --devel-space ${CUSTOM_BUILD_DIR}/devel
     --cmake-args \
-      -DCATKIN_ENABLE_TESTING=0 \
+      -DCMAKE_CXX_STANDARD=14
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
       -DPYTHON_EXECUTABLE=$(which python2) \
       -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
       -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
-  catkin build --limit-status-rate 1
+  catkin build
 
   echo "Installation successful, please source the ROS workspace:"
   echo
