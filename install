@@ -143,10 +143,10 @@ do_install()
       wstool rm rospack
       wstool set rospack --git https://github.com/ros/rospack.git -y
 
-      wstool rm ros_comm/*
-      wstool set ros_comm --git https://github.com/ros/ros_comm.git -y
+      # wstool rm ros_comm/xmlrpcpp ros_comm/topic_tools ros_comm/roswtf ros_comm/rostopic ros_comm/rostest ros_comm/rosservice ros_comm/rospy ros_comm/rosparam ros_comm/rosout ros_comm/rosnode ros_comm/rosmsg ros_comm/rosmaster ros_comm/roslz4 ros_comm/roslaunch ros_comm/rosgraph ros_comm/roscpp ros_comm/rosconsole ros_comm/rosbag_storage ros_comm/rosbag ros_comm/ros_comm ros_comm/message_filters
+      # wstool set ros_comm --git https://github.com/ros/ros_comm.git -y
 
-      wstool rm roscpp_core/*
+      wstool rm roscpp_core/rostime roscpp_core/roscpp_traits roscpp_core/roscpp_serialization roscpp_core/roscpp_core roscpp_core/cpp_common
       wstool set roscpp_core --git https://github.com/ros/roscpp_core.git -y
 
       wstool rm geometric_shapes
@@ -154,11 +154,14 @@ do_install()
 
        # patch in latest python_qt_binding
       wstool remove python_qt_binding
-      wstool set python_qt_binding --git https://github.com/ros-visualization/python_qt_binding.git
+      wstool set python_qt_binding --git https://github.com/ros-visualization/python_qt_binding.git -y
 
       wstool remove opencv3
 
       wstool update -j8
+
+      # fix C++11 strings (https://github.com/rtv/Stage/pull/62)
+      curl https://raw.githubusercontent.com/rtv/Stage/c223a1af47e3dc1d66cc281e894c351e26d63328/libstage/stage.hh > stage/libstage/stage.hh
 
       # patch rostime for boost 1.67, obsolete once https://github.com/ros/roscpp_core/pull/79 is integrated in main branch
       curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/duration.h > roscpp_core/rostime/include/ros/impl/duration.h
@@ -223,7 +226,7 @@ do_install()
   catkin config --install \
     --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
-      -DCMAKE_CXX_STANDARD=14
+      -DCMAKE_CXX_STANDARD=14 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
       -DPYTHON_EXECUTABLE=$(which python2) \
