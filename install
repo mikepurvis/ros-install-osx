@@ -77,11 +77,11 @@ do_install()
   fi
 
   # Brewed Python
-  # if [ ! "$(which python2)" = "/usr/local/bin/python2" ]; then
-  #   brew install python@2
-  #   mkdir -p ~/Library/Python/2.7/lib/python/site-packages
-  #   echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
-  # fi
+  if [ ! "$(which python2)" = "/usr/local/bin/python2" ]; then
+    brew install python@2
+    mkdir -p ~/Library/Python/2.7/lib/python/site-packages
+    echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
+  fi
 
   # Gives us console_bridge, urdfdom, and gtest.
   brew tap ros/deps
@@ -167,12 +167,6 @@ do_install()
       curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/duration.h > roscpp_core/rostime/include/ros/impl/duration.h
       curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/time.h > roscpp_core/rostime/include/ros/impl/time.h
 
-      # add custom install for image_common/camera_calibration_parsers
-      curl https://raw.githubusercontent.com/smnogar/image_common/51969339f1fd7034952fa8c3d18b88fb015153c5/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
-
-      # fix boost_python errors for cv_bridge
-      curl https://raw.githubusercontent.com/berkaydeniz/vision_opencv/9a7be3e4aabd69cdb5d1dc79e0bbe13f421ccba3/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
-
       # patch tf2 (rosconsole errors are only fixed for melotic geometry 2 release)
       curl https://raw.githubusercontent.com/ros/geometry2/0173a538f89c66e2783dc67ee3609660625e16b4/tf2/src/buffer_core.cpp > geometry2/tf2/src/buffer_core.cpp
 
@@ -190,6 +184,9 @@ do_install()
 
     wstool update -j8
 
+    # add custom install for image_common/camera_calibration_parsers
+    curl https://raw.githubusercontent.com/smnogar/image_common/51969339f1fd7034952fa8c3d18b88fb015153c5/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
+
     # fix boncpp (Fixed in commit 1240bce but not released yet)
     curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
 
@@ -206,6 +203,9 @@ do_install()
     if [ ! -d /usr/local/include/openssl ]; then
       ln -s /usr/local/opt/openssl/include/* /usr/local/include/
     fi
+
+    # fix boost_python errors for cv_bridge
+    curl https://raw.githubusercontent.com/berkaydeniz/vision_opencv/9a7be3e4aabd69cdb5d1dc79e0bbe13f421ccba3/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
 
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
