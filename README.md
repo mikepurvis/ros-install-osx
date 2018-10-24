@@ -140,14 +140,17 @@ Please refer to the very last section of
 Below are assorted tips that I have compiled for fixing any issues that can crop up.
 
 * It is basically impossible to get indigo to work on macOS sierra
+
     * This has to do with home-brew dropping qt4 support: https://github.com/mikepurvis/ros-install-osx/issues/63
 
 * Could also install indigo on snapdragon, but would take a VERY long time to install
 
 * rosdep —skip-keys command is useful for resolving dependencies
+
     * rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys geographiclib --skip-keys geographiclib-tools
 
 * Indigo still doesn’t work using qt@4
+
     * Can’t detect correct qt installation
 
 * Important steps to get kinetic to work (all of these are critical):
@@ -155,6 +158,7 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
     * Rviz needs ogre1.9
 
 * Gazebo8
+
     * Uses Ogre1.9
 
 * High Sierra
@@ -166,6 +170,7 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
     * Basically add path
 
 * Command for updating pip if getting weird python errors
+
     * pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
 
 * If you start getting weird errors with accessing too many files, try:
@@ -177,6 +182,7 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
   * `ulimit -n 65536`
 
 * [If running out of pty devices](https://codybonney.com/increase-the-max-number-of-ptys-on-os-x-10-8-3/)
+
   * `sudo sysctl -w kern.tty.ptmx_max=999`
 
 * image_publisher currently fails. [See this fix](https://github.com/ros-perception/image_pipeline/pull/304)
@@ -184,6 +190,7 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 * For Gazebo plugins, don't forget to setup `/opt/ros/kinetic/lib` in `GAZEBO_PLUGIN_PATH` and to export it into env
 
 * mavros/mavlink
+
   * [workaround to get mavros to compile (endian.h) errors] (https://github.com/mavlink/mavros/issues/851)
 
 * If errors are encountered such as:
@@ -233,4 +240,10 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
         pip install pycrypto
         ```
 
-        
+* If having issues with packages not finding terminal_color, you need to up catkin_pkg_modules
+
+	```bash
+	sudo pip install --upgrade catkin_pkg_modules
+	```
+
+

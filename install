@@ -91,7 +91,7 @@ do_install()
 
   # ROS infrastructure tools
   brew install libyaml || true
-  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl osrf_pycommon
+  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl osrf_pycommon termcolor
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
@@ -227,6 +227,7 @@ do_install()
     --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
       -DCMAKE_CXX_STANDARD=14 \
+      -DCATKIN_ENABLE_TESTING=0 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
       -DPYTHON_EXECUTABLE=$(which python2) \
