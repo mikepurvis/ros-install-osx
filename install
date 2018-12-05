@@ -181,7 +181,8 @@ do_install()
       -DCMAKE_FIND_FRAMEWORK=LAST \
       -DPYTHON_EXECUTABLE=$(which python2) \
       -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-      -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
+      -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7 \
+      -DCMAKE_CXX_STANDARD=14
   catkin build --limit-status-rate 1
 
   echo "Installation successful, please source the ROS workspace:"
