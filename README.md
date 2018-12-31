@@ -1,19 +1,25 @@
 ros-install-osx   [![Build Status](https://travis-ci.org/mikepurvis/ros-install-osx.svg?branch=master)](https://travis-ci.org/mikepurvis/ros-install-osx)
 ===============
 
-**Note: This should work as of 7/11/18**
-
 * This commonly breaks depending on what gets pushed over brew and whether the corresponding packages update deprecated code.
 
-This repo aims to maintain a usable, scripted, up-to-date installation procedure for
-[ROS](http://ros.org), currently Lunar. The intent is that the `install` script may
-be executed on a El Capitan or newer machine and produce a working desktop_full
-installation, including RQT, rviz, and Gazebo.
+This repo aims to maintain a usable, scripted, up-to-date installation procedure for [ROS](http://ros.org), currently melodic. The intent is that the `install` script may be executed on a El Capitan or newer machine and produce a working desktop_full  installation, including RQT, rviz, and Gazebo.
 
-This is the successor to my [popular gist on the same topic][1].
+This is the successor to the [popular gist on the same topic][1].
 
 [1]: https://gist.github.com/mikepurvis/9837958
 
+For troubleshooting tips, see the bottom of this readme.
+
+## Current Status
+
+**Note: This should work as of 12/31/18**
+
+Package notes:
+
+- As of 12/31/18 pcl_ros is broken. This may be due to some combination of pcl 1.9 or vtk 0.8 from brew. You may have to blacklist these packages when building ROS.
+- I have only tested Gazebo 9.6.0 and verified that it works. Previous versions of 9.X will not work. I am not sure about versions < 9. 
+- Rviz probably requires the most up to date version of QT but is currently working.
 
 Usage
 -----

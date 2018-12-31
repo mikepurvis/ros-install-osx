@@ -30,6 +30,11 @@ ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
 do_install()
 {
   set -e
+  
+
+  echo "WARNING: Mojave is missing some extensions. To fix:"
+  echo "1. Run `open /Library/Developer/CommandLineTools/Packages/`"
+  echo "2. Install package macOS_SDK_headers_for_macOS_10.14.pkg"
 
   # Homebrew
   if ! hash brew 2>/dev/null; then
