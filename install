@@ -38,6 +38,7 @@ do_install()
     source ~/.bash_profile
     brew doctor
   fi
+  
   brew update
 
   # # XQuartz
