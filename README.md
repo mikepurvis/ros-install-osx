@@ -1,3 +1,7 @@
+Hey friends and fans! This project is looking for a new maintainer and owner, in part because I'm moving out of the Apple ecosystem for personal and work computers. If you use or have used this and would be interested in periodically updating it as new things happen upstream to break it, please get in touch— see my email in the git history.
+
+----
+
 ros-install-osx   [![Build Status](https://travis-ci.org/mikepurvis/ros-install-osx.svg?branch=master)](https://travis-ci.org/mikepurvis/ros-install-osx)
 ===============
 
