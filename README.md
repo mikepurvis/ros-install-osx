@@ -1,34 +1,59 @@
-ros-install-osx   [![Build Status](https://travis-ci.org/mikepurvis/ros-install-osx.svg?branch=master)](https://travis-ci.org/mikepurvis/ros-install-osx)
+ros-install-osx   
 ===============
 
-* This commonly breaks depending on what gets pushed over brew and whether the corresponding packages update deprecated code.
+* This commonly breaks depending on what gets pushed over brew and whether the corresponding packages update deprecated code. Efforts have been made to pick out working versions of specific packages, but nothing is guaranteed.
 
-This repo aims to maintain a usable, scripted, up-to-date installation procedure for [ROS](http://ros.org), currently melodic. The intent is that the `install` script may be executed on a El Capitan or newer machine and produce a working desktop_full  installation, including RQT, rviz, and Gazebo.
+This repo aims to maintain a usable, scripted, up-to-date installation procedure for [ROS](http://ros.org), currently melodic. The intent is that the `install` script may be executed on a Catalina or newer machine and produce a working desktop_full  installation, including RQT, rviz, and Gazebo.
 
-This is the successor to the [popular gist on the same topic][1].
-
-[1]: https://gist.github.com/mikepurvis/9837958
-
-For troubleshooting tips, see the bottom of this readme.
+This is the successor to the [popular gist on the same topic][1]. Also thanks to [Boris Gromov](https://gist.github.com/bgromov) for [his helpful gist](https://gist.github.com/bgromov/23a74bbe846d965964b150080cb2d574).
 
 ## Current Status
 
-**Note: This should work as of 12/31/18**
+**Note: This should work as of Oct 6, 2019 on Catalina GM** 
 
-Package notes:
+Required software versions (installed via script):
 
-- As of 12/31/18 pcl_ros is broken. This may be due to some combination of pcl 1.9 or vtk 0.8 from brew. You may have to blacklist these packages when building ROS.
-- I have only tested Gazebo 9.6.0 and verified that it works. Previous versions of 9.X will not work. I am not sure about versions < 9. 
-- Rviz probably requires the most up to date version of QT but is currently working.
+* **python2**
+* **gazebo9: ** 9.8.0 - Newer bottled versions didn't work with the corresponding bottled ignition and protobuf
+* **protobuf**: 3.7.1 - Compatible with gazebo
+* **protobuf-c: ** - Compatible with gazebo
+* **ignition-msgs1**: 1.0.0_3 - Compatible with gazebo
+* **sip**: 4.19.8_12 - Required for python2 support
+
+Non standard ROS packages added:
+
+* **pcl_catkin** and **catkin_simple** - I couldn't get bottled pcl to compile right. Kept giving errors about not finding FLANN. This builds pcl straight into catkin, and unfortunately it adds 15 min build time on my quad core desktop.
 
 Usage
 -----
 
-```shell
-git clone https://github.com/mikepurvis/ros-install-osx.git
-cd ros-install-osx
-./install
-```
+The `install` script should just work for most users, although you may need to run it multiple times. Run these steps first to have a better chance of success:
+
+1. Disable system integrity protection.
+
+2. Attempting to clone this repo onto your machine should trigger the xcode command line tools to download.
+
+   ```zsh
+   git clone https://github.com/smnogar/ros-install-osx.git
+   cd ros-install-osx
+   ```
+
+3. Install brew
+
+   ```zsh
+   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+   echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
+   source ~/.bash_profile
+   brew doctor
+   ```
+
+4. Install xquartz
+
+   ```zsh
+   brew cask install xquartz
+   ```
+
+5. Run: `./install`
 
 Note that if you do not yet have XQuartz installed, you will be forced to log out and
 in after that installation, and re-run this script.
@@ -44,23 +69,6 @@ You will be prompted for your sudo password at the following points in this proc
 The installation can be done entirely without sudo if Homebrew and XQuartz are already
 installed, rosdep is already installed and initialized, and you set the `ROS_INSTALL_DIR`
 environment variable to a path which already exists and you have write access to.
-
-
-Step by Step
-------------
-
-The `install` script should just work for most users. However, if you run into trouble,
-it's a pretty big pain to rebuild everything. Note that in this scenario, it may make
-sense to treat the script as a list of instructions, and execute them one by one,
-manually.
-
-If you have a build fail, for example with rviz, note that you can modify the `catkin build`
-line to start at a particular package. Inside your `indigo_desktop_full_ws` dir, run:
-
-    catkin build --start-with rviz
-
-If you've resolved whatever issue stopped the build previously, this will pick up where
-it left off.
 
 
 ## Troubleshooting
@@ -99,7 +107,7 @@ If you are getting permission errors when you `sudo uninstall` pip packages,
 see [Issue #11](https://github.com/mikepurvis/ros-install-osx/issues/11) and
 [this StackOverflow Q&A](http://stackoverflow.com/a/35051066/2653356).
 
-### El Capitan support
+### El Capitan (and newer) support
 
 The `install` script may not work as smoothly in OS X El Capitan.
 Here are some pointers, tips, and hacks to help you complete the installation.

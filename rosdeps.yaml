@@ -139,3 +139,7 @@ libgpgme-dev:
   osx:
     homebrew:
       packages: [gpgme]
+tango-icon-theme:
+  osx:
+    homebrew:
+      packages: []

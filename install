@@ -30,11 +30,6 @@ ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
 do_install()
 {
   set -e
-  
-
-  echo "WARNING: Mojave is missing some extensions. To fix:"
-  echo "1. Run `open /Library/Developer/CommandLineTools/Packages/`"
-  echo "2. Install package macOS_SDK_headers_for_macOS_10.14.pkg"
 
   # Homebrew
   if ! hash brew 2>/dev/null; then
@@ -47,7 +42,6 @@ do_install()
 
   # XQuartz
   if ! hash xquartz 2>/dev/null; then
-    brew install caskroom/cask/brew-cask
     brew cask install xquartz
     echo "Log out and in to finalize XQuartz setup."
     exit 0
@@ -88,14 +82,36 @@ do_install()
     echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
   fi
 
-  # Gives us console_bridge, urdfdom, and gtest.
-  brew tap ros/deps
-
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
 
   # ROS infrastructure tools
   brew install libyaml || true
+
+  # install specific versions of certain brew packages
+
+  # sip 4.19.8_12 - still supports python2
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6d2b011fa8f28ef5a0b52f24eb687276823a22fa/Formula/sip.rb
+
+  # pyqt 5.10.1_1 - still supports python2
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
+
+  # specific working bottled version of gazebo9. A better method would be to
+  # build the latest version of these from source so the protobuf headers
+  # don't break. However building gazebo9 from source fails for me.
+
+  # ignition-msgs1 1.0.0_3
+  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/ignition-msgs1.rb
+
+  # gazebo9 9.8.0
+  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/gazebo9.rb
+
+  # protobuf 3.7.1
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf.rb
+
+  # protobuf-c 1.3.1_2
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf-c.rb
+
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl osrf_pycommon termcolor
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
@@ -104,6 +120,7 @@ do_install()
   export CMAKE_PREFIX_PATH=$(brew --prefix qt5)
 
   # This hack is required to make qt_gui_cpp compile correctly. See https://github.com/mikepurvis/ros-install-osx/pull/84#issuecomment-338209466
+  export PATH="/usr/local/opt/qt5/bin:$PATH"
   pushd /usr/local/share/sip
   if [ ! -e PyQt5 ]; then
     ln -s Qt5 PyQt5
@@ -111,7 +128,12 @@ do_install()
   popd
 
   # Get homebrew's opencv3 from a bottle so that we don't have to build it.
-  brew install opencv3
+  brew install opencv@3
+  brew link opencv@3 --force
+
+  # get openssl and gpgme working for rosbag_storage
+  brew install openssl
+  export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig"
 
   # Mock out python and pip so that we get the brewed versions when rosdep and other programs call them.
   # Mock out pip so that we get the brewed pip2 when rosdep calls it to make an installation.
@@ -143,80 +165,47 @@ do_install()
     # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
 
-    # fix for old boost version errors
-    if [ "${ROS_DISTRO}" = "kinetic" ]; then
-      wstool rm rospack
-      wstool set rospack --git https://github.com/ros/rospack.git -y
-
-      # wstool rm ros_comm/xmlrpcpp ros_comm/topic_tools ros_comm/roswtf ros_comm/rostopic ros_comm/rostest ros_comm/rosservice ros_comm/rospy ros_comm/rosparam ros_comm/rosout ros_comm/rosnode ros_comm/rosmsg ros_comm/rosmaster ros_comm/roslz4 ros_comm/roslaunch ros_comm/rosgraph ros_comm/roscpp ros_comm/rosconsole ros_comm/rosbag_storage ros_comm/rosbag ros_comm/ros_comm ros_comm/message_filters
-      # wstool set ros_comm --git https://github.com/ros/ros_comm.git -y
-
-      wstool rm roscpp_core/rostime roscpp_core/roscpp_traits roscpp_core/roscpp_serialization roscpp_core/roscpp_core roscpp_core/cpp_common
-      wstool set roscpp_core --git https://github.com/ros/roscpp_core.git -y
-
-      wstool rm geometric_shapes
-      wstool set geometric_shapes --git https://github.com/ros-planning/geometric_shapes.git -y
-
-       # patch in latest python_qt_binding
-      wstool remove python_qt_binding
-      wstool set python_qt_binding --git https://github.com/ros-visualization/python_qt_binding.git -y
-
-      wstool remove opencv3
-
-      wstool update -j8
-
-      # fix C++11 strings (https://github.com/rtv/Stage/pull/62)
-      curl https://raw.githubusercontent.com/rtv/Stage/c223a1af47e3dc1d66cc281e894c351e26d63328/libstage/stage.hh > stage/libstage/stage.hh
-
-      # patch rostime for boost 1.67, obsolete once https://github.com/ros/roscpp_core/pull/79 is integrated in main branch
-      curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/duration.h > roscpp_core/rostime/include/ros/impl/duration.h
-      curl https://raw.githubusercontent.com/lsolanka/roscpp_core/e5de3c20eb178683c78e225d00bf0f47c48895a5/rostime/include/ros/impl/time.h > roscpp_core/rostime/include/ros/impl/time.h
-
-      # patch tf2 (rosconsole errors are only fixed for melotic geometry 2 release)
-      curl https://raw.githubusercontent.com/ros/geometry2/0173a538f89c66e2783dc67ee3609660625e16b4/tf2/src/buffer_core.cpp > geometry2/tf2/src/buffer_core.cpp
-
-      # See: https://github.com/ros/catkin/pull/784
-      if [ -d catkin ]; then
-        curl https://raw.githubusercontent.com/ros/catkin/8a47f4eceb4954beb4a5b38b50793d0bbe2c96cf/cmake/catkinConfig.cmake.in > catkin/cmake/catkinConfig.cmake.in
-      fi
-
-      if [ -d image_pipeline ]; then
-        # Pending merge and release: https://github.com/ros-perception/image_pipeline/pull/304
-        curl https://raw.githubusercontent.com/mbreyer/image_pipeline/4bf67d3c861cb157e8174f67250680263b18d2b7/image_publisher/CMakeLists.txt > image_pipeline/image_publisher/CMakeLists.txt
-      fi
-
-    fi
+    # manually add pcl_catkin to get pcl_ros to work. Brew compiled pcl seems
+    # to have issues finding flann
+    # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun).
+    # This takes forever to build.
+    wstool set pcl_catkin --git https://github.com/ethz-asl/pcl_catkin.git -y
+    wstool set catkin_simple --git https://github.com/catkin/catkin_simple.git -y
 
     wstool update -j8
-
-    # add custom install for image_common/camera_calibration_parsers
-    curl https://raw.githubusercontent.com/smnogar/image_common/51969339f1fd7034952fa8c3d18b88fb015153c5/camera_calibration_parsers/CMakeLists.txt > image_common/camera_calibration_parsers/CMakeLists.txt
-
-    # fix boncpp (Fixed in commit 1240bce but not released yet)
-    curl https://raw.githubusercontent.com/ros/bond_core/1240bce50ca1538cdad07dc472d31797257e0851/bondcpp/src/bond.cpp > bond_core/bondcpp/src/bond.cpp
-
-    # add custom install for actionlib
-    curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/include/actionlib/client/simple_action_client.h > actionlib/include/actionlib/client/simple_action_client.h
-    curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/include/actionlib/destruction_guard.h > actionlib/include/actionlib/destruction_guard.h
-    curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/include/actionlib/server/simple_action_server_imp.h > actionlib/include/actionlib/server/simple_action_server_imp.h
-    curl https://raw.githubusercontent.com/ros/actionlib/677e952fcbfe49e6e4c5b835357f88740f49c6ff/src/connection_monitor.cpp > actionlib/src/connection_monitor.cpp 
-
-    # fix boost errors in laser_assembler
-    curl https://raw.githubusercontent.com/ros-perception/laser_assembler/5c504c05078a684746860efb9db433f73c896d32/test/test_assembler.cpp > laser_assembler/test/test_assembler.cpp
-
-    # make symnbolic link to correct header locaiton for rosbag_storage errors
-    if [ ! -d /usr/local/include/openssl ]; then
-      ln -s /usr/local/opt/openssl/include/* /usr/local/include/
-    fi
-
-    # fix boost_python errors for cv_bridge
-    curl https://raw.githubusercontent.com/berkaydeniz/vision_opencv/9a7be3e4aabd69cdb5d1dc79e0bbe13f421ccba3/cv_bridge/CMakeLists.txt > vision_opencv/cv_bridge/CMakeLists.txt
 
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
   popd
 
+  # patches
 
+  # fix roscpp trying to link against unused? boost component
+  patch -d src/ros_comm/roscpp/ < ../patches/roscpp.diff
+  patch -d src/ros_comm/message_filters/ < ../patches/message_filters.diff
+
+  # fix tf and tf2 trying to link against unused? boost component
+  patch -d src/geometry/tf/ < ../patches/tf.diff
+  patch -d src/geometry2/tf2/ < ../patches/tf2.diff
+
+  # rosbag_strorage encryption
+  patch -d src/ros_comm/rosbag_storage/ < ../patches/rosbag_storage.diff
+  if [ ! -d /usr/local/include/openssl ]; then
+    ln -s /usr/local/opt/openssl/include/* /usr/local/include/
+  fi
+
+  # fix boost components in camera_calibration_parsers
+  patch -d src/image_common/camera_calibration_parsers/ < ../patches/camera_calibration_parsers.diff
+
+  # fix boost components in camera_calibration_parsers
+  patch -d src/vision_opencv/cv_bridge/ < ../patches/cv_bridge.diff
+
+  # add pango to image_view
+  patch -d src/image_pipeline/image_view/ < ../patches/image_view.diff
+
+  # patch so pcl_perception uses catkin built pcl 
+  patch -d src/perception_pcl/pcl_ros/ < ../patches/pcl_ros_cmakelists.diff
+  patch -d src/perception_pcl/pcl_ros/ < ../patches/pcl_ros_package.diff
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
@@ -225,13 +214,14 @@ do_install()
     echo "This sudo prompt is to create and chown ${ROS_INSTALL_DIR}."
     sudo mkdir -p ${ROS_INSTALL_DIR}
     sudo chown $USER ${ROS_INSTALL_DIR}
+    sudo chown $USER ${ROS_INSTALL_DIR}/../
   fi
 
   # Parallel build.
   catkin config --install \
     --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
-      -DCMAKE_CXX_STANDARD=14 \
+      -DCMAKE_CXX_STANDARD=11 \
       -DCATKIN_ENABLE_TESTING=0 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \

@@ -1,0 +1,15 @@
+--- CMakeLists.txt	2019-10-06 15:41:55.000000000 -0400
++++ CMakeLists.txt	2019-10-06 15:41:50.000000000 -0400
+@@ -5,7 +5,11 @@
+ 
+ find_package(PythonLibs REQUIRED)
+ if(PYTHONLIBS_VERSION_STRING VERSION_LESS 3)
+-  find_package(Boost REQUIRED COMPONENTS filesystem python)
++  if(APPLE)
++    find_package(Boost REQUIRED COMPONENTS filesystem python27)
++  else()
++    find_package(Boost REQUIRED COMPONENTS filesystem python)
++  endif()
+ else()
+   find_package(Boost REQUIRED COMPONENTS filesystem python3)
+ endif()
