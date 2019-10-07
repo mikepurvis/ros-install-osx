@@ -14,9 +14,9 @@ This is the successor to the [popular gist on the same topic][1]. Also thanks to
 Required software versions (installed via script):
 
 * **python2**
-* **gazebo9: ** 9.8.0 - Newer bottled versions didn't work with the corresponding bottled ignition and protobuf
+* **gazebo9:** 9.8.0 - Newer bottled versions didn't work with the corresponding bottled ignition and protobuf
 * **protobuf**: 3.7.1 - Compatible with gazebo
-* **protobuf-c: ** - Compatible with gazebo
+* **protobuf-c:** - Compatible with gazebo
 * **ignition-msgs1**: 1.0.0_3 - Compatible with gazebo
 * **sip**: 4.19.8_12 - Required for python2 support
 
