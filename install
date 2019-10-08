@@ -171,12 +171,12 @@ do_install()
 
   # install specific versions of certain brew packages
 
-  # boost 1.70.0
+  # boost 1.69.0
   brew unlink boost-python
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost-python.rb
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/16274ef9d6acdb629139b331a0c37d0964e61a14/Formula/boost-python.rb
   brew link boost-python
   brew unlink boost
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost.rb
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/16274ef9d6acdb629139b331a0c37d0964e61a14/Formula/boost.rb
   brew link boost
 
   # sip 4.19.8_12 - still supports python2
