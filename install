@@ -88,30 +88,6 @@ do_install()
   # ROS infrastructure tools
   brew install libyaml || true
 
-  # install specific versions of certain brew packages
-
-  # sip 4.19.8_12 - still supports python2
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6d2b011fa8f28ef5a0b52f24eb687276823a22fa/Formula/sip.rb
-
-  # pyqt 5.10.1_1 - still supports python2
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
-
-  # specific working bottled version of gazebo9. A better method would be to
-  # build the latest version of these from source so the protobuf headers
-  # don't break. However building gazebo9 from source fails for me.
-
-  # ignition-msgs1 1.0.0_3
-  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/ignition-msgs1.rb
-
-  # gazebo9 9.8.0
-  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/gazebo9.rb
-
-  # protobuf 3.7.1
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf.rb
-
-  # protobuf-c 1.3.1_2
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf-c.rb
-
   pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl osrf_pycommon termcolor
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
@@ -126,10 +102,6 @@ do_install()
     ln -s Qt5 PyQt5
   fi
   popd
-
-  # Get homebrew's opencv3 from a bottle so that we don't have to build it.
-  brew install opencv@3
-  brew link opencv@3 --force
 
   # get openssl and gpgme working for rosbag_storage
   brew install openssl
@@ -174,9 +146,82 @@ do_install()
 
     wstool update -j8
 
+    # remove unnecessary packages from pcl_catkin
+    rm -rf pcl_catkin/geometry2
+    rm -rf pcl_catkin/perception_pcl
+
+    # conflicts with normal numpy
+    if [ -d /usr/local/bin/f2py ]; then
+      rm '/usr/local/bin/f2py'
+    fi
+    if brew ls --versions numpy > /dev/null; then
+      brew link numpy
+    fi
+
+    # make sure rosdep doesn't stop on opencv
+    if brew ls --versions opencv@3 > /dev/null; then    
+      brew unlink opencv@3
+      brew install opencv
+      brew link opencv
+    fi
+
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
   popd
+
+  # install specific versions of certain brew packages
+
+  # boost 1.70.0
+  brew unlink boost
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost.rb
+  brew link boost
+  brew unlink boost-python
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost-python.rb
+  brew link boost-python
+
+  # sip 4.19.8_12 - still supports python2
+  brew unlink sip
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6d2b011fa8f28ef5a0b52f24eb687276823a22fa/Formula/sip.rb
+  brew link sip
+
+  # pyqt 5.10.1_1 - still supports python2
+  brew unlink pyqt
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
+  brew link pyqt
+
+  # specific working bottled version of gazebo9. A better method would be to
+  # build the latest version of these from source so the protobuf headers
+  # don't break. However building gazebo9 from source fails for me.
+
+  # ignition-msgs1 1.0.0_3
+  brew unlink ignition-msgs1
+  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/ignition-msgs1.rb
+  brew link ignition-msgs1
+
+  # gazebo9 9.8.0
+  brew unlink gazebo9
+  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/gazebo9.rb
+  brew link gazebo9
+
+  # protobuf 3.7.1
+  brew unlink protobuf
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf.rb
+  brew link protobuf
+
+  # protobuf-c 1.3.1_2
+  brew unlink protobuf-c
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf-c.rb
+  brew link protobuf-c
+
+  # Get homebrew's opencv3 from a bottle so that we don't have to build it.
+  brew unlink opencv
+  brew install opencv@3
+  brew link opencv@3 --force
+
+  # old version of numpy
+  brew unlink numpy
+  brew install numpy@1.16
+  brew link numpy@1.16 --force
 
   # patches
 
@@ -221,7 +266,7 @@ do_install()
   catkin config --install \
     --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
-      -DCMAKE_CXX_STANDARD=11 \
+      -DCMAKE_CXX_STANDARD=14 \
       -DCATKIN_ENABLE_TESTING=0 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
