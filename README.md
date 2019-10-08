@@ -13,6 +13,8 @@ This is the successor to the [popular gist on the same topic][1]. Also thanks to
 
 Required software versions (installed via script):
 
+* **boost**: 1.69
+* **opencv3**
 * **python2**
 * **gazebo9:** 9.8.0 - Newer bottled versions didn't work with the corresponding bottled ignition and protobuf
 * **protobuf**: 3.7.1 - Compatible with gazebo
