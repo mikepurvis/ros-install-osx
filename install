@@ -92,7 +92,7 @@ do_install()
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
-  brew install qt5 pyqt5 sip
+  brew install qt5 pyqt5 sip || true
   export CMAKE_PREFIX_PATH=$(brew --prefix qt5)
 
   # This hack is required to make qt_gui_cpp compile correctly. See https://github.com/mikepurvis/ros-install-osx/pull/84#issuecomment-338209466
@@ -172,12 +172,12 @@ do_install()
   # install specific versions of certain brew packages
 
   # boost 1.70.0
-  brew unlink boost
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost.rb
-  brew link boost
   brew unlink boost-python
   brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost-python.rb
   brew link boost-python
+  brew unlink boost
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/80745d7975635f4895ab9a04efce2b23bbe46f31/Formula/boost.rb
+  brew link boost
 
   # sip 4.19.8_12 - still supports python2
   brew unlink sip
