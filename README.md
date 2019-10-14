@@ -17,7 +17,7 @@ Required software versions (installed via script):
 * **opencv3**
 * **python2**
 * **sip**: 4.19.8_12 - Required for python2 support
-* **pyqt: ** 5.10.1_1 - Required for python 2 support
+* **pyqt**: 5.10.1_1 - Required for python 2 support
 
 Non standard ROS packages added:
 
