@@ -16,15 +16,12 @@ Required software versions (installed via script):
 * **boost**: 1.69
 * **opencv3**
 * **python2**
-* **gazebo9:** 9.8.0 - Newer bottled versions didn't work with the corresponding bottled ignition and protobuf
-* **protobuf**: 3.7.1 - Compatible with gazebo
-* **protobuf-c:** - Compatible with gazebo
-* **ignition-msgs1**: 1.0.0_3 - Compatible with gazebo
 * **sip**: 4.19.8_12 - Required for python2 support
+* **pyqt: ** 5.10.1_1 - Required for python 2 support
 
 Non standard ROS packages added:
 
-* **pcl_catkin** and **catkin_simple** - I couldn't get bottled pcl to compile right. Kept giving errors about not finding FLANN. This builds pcl straight into catkin, and unfortunately it adds 15 min build time on my quad core desktop.
+* **pcl_catkin** and **catkin_simple** - I couldn't get bottled pcl to work right with pcl_ros. Kept giving errors about not finding FLANN. It also appears pcl does not build from source correctly on Catalina using Brew. These packages builds pcl straight into catkin, and unfortunately it adds 15 min build time on my quad core desktop. 
 
 Usage
 -----
@@ -36,6 +33,7 @@ The `install` script should just work for most users, although you may need to r
 2. Attempting to clone this repo onto your machine should trigger the xcode command line tools to download.
 
    ```zsh
+   xcode-select --install
    git clone https://github.com/smnogar/ros-install-osx.git
    cd ros-install-osx
    ```

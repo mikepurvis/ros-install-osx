@@ -166,7 +166,7 @@ do_install()
     fi
 
     # Package dependencies.
-    rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
+    rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y -r --as-root pip:no
   popd
 
   # install specific versions of certain brew packages
@@ -194,24 +194,24 @@ do_install()
   # don't break. However building gazebo9 from source fails for me.
 
   # ignition-msgs1 1.0.0_3
-  brew unlink ignition-msgs1
-  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/ignition-msgs1.rb
-  brew link ignition-msgs1
+  # brew unlink ignition-msgs1
+  # brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/ignition-msgs1.rb
+  # brew link ignition-msgs1
 
   # gazebo9 9.8.0
-  brew unlink gazebo9
-  brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/gazebo9.rb
-  brew link gazebo9
+  # brew unlink gazebo9
+  # brew install https://raw.githubusercontent.com/osrf/homebrew-simulation/9195cde6460367d5e7b9859e4b9bfb88b2d3766c/Formula/gazebo9.rb
+  # brew link gazebo9
 
   # protobuf 3.7.1
-  brew unlink protobuf
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf.rb
-  brew link protobuf
+  # brew unlink protobuf
+  # brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf.rb
+  # brew link protobuf
 
   # protobuf-c 1.3.1_2
-  brew unlink protobuf-c
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf-c.rb
-  brew link protobuf-c
+  # brew unlink protobuf-c
+  # brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/4da4f1a6f274eeee8cc0ff4eea155c7e2a29aa20/Formula/protobuf-c.rb
+  # brew link protobuf-c
 
   # Get homebrew's opencv3 from a bottle so that we don't have to build it.
   brew unlink opencv
