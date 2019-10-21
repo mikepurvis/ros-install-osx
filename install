@@ -137,18 +137,10 @@ do_install()
     # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
 
-    # manually add pcl_catkin to get pcl_ros to work. Brew compiled pcl seems
-    # to have issues finding flann
-    # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun).
-    # This takes forever to build.
-    wstool set pcl_catkin --git https://github.com/ethz-asl/pcl_catkin.git -y
-    wstool set catkin_simple --git https://github.com/catkin/catkin_simple.git -y
-
+    # swap out rospy for kinetic version 1.12.6. This fixes "RuntimeError:
+    # concurrent poll() invocation" errors. 
+    wstool merge -r ../../patches/rospy_patch.rosinstall -y
     wstool update -j8
-
-    # remove unnecessary packages from pcl_catkin
-    rm -rf pcl_catkin/geometry2
-    rm -rf pcl_catkin/perception_pcl
 
     # conflicts with normal numpy
     if [ -d /usr/local/bin/f2py ]; then
@@ -189,6 +181,9 @@ do_install()
   brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
   brew link pyqt
 
+  # install gazebo9 from source. Fixes a lot of problems with protobuf compatibility
+  brew reinstall -s gazebo9
+
   # Get homebrew's opencv3 from a bottle so that we don't have to build it.
   brew unlink opencv
   brew install opencv@3
@@ -224,9 +219,9 @@ do_install()
   # add pango to image_view
   patch -d src/image_pipeline/image_view/ < ../patches/image_view.diff
 
-  # patch so pcl_perception uses catkin built pcl 
-  patch -d src/perception_pcl/pcl_ros/ < ../patches/pcl_ros_cmakelists.diff
-  patch -d src/perception_pcl/pcl_ros/ < ../patches/pcl_ros_package.diff
+  # fix find flann library in pcl so pcl_ros can build
+  # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun)
+  patch -d /usr/local/share/pcl-1.9/Modules/FindFLANN.cmake < ../patches/FindFLANN.diff
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then

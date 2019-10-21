@@ -9,7 +9,7 @@ This is the successor to the [popular gist on the same topic][1]. Also thanks to
 
 ## Current Status
 
-**Note: This should work as of Oct 6, 2019 on Catalina GM** 
+**Note: This should work as of Oct 20, 2019 on Catalina 10.15.0** 
 
 Required software versions (installed via script):
 
@@ -19,41 +19,43 @@ Required software versions (installed via script):
 * **sip**: 4.19.8_12 - Required for python2 support
 * **pyqt: ** 5.10.1_1 - Required for python 2 support
 
-Non standard ROS packages added:
-
-* **pcl_catkin** and **catkin_simple** - I couldn't get bottled pcl to work right with pcl_ros. Kept giving errors about not finding FLANN. It also appears pcl does not build from source correctly on Catalina using Brew. These packages builds pcl straight into catkin, and unfortunately it adds 15 min build time on my quad core desktop. 
-
 Usage
 -----
 
 The `install` script should just work for most users, although you may need to run it multiple times. Run these steps first to have a better chance of success:
 
-1. Disable system integrity protection.
+1. [Disable system integrity protection](https://www.imore.com/how-turn-system-integrity-protection-macos).
 
-2. Attempting to clone this repo onto your machine should trigger the xcode command line tools to download.
+2. If on Catalina, set your terminal back to bash. This is very helpful for building software via brew, and roslaunch will not autocomplete using zsh.
 
-   ```zsh
+   ```bash
+   chsh -s /bin/bash
+   ```
+
+3. Attempting to clone this repo onto your machine should trigger the xcode command line tools to download.
+
+   ```bash
    xcode-select --install
    git clone https://github.com/smnogar/ros-install-osx.git
    cd ros-install-osx
    ```
 
-3. Install brew
+4. Install brew
 
-   ```zsh
+   ```bash
    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
    echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
    source ~/.bash_profile
    brew doctor
    ```
 
-4. Install xquartz
+5. Install xquartz
 
-   ```zsh
+   ```bash
    brew cask install xquartz
    ```
 
-5. Run: `./install`
+6. Run: `./install`
 
 Note that if you do not yet have XQuartz installed, you will be forced to log out and
 in after that installation, and re-run this script.

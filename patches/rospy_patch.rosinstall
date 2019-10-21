@@ -1,0 +1,5 @@
+- git:
+    local-name: ros_comm/rospy
+    uri: https://github.com/ros-gbp/ros_comm-release.git
+    version: release/kinetic/rospy/1.12.6-0
+
