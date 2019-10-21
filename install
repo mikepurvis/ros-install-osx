@@ -221,7 +221,7 @@ do_install()
 
   # fix find flann library in pcl so pcl_ros can build
   # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun)
-  patch -d /usr/local/share/pcl-1.9/Modules/FindFLANN.cmake < ../patches/FindFLANN.diff
+  patch -d /usr/local/share/pcl-1.9/Modules/ < ../patches/FindFLANN.diff
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
