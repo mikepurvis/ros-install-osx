@@ -99,7 +99,7 @@ do_install()
   export PATH="/usr/local/opt/qt5/bin:$PATH"
   pushd /usr/local/share/sip
   if [ ! -e PyQt5 ]; then
-    ln -s Qt5 PyQt5
+    ln -fvs Qt5 PyQt5
   fi
   popd
 
