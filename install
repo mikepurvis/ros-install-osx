@@ -176,6 +176,11 @@ do_install()
   brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6d2b011fa8f28ef5a0b52f24eb687276823a22fa/Formula/sip.rb
   brew link sip
 
+  # qt 5.13.1 - 5.14 had problems with rqt_image_view
+  brew unlink qt
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/b2f67e742630b1b2353a9870e6ef18d8eaa19638/Formula/qt.rb
+  brew link qt
+
   # pyqt 5.10.1_1 - still supports python2
   brew unlink pyqt
   brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
