@@ -228,6 +228,10 @@ do_install()
   # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun)
   patch -d /usr/local/share/pcl-1.9/Modules/ < ../patches/FindFLANN.diff
 
+  # fix ros_controllers not finding class_loader and console_bridge
+  patch -d src/ros_controllers/position_controllers/ < ../patches/position_controllers.diff 
+  patch -d src/ros_controllers/diff_drive_controller/ < ../patches/diff_drive_controller.diff 
+
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
     rm -rf ${ROS_INSTALL_DIR}/*

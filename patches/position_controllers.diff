@@ -1,0 +1,12 @@
+--- CMakeLists.txt	2020-02-24 09:47:12.000000000 -0500
++++ CMakeLists.txt	2020-02-24 09:47:09.000000000 -0500
+@@ -2,7 +2,8 @@
+ project(position_controllers)
+ 
+ # Load catkin and all dependencies required for this package
+-find_package(catkin REQUIRED COMPONENTS controller_interface forward_command_controller)
++find_package(catkin REQUIRED COMPONENTS controller_interface forward_command_controller class_loader)
++find_package(console_bridge REQUIRED)
+ 
+ # Declare catkin project
+ catkin_package(
