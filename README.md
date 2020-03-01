@@ -9,15 +9,13 @@ This is the successor to the [popular gist on the same topic][1]. Also thanks to
 
 ## Current Status
 
-**Note: This should work as of Oct 20, 2019 on Catalina 10.15.0** 
+**Note: This should work as of March 1, 2020 on Catalina 10.15.3** 
 
 Required software versions (installed via script):
 
-* **boost**: 1.69
+* **boost**: 1.72
 * **opencv3**
-* **python2**
-* **sip**: 4.19.8_12 - Required for python2 support
-* **pyqt**: 5.10.1_1 - Required for python 2 support
+* **python3**
 
 Usage
 -----
@@ -56,6 +54,14 @@ The `install` script should just work for most users, although you may need to r
    ```
 
 6. Run: `./install`
+
+7. After it completes successfully, add the following to your bash_profile:
+
+   ```bash
+   cat bash_profile_recommendations.sh >> ~/.bash_profile
+   ```
+
+   
 
 Note that if you do not yet have XQuartz installed, you will be forced to log out and
 in after that installation, and re-run this script.

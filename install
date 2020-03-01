@@ -75,20 +75,34 @@ do_install()
     echo "    sudo chown -R $USER:admin /usr/local/*"
   fi
 
-  # Brewed Python
-  if [ ! "$(which python2)" = "/usr/local/bin/python2" ]; then
-    brew install python@2
-    mkdir -p ~/Library/Python/2.7/lib/python/site-packages
-    echo "$(brew --prefix)/lib/python2.7/site-packages" >> ~/Library/Python/2.7/lib/python/site-packages/homebrew.pth
+  # # Brewed Python
+  if [ ! "$(which python3)" = "/usr/local/bin/python3" ]; then
+    brew install python
+    mkdir -p ~/Library/Python/3.7/lib/python/site-packages
+    echo "$(brew --prefix)/lib/python3.7/site-packages" >> ~/Library/Python/3.7/lib/python/site-packages/homebrew.pth
   fi
 
   # This tap gives us formulae for Gazebo and its dependencies, including SDF.
   brew tap osrf/simulation
 
   # ROS infrastructure tools
-  brew install libyaml || true
+  brew install libyaml python git || true
 
-  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall catkin_tools bloom empy sphinx pycurl osrf_pycommon termcolor
+  # install catkin_tools from source (fixes https://github.com/catkin/catkin_tools/issues/558)
+  git clone https://github.com/catkin/catkin_tools.git
+  pip install catkin_tools/
+
+  # install tango-icon-theme so icons show up correctly in rqt
+  brew install wget intltool gettext icon-naming-utils imagemacgick 
+  brew link --force gettext
+  wget http://pkgs.fedoraproject.org/repo/pkgs/tango-icon-theme/tango-icon-theme-0.8.90.tar.gz/0795895d2f20eddcbd2bffe94ed431a6/tango-icon-theme-0.8.90.tar.gz
+  tar -xvf tango-icon-theme-0.8.90.tar.gz
+  cd tango-icon-theme-0.8.90
+  ./configure 
+  make install
+  cd ..
+
+  pip install -U setuptools rosdep rosinstall_generator wstool rosinstall bloom empy sphinx pycurl osrf_pycommon termcolor
 
   # Rosdep has an issue detecting that qt5 is correctly installed, so preinstall it. This is a keg-only formula,
   # so add its location to the prefix path in order for workspace packages to be able to find it.
@@ -109,7 +123,12 @@ do_install()
 
   # Mock out python and pip so that we get the brewed versions when rosdep and other programs call them.
   # Mock out pip so that we get the brewed pip2 when rosdep calls it to make an installation.
-  export PATH=$(pwd)/shim:$PATH
+  # export PATH=$(pwd)/shim:$PATH
+  export ROS_PYTHON_VERSION=3
+
+  # missing depdendencies that rosdep doesn't seem to catch
+  brew install fltk poco lz4 gpgme yaml-cpp opencv@3 pcl
+  brew link --force opencv@3
 
   # Initialize and update rosdep
   if [ ! -d /etc/ros/rosdep/ ]; then
@@ -134,82 +153,24 @@ do_install()
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
   pushd src
-    # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
-
-    # swap out rospy for kinetic version 1.12.6. This fixes "RuntimeError:
-    # concurrent poll() invocation" errors. 
-    wstool merge -r ../../patches/rospy_patch.rosinstall -y
     wstool update -j8
-
-    # conflicts with normal numpy
-    if [ -d /usr/local/bin/f2py ]; then
-      rm '/usr/local/bin/f2py'
-    fi
-    if brew ls --versions numpy > /dev/null; then
-      brew link numpy
-    fi
-
-    # make sure rosdep doesn't stop on opencv
-    if brew ls --versions opencv@3 > /dev/null; then    
-      brew unlink opencv@3
-      brew install opencv
-      brew link opencv
-    fi
 
     # Package dependencies.
     rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y -r --as-root pip:no
   popd
 
-  # install specific versions of certain brew packages
-
-  # boost 1.69.0
-  brew unlink boost-python
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/16274ef9d6acdb629139b331a0c37d0964e61a14/Formula/boost-python.rb
-  brew link boost-python
-  brew unlink boost
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/16274ef9d6acdb629139b331a0c37d0964e61a14/Formula/boost.rb
-  brew link boost
-
-  # sip 4.19.8_12 - still supports python2
-  brew unlink sip
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6d2b011fa8f28ef5a0b52f24eb687276823a22fa/Formula/sip.rb
-  brew link sip
-
-  # qt 5.13.1 - 5.14 had problems with rqt_image_view
-  brew unlink qt
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/b2f67e742630b1b2353a9870e6ef18d8eaa19638/Formula/qt.rb
-  brew link qt
-
-  # pyqt 5.10.1_1 - still supports python2
-  brew unlink pyqt
-  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
-  brew link pyqt
-
-  # install gazebo9 from source. Fixes a lot of problems with protobuf compatibility
-  brew reinstall -s gazebo9
-
-  # Get homebrew's opencv3 from a bottle so that we don't have to build it.
-  brew unlink opencv
-  brew install opencv@3
-  brew link opencv@3 --force
-
-  # old version of numpy
-  brew unlink numpy
-  brew install numpy@1.16
-  brew link numpy@1.16 --force
-
   # patches
 
-  # fix roscpp trying to link against unused? boost component
+  # # fix roscpp trying to link against unused? boost component
   patch -d src/ros_comm/roscpp/ < ../patches/roscpp.diff
   patch -d src/ros_comm/message_filters/ < ../patches/message_filters.diff
 
-  # fix tf and tf2 trying to link against unused? boost component
+  # # fix tf and tf2 trying to link against unused? boost component
   patch -d src/geometry/tf/ < ../patches/tf.diff
   patch -d src/geometry2/tf2/ < ../patches/tf2.diff
 
-  # rosbag_strorage encryption
+  # # rosbag_strorage encryption
   patch -d src/ros_comm/rosbag_storage/ < ../patches/rosbag_storage.diff
   if [ ! -d /usr/local/include/openssl ]; then
     ln -s /usr/local/opt/openssl/include/* /usr/local/include/
@@ -221,9 +182,6 @@ do_install()
   # fix boost components in camera_calibration_parsers
   patch -d src/vision_opencv/cv_bridge/ < ../patches/cv_bridge.diff
 
-  # add pango to image_view
-  patch -d src/image_pipeline/image_view/ < ../patches/image_view.diff
-
   # fix find flann library in pcl so pcl_ros can build
   # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun)
   patch -d /usr/local/share/pcl-1.9/Modules/ < ../patches/FindFLANN.diff
@@ -231,6 +189,16 @@ do_install()
   # fix ros_controllers not finding class_loader and console_bridge
   patch -d src/ros_controllers/position_controllers/ < ../patches/position_controllers.diff 
   patch -d src/ros_controllers/diff_drive_controller/ < ../patches/diff_drive_controller.diff 
+
+  # patch rospy to fix mac specific errors (https://github.com/ros/ros_comm/pull/1904)
+  patch -p1 -d src/ros_comm < ../patches/rospy_kqueue.patch 
+  patch -p1 -d src/ros_comm < ../patches/rospy_exception.patch 
+
+  # fix rqt_reconfigure not showing up in rqt_gui
+  patch -d src/rqt_reconfigure/ < ../patches/rqt_reconfigure.diff
+
+  # fix python 3 errors in smach_ros (https://github.com/ros/executive_smach/pull/62)
+  patch -p1 -d src/executive_smach/smach_ros < ../patches/smach_ros.patch
 
   # Clean out or create the install directory.
   if [ -d ${ROS_INSTALL_DIR} ]; then
@@ -250,9 +218,7 @@ do_install()
       -DCATKIN_ENABLE_TESTING=0 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
-      -DPYTHON_EXECUTABLE=$(which python2) \
-      -DPYTHON_LIBRARY=$(python2 -c "import sys; print sys.prefix")/lib/libpython2.7.dylib \
-      -DPYTHON_INCLUDE_DIR=$(python2 -c "import sys; print sys.prefix")/include/python2.7
+      -DPYTHON_EXECUTABLE=$(which python3)
   catkin build
 
   echo "Installation successful, please source the ROS workspace:"

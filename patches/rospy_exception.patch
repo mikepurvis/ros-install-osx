@@ -1,0 +1,26 @@
+From e7eeac4b16d8a5ce85d7d755c0cee3976df24845 Mon Sep 17 00:00:00 2001
+From: Steve Nogar <snogar@gmail.com>
+Date: Sun, 1 Mar 2020 13:02:37 -0500
+Subject: [PATCH] add exception for ConnectionAbortedError
+
+Prevent python nodes from spamming the terminal on every close. Noted in Python 3 running on macOS.
+---
+ clients/rospy/src/rospy/impl/tcpros_base.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git clients/rospy/src/rospy/impl/tcpros_base.py clients/rospy/src/rospy/impl/tcpros_base.py
+index beb11aaf1..2f896731e 100644
+--- clients/rospy/src/rospy/impl/tcpros_base.py
++++ clients/rospy/src/rospy/impl/tcpros_base.py
+@@ -154,6 +154,8 @@ class TCPServer(object):
+                 (client_sock, client_addr) = self.server_sock.accept()
+             except socket.timeout:
+                 continue
++            except ConnectionAbortedError:
++                continue
+             except IOError as e:
+                 (e_errno, msg) = e.args
+                 if e_errno == errno.EINTR: #interrupted system call
+-- 
+2.25.0
+

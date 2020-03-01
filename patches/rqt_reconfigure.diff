@@ -1,0 +1,11 @@
+--- plugin.xml	2020-02-29 16:52:44.000000000 -0500
++++ plugin.xml	2020-02-29 16:52:42.000000000 -0500
+@@ -6,7 +6,7 @@
+     </description>
+     <qtgui>
+       <group>
+-        <label>Conf</label>
++        <label>Configuration</label>
+         <icon type="theme">folder</icon>
+         <statustip>Plugins related to configuration.</statustip>
+       </group>

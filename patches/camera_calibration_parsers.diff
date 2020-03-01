@@ -1,6 +1,6 @@
---- CMakeLists.txt	2019-10-06 15:41:55.000000000 -0400
-+++ CMakeLists.txt	2019-10-06 15:41:50.000000000 -0400
-@@ -5,7 +5,11 @@
+--- CMakeLists.txt	2020-02-29 15:56:45.000000000 -0500
++++ CMakeLists.txt	2020-02-29 15:55:41.000000000 -0500
+@@ -5,9 +5,17 @@
  
  find_package(PythonLibs REQUIRED)
  if(PYTHONLIBS_VERSION_STRING VERSION_LESS 3)
@@ -11,5 +11,19 @@
 +    find_package(Boost REQUIRED COMPONENTS filesystem python)
 +  endif()
  else()
-   find_package(Boost REQUIRED COMPONENTS filesystem python3)
+-  find_package(Boost REQUIRED COMPONENTS filesystem python3)
++  if(APPLE)
++    find_package(Boost REQUIRED COMPONENTS filesystem python)
++  else()
++    find_package(Boost REQUIRED COMPONENTS filesystem python3)
++  endif()
  endif()
+ include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+ 
+@@ -80,4 +88,4 @@
+ 
+ if(CATKIN_ENABLE_TESTING)
+   add_subdirectory(test)
+-endif()
+\ No newline at end of file
++endif()
