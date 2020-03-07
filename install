@@ -93,7 +93,7 @@ do_install()
   pip install catkin_tools/
 
   # install tango-icon-theme so icons show up correctly in rqt
-  brew install wget intltool gettext icon-naming-utils imagemacgick 
+  brew install wget intltool gettext icon-naming-utils imagemagick 
   brew link --force gettext
   wget http://pkgs.fedoraproject.org/repo/pkgs/tango-icon-theme/tango-icon-theme-0.8.90.tar.gz/0795895d2f20eddcbd2bffe94ed431a6/tango-icon-theme-0.8.90.tar.gz
   tar -xvf tango-icon-theme-0.8.90.tar.gz
