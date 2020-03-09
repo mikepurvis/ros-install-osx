@@ -197,6 +197,9 @@ do_install()
   # fix rqt_reconfigure not showing up in rqt_gui
   patch -d src/rqt_reconfigure/ < ../patches/rqt_reconfigure.diff
 
+  # fix rqt_launch not showing up in rqt_gui
+  patch -d src/rqt_launch/ < ../patches/rqt_launch.diff
+
   # fix python 3 errors in smach_ros (https://github.com/ros/executive_smach/pull/62)
   patch -p1 -d src/executive_smach/smach_ros < ../patches/smach_ros.patch
 
