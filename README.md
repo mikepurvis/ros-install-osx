@@ -15,7 +15,7 @@ Required software versions (installed via script):
 
 * **boost**: 1.72
 * **opencv3**
-* **python3**
+* **python2**
 
 Usage
 -----
