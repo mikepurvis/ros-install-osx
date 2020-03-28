@@ -1,6 +1,6 @@
---- CMakeLists.txt	2020-03-11 20:56:18.000000000 -0400
-+++ CMakeLists.new.txt	2020-03-11 20:53:18.000000000 -0400
-@@ -29,12 +29,14 @@
+--- CMakeLists.txt	2020-03-27 22:19:28.000000000 -0400
++++ CMakeLists.txt	2020-03-27 22:21:34.000000000 -0400
+@@ -22,12 +22,13 @@
  # Support large bags (>2GB) on 32-bit systems
  add_definitions(-D_FILE_OFFSET_BITS=64)
  
@@ -12,7 +12,6 @@
  set(AES_ENCRYPT_LIBRARIES "")
 -if(NOT WIN32)
 +if(APPLE)
-+  set(AES_ENCRYPT_LIBRARIES "crypto" "Gpgmepp")
 +elseif(NOT WIN32)
    set(AES_ENCRYPT_SOURCE "src/aes_encryptor.cpp" "src/gpgme_utils.cpp")
    find_library(GPGME_LIBRARY
