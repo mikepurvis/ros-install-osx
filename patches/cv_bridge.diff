@@ -20,10 +20,3 @@
    endif()
  else()
  find_package(Boost REQUIRED)
-@@ -45,4 +53,4 @@
- install(
-   DIRECTORY include/${PROJECT_NAME}/
-   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
--)
-\ No newline at end of file
-+)

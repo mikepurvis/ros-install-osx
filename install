@@ -148,6 +148,13 @@ do_install()
   mkdir $WS
   cd $WS
 
+  if brew ls --versions  numpy@1.16 > /dev/null; then
+    brew uninstall numpy@1.16
+    brew install numpy
+    brew link numpy
+  fi
+
+
   # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
   wstool init src
@@ -176,24 +183,26 @@ do_install()
   brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/1f389d65e21ad067be6811900f5361301b44839f/Formula/pyqt.rb
   brew link pyqt
 
-  # # old version of numpy
-  brew unlink numpy
-  brew install numpy@1.16
-  brew link numpy@1.16 --force
+  # cmake 3.17 seems to break things, this is 3.16.15
+  brew unlink cmake
+  brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/ce67f01dd2586e36b84eba1c0a7d13fb0cde0302/Formula/cmake.rb
+  brew link cmake
 
+  # opencv3
   brew unlink opencv
   brew install opencv@3
   brew link --force opencv@3
 
+  # # old version of numpy
+  if ! brew ls --versions  numpy@1.16 > /dev/null; then
+    brew unlink numpy
+    brew install numpy@1.16
+    brew link numpy@1.16 --force
+  fi
 
   # patches
 
-  # fix roscpp trying to link against unused? boost component
-  patch -N -d src/ros_comm/roscpp/ < ../patches/roscpp.diff
-  patch -N -d src/ros_comm/message_filters/ < ../patches/message_filters.diff
-
   # fix tf and tf2 trying to link against unused? boost component
-  patch -N -d src/geometry/tf/ < ../patches/tf.diff
   patch -N -d src/geometry2/tf2/ < ../patches/tf2.diff
 
   # rosbag_strorage encryption
@@ -214,17 +223,6 @@ do_install()
   # fix find flann library in pcl so pcl_ros can build
   # (https://stackoverflow.com/questions/53776238/building-point-cloud-library-pcl-on-macos-x-mojave-error-ld-library-not-foun)
   patch -N -d /usr/local/share/pcl-1.9/Modules/ < ../patches/FindFLANN.diff
-
-  # fix ros_controllers not finding class_loader and console_bridge
-  patch -N -d src/ros_controllers/position_controllers/ < ../patches/position_controllers.diff 
-  patch -N -d src/ros_controllers/diff_drive_controller/ < ../patches/diff_drive_controller.diff 
-
-  # patch rospy to fix mac specific errors (https://github.com/ros/ros_comm/pull/1904)
-  patch -p1 -d src/ros_comm < ../patches/rospy_kqueue.patch 
-  patch -p1 -d src/ros_comm < ../patches/rospy_exception.patch 
-
-  # fix rqt_reconfigure not showing up in rqt_gui
-  patch -N -d src/rqt_reconfigure/ < ../patches/rqt_reconfigure.diff
 
   # fix rqt_launch not showing up in rqt_gui
   patch -N -d src/rqt_launch/ < ../patches/rqt_launch.diff
