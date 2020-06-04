@@ -165,8 +165,6 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 
     * This has to do with home-brew dropping qt4 support: https://github.com/mikepurvis/ros-install-osx/issues/63
 
-* Could also install indigo on snapdragon, but would take a VERY long time to install
-
 * rosdep —skip-keys command is useful for resolving dependencies
 
     * rosdep check --from-paths src --ignore-src --rosdistro kinetic --skip-keys geographiclib --skip-keys geographiclib-tools
@@ -268,4 +266,21 @@ Below are assorted tips that I have compiled for fixing any issues that can crop
 	sudo pip install --upgrade catkin_pkg_modules
 	```
 
+* If the standard library is missing: such as
 
+  ```bash
+   error: no member named 'isfinite' in namespace 'std'; did you mean 'finite'?
+  ```
+
+  Run the following command (from [here](https://github.com/PointCloudLibrary/pcl/issues/2601))
+
+  ```bash
+  #Check the current sdk
+  xcrun --show-sdk-path
+  
+  #Change sdk
+  sudo xcode-select -s /Library/Developer/CommandLineTools          #Using CommandLineTools SDK
+  sudo xcode-select -s /Applications/Xcode.app/Contents/Developer   #Using XCode.app SDK
+  ```
+
+  

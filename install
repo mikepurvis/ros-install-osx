@@ -149,9 +149,9 @@ do_install()
   cd $WS
 
   if brew ls --versions  numpy@1.16 > /dev/null; then
-    brew uninstall numpy@1.16
+    brew uninstall --ignore-dependencies numpy@1.16
     brew install numpy
-    brew link numpy
+    brew link --overwrite numpy
   fi
 
 
@@ -213,6 +213,9 @@ do_install()
 
   # fix boost components in camera_calibration_parsers
   patch -N -d src/image_common/camera_calibration_parsers/ < ../patches/camera_calibration_parsers.diff
+
+  # remove testing from diagnostic aggregator
+  patch -N -d src/diagnostics/diagnostic_aggregator/ < ../patches/diagnostic_aggregator.diff
 
   # fix boost components in camera_calibration_parsers
   patch -N -d src/vision_opencv/cv_bridge/ < ../patches/cv_bridge.diff
