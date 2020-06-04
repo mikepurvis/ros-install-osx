@@ -5,6 +5,10 @@ libogre-dev:
       packages: [ogre1.9]
 
 # Use Gazebo 8 instead of 7.
+gazebo:
+  osx:
+    homebrew:
+      packages: [gazebo8]
 gazebo7:
   osx:
     homebrew:
@@ -14,8 +18,32 @@ libgazebo7-dev:
     homebrew:
       packages: [gazebo8]
 
+gazebo9:
+  osx:
+    homebrew:
+      packages: [gazebo9]
+libgazebo9-dev:
+  osx:
+    homebrew:
+      packages: [gazebo9]
+
 # Don't try to install opencv3
 opencv3:
+  osx:
+    homebrew:
+      packages: []
+
+geographiclib:
+  osx:
+    homebrew:
+      packages: [geographiclib]
+geographiclib-tools:
+  osx:
+    homebrew:
+      packages: []
+
+# ignore joystick drivers
+joy:
   osx:
     homebrew:
       packages: []
@@ -23,6 +51,7 @@ opencv3:
 # Installing all this Python stuff from homebrew instead of pip
 # means we get pre-built bottles and don't have to build it all
 # each time.
+
 python:
   osx:
     homebrew:
@@ -84,6 +113,33 @@ qt5-qmake:
     homebrew:
       packages: []
 python-qt5-bindings:
+  osx:
+    homebrew:
+      packages: []
+google-mock:
+  osx:
+    homebrew:
+      pacakges: []
+gtest: 
+  osx:
+    homebrew:
+      packages: []
+
+python:
+  osx:
+    homebrew:
+      packages: [python@2]
+
+python-gnupg:
+  osx:
+    pip:
+      packages: [python-gnupg]
+
+libgpgme-dev:
+  osx:
+    homebrew:
+      packages: [gpgme]
+tango-icon-theme:
   osx:
     homebrew:
       packages: []

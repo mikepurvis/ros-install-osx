@@ -1,0 +1,13 @@
+--- FindFLANN.cmake	2019-10-20 20:48:33.000000000 -0400
++++ FindFLANN.cmake	2019-10-20 20:45:53.000000000 -0400
+@@ -9,6 +9,10 @@
+ # If FLANN_USE_STATIC is specified and then look for static libraries ONLY else
+ # look for shared ones
+ 
++# find flann libraries
++set(FLANN_LIBRARIES /usr/local/lib/libflann.dylib /usr/local/lib/libflann_cpp.dylib)
++set(FLANN_FOUND TRUE)
++
+ if(FLANN_USE_STATIC)
+   set(FLANN_RELEASE_NAME flann_cpp_s)
+   set(FLANN_DEBUG_NAME flann_cpp_s-gd)

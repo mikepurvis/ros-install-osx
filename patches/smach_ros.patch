@@ -1,0 +1,39 @@
+From cc7eaf7a145430b8293cb66680cb9d45206dd6e7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcus=20Mee=C3=9Fen?= <marcus@meessen.online>
+Date: Fri, 15 Mar 2019 14:11:37 +0100
+Subject: [PATCH] missing module name in smach_ros/__init__.py import
+ statements
+
+---
+ smach_ros/src/smach_ros/__init__.py | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git smach_ros/src/smach_ros/__init__.py smach_ros/src/smach_ros/__init__.py
+index af249b2..688e9f0 100644
+--- smach_ros/src/smach_ros/__init__.py
++++ smach_ros/src/smach_ros/__init__.py
+@@ -49,14 +49,14 @@ smach.set_loggers(
+ smach.set_shutdown_check(rospy.is_shutdown)
+ 
+ ### Core classes
+-from util import set_preempt_handler
++from smach_ros.util import set_preempt_handler
+ 
+ ### Top-level Containers / Wrappers
+-from action_server_wrapper import ActionServerWrapper
+-from introspection import IntrospectionClient, IntrospectionServer
++from smach_ros.action_server_wrapper import ActionServerWrapper
++from smach_ros.introspection import IntrospectionClient, IntrospectionServer
+ 
+ ### State Classes
+-from simple_action_state import SimpleActionState
+-from service_state import ServiceState
+-from monitor_state import MonitorState
+-from condition_state import ConditionState
++from smach_ros.simple_action_state import SimpleActionState
++from smach_ros.service_state import ServiceState
++from smach_ros.monitor_state import MonitorState
++from smach_ros.condition_state import ConditionState
+-- 
+2.25.0
+
