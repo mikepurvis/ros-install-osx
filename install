@@ -42,7 +42,6 @@ do_install()
 
   # XQuartz
   if ! hash xquartz 2>/dev/null; then
-    brew install caskroom/cask/brew-cask
     brew cask install xquartz
     echo "Log out and in to finalize XQuartz setup."
     exit 0
