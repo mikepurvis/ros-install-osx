@@ -1,0 +1,62 @@
+From 24947cc053381396ae961d28412331512cb85355 Mon Sep 17 00:00:00 2001
+From: Stephen Nogar <stephen.m.nogar.civ@mail.mil>
+Date: Mon, 4 Jan 2021 17:40:51 -0500
+Subject: [PATCH] fix for detecting big sur (and newer) versions of macOS
+
+---
+ src/rospkg/os_detect.py | 35 ++++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
+
+diff --git a/src/rospkg/os_detect.py b/src/rospkg/os_detect.py
+index 0027baa..c6915d7 100644
+--- a/src/rospkg/os_detect.py
++++ b/src/rospkg/os_detect.py
+@@ -343,25 +343,30 @@ class Rhel(Fedora):
+ 
+ # Source: https://en.wikipedia.org/wiki/MacOS#Versions
+ _osx_codename_map = {
+-    4: 'tiger',
+-    5: 'leopard',
+-    6: 'snow',
+-    7: 'lion',
+-    8: 'mountain lion',
+-    9: 'mavericks',
+-    10: 'yosemite',
+-    11: 'el capitan',
+-    12: 'sierra',
+-    13: 'high sierra',
+-    14: 'mojave',
+-    15: 'catalina',
++ '10.4': 'tiger',
++ '10.5': 'leopard',
++ '10.6': 'snow',
++ '10.7': 'lion',
++ '10.8': 'mountain lion',
++ '10.9': 'mavericks',
++ '10.10': 'yosemite',
++ '10.11': 'el capitan',
++ '10.12': 'sierra',
++ '10.13': 'high sierra',
++ '10.14': 'mojave',
++ '10.15': 'catalina',
++ '11': 'big sur'
+ }
+ 
+ 
+ def _osx_codename(major, minor):
+-    if major != 10 or minor not in _osx_codename_map:
+-        raise OsNotDetected("unrecognized version: %s.%s" % (major, minor))
+-    return _osx_codename_map[minor]
++    if major == 10:
++        key = '%s.%s' % (major, minor)
++    else:
++        key = '%s' % (major)        
++    if key not in _osx_codename_map:
++         raise OsNotDetected("unrecognized version: %s" % key)
++    return _osx_codename_map[key]
+ 
+ 
+ class OSX(OsDetector):
+-- 
+2.24.3 (Apple Git-128)
+

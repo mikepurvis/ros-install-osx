@@ -3,8 +3,12 @@ libogre-dev:
   osx:
     homebrew:
       packages: [ogre1.9]
+libogre:
+  osx:
+    homebrew:
+      packages: [ogre1.9]
 
-# Use Gazebo 8 instead of 7.
+# Gazebo
 gazebo:
   osx:
     homebrew:
@@ -17,7 +21,6 @@ libgazebo7-dev:
   osx:
     homebrew:
       packages: [gazebo8]
-
 gazebo9:
   osx:
     homebrew:
@@ -26,6 +29,14 @@ libgazebo9-dev:
   osx:
     homebrew:
       packages: [gazebo9]
+gazebo11:
+  osx:
+    homebrew:
+      packages: [gazebo11]
+libgazebo11-dev:
+  osx:
+    homebrew:
+      packages: [gazebo11]
 
 # Don't try to install opencv3
 opencv3:
@@ -52,28 +63,97 @@ joy:
 # means we get pre-built bottles and don't have to build it all
 # each time.
 
-python:
+python3:
   osx:
     homebrew:
-      packages: [python]
+      packages: [python3@3.8]
     pip:
       packages: [pip, setuptools, nose]
-python-matplotlib:
+python3-matplotlib:
   osx:
     pip:
       packages: [matplotlib]
-python-numpy:
+python3-numpy:
   osx:
     homebrew:
       packages: [numpy]
-python-scipy:
+python3-scipy:
   osx:
     homebrew:
       packages: [scipy]
-python-wxtools:
+python3-wxtools:
   osx:
     homebrew:
       packages: [wxmac]
+python3-gnupg:
+  osx:
+    pip:
+      packages: [gnupg]
+libgpgme-dev:
+  osx:
+    homebrew:
+      packages: [gpgme]
+tango-icon-theme:
+  osx:
+    homebrew:
+      packages: []
+python3-empy:
+  osx:
+    pip:
+      packages: [empy]
+python3-pykdl:
+  osx:
+    homebrew:
+      packages: [orocos-kdl]
+python3-nose:
+  osx:
+    pip:
+      packages: [nose]
+python3-paramiko:
+  osx:
+    pip:
+      packages: [paramiko]
+python3-mock:
+  osx:
+    pip:
+      packages: [mock]
+python3-coverage:
+  osx:
+    pip:
+      packages: [coverage]
+python3-pydot:
+  osx:
+    pip:
+      packages: [pydot]
+python3-defusedxml:
+  osx:
+    pip:
+      packages: [defusedxml]
+python3-opengl:
+  osx:
+    pip:
+      packages: []
+python3-opencv:
+  osx:
+    homebrew:
+      packages: [opencv]
+python3-cairo:
+  osx:
+    homebrew:
+      packages: [py3cairo]
+python3-netifaces:
+  osx:
+    pip:
+      packages: [netifaces]
+python3-catkin-pkg:
+  osx:
+    pip:
+      packages: [catkin-pkg]
+python3-rosdep-modules:
+  osx:
+    pip:
+      packages: []
+
 
 # Zero out all the QT5 keys. We'll install it ourselves upfront.
 libqt5-opengl-dev:
@@ -88,11 +168,11 @@ libqt5-core:
   osx:
     homebrew:
       packages: []
-python-qt5-bindings-gl:
+python3-qt5-bindings-gl:
   osx:
     homebrew:
       packages: []
-python-qt5-bindings-webkit:
+python3-qt5-bindings-webkit:
   osx:
     homebrew:
       packages: []
@@ -112,34 +192,55 @@ qt5-qmake:
   osx:
     homebrew:
       packages: []
-python-qt5-bindings:
+python3-qt5-bindings:
   osx:
     homebrew:
       packages: []
+
+# boost
+libboost-thread-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-regex-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-filesystem-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-system-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-date-time-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-program-options-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+libboost-chrono-dev:
+  osx:
+    homebrew:
+      packages: [boost]
+
+# misc
+gtk3:
+  osx:
+    homebrew:
+      packages: [gtk+3]
 google-mock:
   osx:
     homebrew:
       pacakges: []
 gtest: 
-  osx:
-    homebrew:
-      packages: []
-
-python:
-  osx:
-    homebrew:
-      packages: [python@2]
-
-python-gnupg:
-  osx:
-    pip:
-      packages: [python-gnupg]
-
-libgpgme-dev:
-  osx:
-    homebrew:
-      packages: [gpgme]
-tango-icon-theme:
   osx:
     homebrew:
       packages: []

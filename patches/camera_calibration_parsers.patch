@@ -1,0 +1,26 @@
+From 1302dbf942e2693f6029985afdb4675f32fe5e88 Mon Sep 17 00:00:00 2001
+From: Stephen Nogar <stephen.m.nogar.civ@mail.mil>
+Date: Wed, 6 Jan 2021 14:44:54 -0500
+Subject: [PATCH] fix boost python
+
+---
+ camera_calibration_parsers/CMakeLists.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/camera_calibration_parsers/CMakeLists.txt b/camera_calibration_parsers/CMakeLists.txt
+index 4f08187..981c0c9 100644
+--- a/camera_calibration_parsers/CMakeLists.txt
++++ b/camera_calibration_parsers/CMakeLists.txt
+@@ -4,7 +4,8 @@ project(camera_calibration_parsers)
+ find_package(catkin REQUIRED sensor_msgs rosconsole roscpp roscpp_serialization)
+ 
+ find_package(PythonLibs REQUIRED)
+-find_package(Boost REQUIRED COMPONENTS filesystem python)
++find_package(PythonInterp REQUIRED)
++find_package(Boost REQUIRED COMPONENTS filesystem python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+ include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+ 
+ catkin_python_setup()
+-- 
+2.24.3 (Apple Git-128)
+

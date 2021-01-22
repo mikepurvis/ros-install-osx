@@ -9,13 +9,13 @@ This is the successor to the [popular gist on the same topic][1]. Also thanks to
 
 ## Current Status
 
-**Note: This should work as of March 1, 2020 on Catalina 10.15.3** 
+**Note: This should work as of Jan 22, 2021 on macOS Big Sur 11.1**. **Only ROS Noetic is supported.**
 
 Required software versions (installed via script):
 
-* **boost**: 1.72
-* **opencv3**
-* **python2**
+* **Boost**: 1.73
+* **Opencv**: 4.5
+* **Python**: 3.8
 
 Usage
 -----

@@ -1,0 +1,40 @@
+From 1de0086f610c09cb752c0ee6d382b9611b2f4e42 Mon Sep 17 00:00:00 2001
+From: Stephen Nogar <stephen.m.nogar.civ@mail.mil>
+Date: Wed, 6 Jan 2021 15:40:45 -0500
+Subject: [PATCH] make harfbuzz and gtk optional
+
+---
+ image_view/CMakeLists.txt | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/image_view/CMakeLists.txt b/image_view/CMakeLists.txt
+index 747e0ab..14b4a8c 100644
+--- a/image_view/CMakeLists.txt
++++ b/image_view/CMakeLists.txt
+@@ -39,11 +39,19 @@ if(ANDROID)
+ endif()
+ 
+ find_package(PkgConfig REQUIRED)
+-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+-include_directories(${GTK3_INCLUDE_DIRS})
++pkg_check_modules(GTK3 gtk+-3.0)
++if(GTK3_FOUND)
++  include_directories(${GTK3_INCLUDE_DIRS})
++else()
++  message(STATUS "GTK3 is not found. Some features are disabled.")
++endif()
+ 
+-pkg_check_modules(PC_HB REQUIRED harfbuzz)
+-include_directories(${PC_HB_INCLUDE_DIRS})
++pkg_check_modules(PC_HB harfbuzz)
++if(PC_HB_FOUND)
++  include_directories(${PC_HB_INCLUDE_DIRS})
++else()
++  message(STATUS "harfbuzz is not found. Some features are disabled.")
++endif()
+ 
+ # Nodelet library
+ add_library(image_view src/nodelets/image_nodelet.cpp src/nodelets/disparity_nodelet.cpp src/nodelets/window_thread.cpp)
+-- 
+2.24.3 (Apple Git-128)
+

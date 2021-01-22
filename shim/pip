@@ -1,6 +1,0 @@
-#!/bin/sh
-# This wrapper allows rosdep to call pip and it actually be
-# the pip2 that's part of brewed Python, rather than the missing
-# system pip.
-pip2 $@
-exit $?

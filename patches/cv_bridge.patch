@@ -1,0 +1,33 @@
+From 5dcaf516e272ccee80ec39bff6942804d3535086 Mon Sep 17 00:00:00 2001
+From: Stephen Nogar <stephen.m.nogar.civ@mail.mil>
+Date: Wed, 6 Jan 2021 15:18:10 -0500
+Subject: [PATCH] fixes for loading correct version of boost python
+
+---
+ cv_bridge/CMakeLists.txt | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/cv_bridge/CMakeLists.txt b/cv_bridge/CMakeLists.txt
+index ef804b9..3ac0a19 100644
+--- a/cv_bridge/CMakeLists.txt
++++ b/cv_bridge/CMakeLists.txt
+@@ -5,14 +5,8 @@ find_package(catkin REQUIRED COMPONENTS rosconsole sensor_msgs)
+ 
+ if(NOT ANDROID)
+   find_package(PythonLibs)
+-
+-  if(PYTHONLIBS_VERSION_STRING VERSION_LESS "3.8")
+-    # Debian Buster
+-    find_package(Boost REQUIRED python37)
+-  else()
+-    # Ubuntu Focal
+-    find_package(Boost REQUIRED python)
+-  endif()
++  find_package(PythonInterp REQUIRED)
++  find_package(Boost REQUIRED python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+ else()
+ find_package(Boost REQUIRED)
+ endif()
+-- 
+2.24.3 (Apple Git-128)
+

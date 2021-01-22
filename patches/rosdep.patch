@@ -1,0 +1,29 @@
+From fd935ad0bc75fd0a9791033d719e01c9ac215109 Mon Sep 17 00:00:00 2001
+From: Stephen Nogar <stephen.m.nogar.civ@mail.mil>
+Date: Tue, 5 Jan 2021 14:12:05 -0500
+Subject: [PATCH] fix brew list warning
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fixes “Error: Calling `brew list` to only list formulae is disabled! Use `brew list --formula` instead.” warning
+---
+ src/rosdep2/platforms/osx.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/rosdep2/platforms/osx.py b/src/rosdep2/platforms/osx.py
+index 13b0723..aadcb46 100644
+--- a/src/rosdep2/platforms/osx.py
++++ b/src/rosdep2/platforms/osx.py
+@@ -184,7 +184,7 @@ def brew_detect(resolved, exec_fn=None):
+     """
+     if exec_fn is None:
+         exec_fn = read_stdout
+-    std_out = exec_fn(['brew', 'list'])
++    std_out = exec_fn(['brew', 'list', '--formula'])
+     installed_formulae = std_out.split()
+ 
+     def is_installed(r):
+-- 
+2.24.3 (Apple Git-128)
+

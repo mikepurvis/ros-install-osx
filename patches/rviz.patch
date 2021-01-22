@@ -1,0 +1,63 @@
+From c2e255f0b477afd431cf4678b34916fdaf55690b Mon Sep 17 00:00:00 2001
+From: Stephen Nogar <stephen.m.nogar.civ@mail.mil>
+Date: Wed, 6 Jan 2021 18:51:54 -0500
+Subject: [PATCH] fix build for mac
+
+remove screw/twist plugin, fix assimp link
+---
+ CMakeLists.txt                         | 23 +++++++++++++++++++----
+ src/rviz/default_plugin/CMakeLists.txt |  4 ++--
+ 2 files changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 674e1033..e66828f5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,10 +26,25 @@ find_package(Boost REQUIRED
+ find_package(urdfdom_headers REQUIRED)
+ 
+ set(CMAKE_POLICY_DEFAULT_CMP0012 NEW)  # required due to a bug in assimp 5.0
+-find_package(ASSIMP REQUIRED)
+-if(NOT DEFINED ASSIMP_LIBRARIES AND TARGET assimp::assimp)
+-  # ASSIMP >= 5.0 no longer defines ASSIMP_LIBRARIES
+-  set(ASSIMP_LIBRARIES assimp::assimp)
++find_package(ASSIMP QUIET)
++if (ASSIMP_FOUND)
++  if( NOT ${ASSIMP_VERSION} VERSION_LESS "2.0.1150" )
++    add_definitions(-DASSIMP_UNIFIED_HEADER_NAMES)
++    message(STATUS "Assimp version has unified headers")
++  else()
++    message(STATUS "Assimp version does not have unified headers")
++  endif()
++  include_directories(${ASSIMP_INCLUDE_DIRS})
++  #catkin_lint: ignore_once link_directory
++  link_directories(${ASSIMP_LIBRARY_DIRS})
++else()
++  message(STATUS "could not find assimp (perhaps available thorugh ROS package?), so assimping assimp v2")
++  set(ASSIMP_LIBRARIES assimp)
++  set(ASSIMP_LIBRARY_DIRS)
++  set(ASSIMP_CXX_FLAGS)
++  set(ASSIMP_CFLAGS_OTHER)
++  set(ASSIMP_LINK_FLAGS)
++  set(ASSIMP_INCLUDE_DIRS)
+ endif()
+ 
+ find_package(OGRE QUIET COMPONENTS Overlay)
+diff --git a/src/rviz/default_plugin/CMakeLists.txt b/src/rviz/default_plugin/CMakeLists.txt
+index 196c2521..41b13d0e 100644
+--- a/src/rviz/default_plugin/CMakeLists.txt
++++ b/src/rviz/default_plugin/CMakeLists.txt
+@@ -47,8 +47,8 @@ set(SOURCE_FILES
+   range_display.cpp
+   relative_humidity_display.cpp
+   robot_model_display.cpp
+-  screw_display.cpp
+-  screw_visual.cpp
++#   screw_display.cpp
++#   screw_visual.cpp
+   temperature_display.cpp
+   tf_display.cpp
+   tools/focus_tool.cpp
+-- 
+2.24.3 (Apple Git-128)
+
