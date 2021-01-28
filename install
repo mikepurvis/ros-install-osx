@@ -184,7 +184,7 @@ do_install()
 
   # Standard source install
   rosinstall_generator ${ROS_CONFIGURATION} ${ROS_EXTRA_PACKAGES} --rosdistro ${ROS_DISTRO} --deps --tar > ${WS}.rosinstall
-  vcs import src < ../${WS}.rosinstall
+  vcs import src < ${WS}.rosinstall
   rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} --as-root pip:false -y 
 
   # custom built dependencies
@@ -194,10 +194,11 @@ do_install()
     smnogar/ros-noetic/boost-python3@1.73 \
     smnogar/ros-noetic/sip@4.19.24 \
     smnogar/ros-noetic/pyqt@5.15.0 \
+    smnogar/ros-noetic/opencv@4.5 \
     smnogar/ros-noetic/tango-icon-theme
   brew unlink boost && brew link boost@1.73
   brew unlink boost-python3 && brew link boost-python3@1.73
-  brew unlink opencv && brew link opencv@4.2
+  brew unlink opencv && brew link opencv@4.5
   brew unlink sip && brew link sip@4.19.24
   brew unlink pyqt && brew link pyqt@5.15.0
 
