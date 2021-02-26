@@ -123,7 +123,7 @@ do_install()
     brew install python@3.8
     brew link python@3.8
 
-    mkdir -p ~/Library/Python/2.8/lib/python/site-packages
+    mkdir -p ~/Library/Python/3.8/lib/python/site-packages
     echo "$(brew --prefix)/lib/python3.8/site-packages" >> ~/Library/Python/3.8/lib/python/site-packages/homebrew.pth
   fi
   # export PATH="/usr/local/opt/python@3.8/bin:$PATH"
